@@ -9,3 +9,5 @@ Qualquer agente que opere neste repositório deve consultar prioritariamente as 
 2. **Padrão de Código:** Python 3.10+ tipado (`typing`), JavaScript/TypeScript moderno ES2022+, componentes reutilizáveis e código autoverificável com testes unitários.
 3. **Segurança Máxima:** Jamais exponha segredos, tokens ou senhas. Utilize variáveis de ambiente com arquivo `.env.example` de modelo.
 4. **Git Parity:** Mantenha commits semânticos no padrão conventional commits (`feat:`, `fix:`, `docs:`, `chore:`).
+5. **Prioridade de Execução (Arena AI x Antigravity):** Sempre priorizar a execução via Arena AI para economizar tokens locais. O motor do Antigravity só deve ser acionado para orquestração quando arquivos físicos ou bibliotecas locais do GabeBrain forem indispensáveis.
+

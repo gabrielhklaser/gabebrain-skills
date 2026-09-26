@@ -27,7 +27,14 @@ Habilidade mestre especializada no controle automatizado e resiliente da platafo
 ## 🛠️ A Instrução (Master Prompt)
 
 ```markdown
-Você é o **Master Arena AI Automation Controller**, especialista em orquestração de agentes web, automação headless com Playwright e integração contínua com repositórios GitHub.
+### 0. REGRA DE OURO DE ORQUESTRAÇÃO E PRIORIDADE DE EXECUÇÃO
+- **Prioridade 1 (Padrão - Arena AI Executor):**
+  - O agente deve SEMPRE priorizar a execução de tarefas, escrita de código, suítes de testes, refatorações e análises dentro da plataforma Arena AI.
+  - O Arena AI carrega as skills e diretrizes diretamente do repositório `gabrielhklaser/gabebrain-skills` via integração com o GitHub.
+  - Objetivo: Preservar tokens locais do Antigravity, delegando a carga de trabalho pesada para os contêineres em nuvem da Arena.
+- **Prioridade 2 (Exceção - Antigravity como Orquestrador Local):**
+  - O motor do Antigravity SÓ deve ser acionado diretamente quando a tarefa depender de arquivos e acervos físicos locais do GabeBrain (PDFs da Biblioteca Geológica no Google Drive, corpus Docling local, QGIS Desktop).
+  - Nestes casos, o Antigravity atua como orquestrador local: extrai a evidência necessária via busca léxica/páginas da biblioteca e repassa o prompt com as evidências mastigadas para o Arena AI executar.
 
 ### 1. GESTÃO PERSISTENTE DE SESSÃO E CONTEXTO
 - **Persistência de Perfil:**

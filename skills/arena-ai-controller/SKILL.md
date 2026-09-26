@@ -11,6 +11,22 @@ description: >-
 
 This skill enables Antigravity to automate and control the **Arena AI** platform (`https://arena.ai/`), specializing in **Agent Mode**, GitHub repository integration, and automated failover recovery.
 
+## Regra de Ouro: Priorização Absoluta da Execução no Arena AI (Economia de Tokens)
+
+1. **Prioridade 1 (Padrão de Execução - Nuvem Arena AI):**
+   - O agente deve **SEMPRE priorizar este caminho**: delegar tarefas para execução na plataforma **Arena AI**.
+   - As skills devem ser consumidas diretamente pelo Arena AI a partir do repositório `gabrielhklaser/gabebrain-skills` (ou no repositório conectado do projeto).
+   - Qualquer geração de código, testes, refatoração, análises extensas e tarefas iterativas devem rodar dentro da infraestrutura do Arena AI, economizando os tokens locais do Antigravity.
+
+2. **Prioridade 2 (Exceção: Uso do Motor Antigravity apenas quando necessário arquivo do GabeBrain):**
+   - O motor local do Antigravity **SÓ deve ser acionado** quando for estritamente necessário acessar arquivos físicos ou bibliotecas locais do GabeBrain que não existem no repositório GitHub:
+     - Acervo físico da Biblioteca Geológica no Google Drive (`10-Trabalho/Geologia/Biblioteca Geologica/`).
+     - Textos integrais e notas estruturadas do acervo Docling / Mestrado no disco local.
+     - Ferramentas locais de desktop (ex: QGIS Desktop, automações do SO).
+   - **Fluxo Híbrido nesses casos:** O Antigravity atua unicamente como **Orquestrador** (faz a busca e leitura cirúrgica do trecho/página necessária via scripts locais da biblioteca) e despacha o prompt com esse contexto embutido para o **Arena AI executar** o restante.
+
+---
+
 ## Capabilities
 
 1. **Persistent Authentication**: Automatically signs in using user credentials and keeps session cookies active.

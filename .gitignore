@@ -1,0 +1,29 @@
+﻿# Environment & Secrets
+.env
+*.env
+.env.*
+!.env.example
+.session_data/
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Runtime locks & logs
+*.log
+*.lock
+vcs_state.json
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

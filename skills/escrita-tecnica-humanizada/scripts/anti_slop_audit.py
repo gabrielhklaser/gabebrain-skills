@@ -12,19 +12,19 @@ import statistics
 
 # Lista de termos e clichês frequentemente gerados por IA
 BANNED_PATTERNS = [
-    (r"\bdelve\b", "delve (troque por examine, analyze, investigate ou vá direto ao ponto)"),
-    (r"\btapestry\b", "tapestry (troque por context, domain, structure)"),
+    (r"\bdelv(e|es|ed|ing)\b", "delve / delving / delved (troque por examine, analyze, investigate ou vá direto ao ponto)"),
+    (r"\btapestr(y|ies)\b", "tapestry / tapestries (troque por context, domain, structure)"),
     (r"\bcrucial\b", "crucial (use essential, necessary, critical ou mostre por que é importante)"),
     (r"\bpivotal\b", "pivotal (adjetivo inflado de IA)"),
-    (r"\bgame-changer\b", "game-changer (jargão informal/comercial)"),
-    (r"\btestament\b", "testament / 'serves as a testament' (clichê de IA)"),
-    (r"\bsheds light on\b", "sheds light on (metáfora vazia)"),
-    (r"\bimportant to note that\b", "important to note that (muleta verbal desnecessária)"),
-    (r"\bvale ressaltar que\b", "vale ressaltar que (elimine e afirme diretamente o fato)"),
-    (r"\bcabe destacar que\b", "cabe destacar que (elimine e afirme diretamente)"),
-    (r"\bé importante notar que\b", "é importante notar que (elimine a muleta)"),
-    (r"\bmergulhar profundamente\b", "mergulhar profundamente (clichê de tradução de delve)"),
-    (r"\bmosaico complexo\b", "mosaico complexo (clichê de tradução de complex tapestry)"),
+    (r"\bgame-changers?\b", "game-changer (jargão informal/comercial)"),
+    (r"\btestaments?\b", "testament / 'serves as a testament' (clichê de IA)"),
+    (r"\bsheds?\s+light\s+on\b", "sheds light on (metáfora vazia)"),
+    (r"\bimportant\s+to\s+note\s+that\b", "important to note that (muleta verbal desnecessária)"),
+    (r"\bvale\s+ressaltar\s+que\b", "vale ressaltar que (elimine e afirme diretamente o fato)"),
+    (r"\bcabe\s+destacar\s+que\b", "cabe destacar que (elimine e afirme diretamente)"),
+    (r"\bé\s+importante\s+notar\s+que\b", "é importante notar que (elimine a muleta)"),
+    (r"\bmergulh(ar|a|am|ou|ando)\s+profundamente\b", "mergulhar profundamente (clichê de tradução de delve)"),
+    (r"\bmosaicos?\s+complexos?\b", "mosaico complexo (clichê de tradução de complex tapestry)"),
     (r"^(in summary|in conclusion|em suma|em conclusão)[,\s]", "início com muleta de resumo (comece com a constatação técnica direta)"),
 ]
 

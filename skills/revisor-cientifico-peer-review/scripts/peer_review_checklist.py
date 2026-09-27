@@ -76,8 +76,8 @@ def audit_paper(file_path: Path):
     print(f"• Fórmulas Matemáticas: {math_blocks} blocos formais, {inline_math} equações inline")
     
     # Citations
-    cits_md = len(re.findall(r"\[@[\w\-]+\]|\[[\w\s,]+,\s*\d{4}\]", text))
-    cits_tex = len(re.findall(r"\\cite\{.*?\}", text))
+    cits_md = len(re.findall(r"\[@[\w\-]+\]|\[[\w\s.,\-]+,\s*\d{4}\]|\([\w\s.,\-]+,\s*\d{4}\)|\[\d+(?:[,\s\-]+\d+)*\]", text))
+    cits_tex = len(re.findall(r"\\cite[a-zA-Z]*\{.*?\}", text))
     total_cits = cits_md + cits_tex
     print(f"• Citações Bibliográficas Detectadas: {total_cits}")
 

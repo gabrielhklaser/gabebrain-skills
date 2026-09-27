@@ -51,6 +51,7 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **20** | [`Master_Geologia_Estrutural_e_Tensores`](master-skills/Master_Geologia_Estrutural_e_Tensores.md) | Elipsóide de deformação, tensores de tensão, critério Mohr-Coulomb |
 | **21** | [`Master_Hidrogeologia_e_Modelagem_Fluxo`](master-skills/Master_Hidrogeologia_e_Modelagem_Fluxo.md) | Lei de Darcy, equação de Theis, ensaios de bombeamento, modelagem numérica |
 | **22** | [`Master_Canva_Image_e_Design_Agent`](master-skills/Master_Canva_Image_e_Design_Agent.md) | Automação Canva Pro Playwright, design gráfico, manipulação de imagem Pillow |
+| **23** | [`Master_Revisao_Cientifica_e_Escrita_Humanizada`](master-skills/Master_Revisao_Cientifica_e_Escrita_Humanizada.md) | Peer Review rigoroso (SBC/IEEE/ACM), Anti-AI Slop, conversão dissertação -> artigo |
 
 ---
 
@@ -66,6 +67,8 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 6. **`biblioteca-mapa-documento`**: Extrator de estrutura de documentos extensos (>50k tokens) e mergulho direcionado em capítulos técnicos.
 7. **`computacao-aplicada`**: Módulo de acesso ao acervo do Mestrado PPGCA/Unisinos estruturado via Docling.
 8. **`canva-image-agent`**: Automação do Canva Pro via Playwright e motor local de manipulação gráfica (redimensionamento Lanczos, corte, otimização).
+9. **`revisor-cientifico-peer-review`**: Simulador de parecerista sênior (SBC/IEEE/ACM/Elsevier) com auditoria em 5 etapas e checklist canônico de manuscritos.
+10. **`escrita-tecnica-humanizada`**: Guia anti-AI slop, modulação de burstiness, voz ativa, densidade semântica e linter de estilo acadêmico.
 
 ---
 

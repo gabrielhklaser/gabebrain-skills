@@ -48,6 +48,7 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 | **20** | Master_Geologia_Estrutural_e_Tensores | Elipsóide de deformação, tensores de tensão, critério Mohr-Coulomb |
 | **21** | Master_Hidrogeologia_e_Modelagem_Fluxo | Lei de Darcy, equação de Theis, ensaios de bombeamento, modelagem numérica |
 | **22** | Master_Canva_Image_e_Design_Agent | Automação Canva Pro Playwright, design gráfico, manipulação de imagem Pillow |
+| **23** | Master_Revisao_Cientifica_e_Escrita_Humanizada | Peer Review rigoroso (SBC/IEEE/ACM), Anti-AI Slop, conversão dissertação -> artigo |
 
 ---
 

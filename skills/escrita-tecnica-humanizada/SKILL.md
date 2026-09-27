@@ -4,6 +4,9 @@ description: >-
   Diretrizes de redação científica de alto impacto, eliminação de clichês sintéticos
   de IA (anti-AI slop) e destilação de dissertações de mestrado em artigos científicos
   para Computação Aplicada. Focado em voz ativa, autoridade técnica, ritmo variado e precisão.
+allowed-tools:
+  - read
+  - write
 ---
 
 # ✍️ Escrita Técnica Humanizada & Anti-AI Slop (Computação Aplicada)

@@ -5,6 +5,9 @@ description: >-
   para auditoria e peer review rigoroso de artigos científicos em Computação Aplicada.
   Avalia novidade, metodologia, reprodutibilidade, coerência de dados e gera
   pareceres formais com pontuação, major flaws e recomendações acionáveis.
+allowed-tools:
+  - read
+  - write
 ---
 
 # 🎓 Revisor Científico & Peer Review (Computação Aplicada)

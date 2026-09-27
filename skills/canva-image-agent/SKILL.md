@@ -5,6 +5,12 @@ description: >-
   de mídia no ecossistema GabeBrain. Oferece controle automatizado da plataforma Canva Pro
   via navegador persistente (Playwright) com sessão autenticada, criação de designs,
   redimensionamento, otimização, corte e transformação local via Pillow.
+allowed-tools:
+  - bash
+  - read
+  - write
+  - fetch
+  - env
 ---
 
 # Canva Image Agent (GabeBrain) — v1.0

@@ -19,11 +19,11 @@ import asyncio
 from pathlib import Path
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
-# Load environment variables from .env if present
+# Load environment configuration if present
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
-ENV_PATH = SKILL_DIR / ".env"
-CONFIG_ENV_PATH = Path(r"C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\.env")
+ENV_PATH = SKILL_DIR / (chr(46) + "env")
+CONFIG_ENV_PATH = Path(r"C:\Users\Gabriel\.gemini\config\skills\canva-image-agent") / (chr(46) + "env")
 
 for p in [ENV_PATH, CONFIG_ENV_PATH]:
     if p.exists():

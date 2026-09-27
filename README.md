@@ -23,7 +23,7 @@ Consulte o detalhamento completo em [`protocols/arena_antigravity_bridge.md`](pr
 
 ---
 
-## 📚 Catálogo das 25 Master Skills
+## 📚 Catálogo das 26 Master Skills
 
 As Master Skills residem no diretório [`master-skills/`](master-skills/) e formam a base teórica e normativa de raciocínio de todos os agentes:
 
@@ -54,6 +54,7 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **23** | [`Master_Revisao_Cientifica_e_Escrita_Humanizada`](master-skills/Master_Revisao_Cientifica_e_Escrita_Humanizada.md) | Peer Review rigoroso (SBC/IEEE/ACM), Anti-AI Slop, conversão dissertação -> artigo |
 | **24** | [`Master_SkillSpector_Seguranca_e_Auditoria_Skills`](master-skills/Master_SkillSpector_Seguranca_e_Auditoria_Skills.md) | NVIDIA SkillSpector: auditoria AppSec de skills de IA, 71 padrões, YARA, AST e Least Privilege |
 | **25** | [`Master_ECC_Harness_e_Otimizacao_Agentes`](master-skills/Master_ECC_Harness_e_Otimizacao_Agentes.md) | Everything Claude Code: harness OS, economia de tokens, ciclo 6-fases, TDD e memória durável SQLite |
+| **26** | [`Master_Superpowers_Engenharia_Codigo_e_Prompts`](master-skills/Master_Superpowers_Engenharia_Codigo_e_Prompts.md) | Superpowers: metodologia disciplinada de código a partir de prompts, brainstorming e planos atômicos |
 
 ---
 
@@ -73,6 +74,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 10. **`escrita-tecnica-humanizada`**: Guia anti-AI slop, modulação de burstiness, voz ativa, densidade semântica e linter de estilo acadêmico.
 11. **`skillspector-auditor`**: Agente e scanner de segurança para skills de agentes de IA baseado no NVIDIA SkillSpector.
 12. **`ecc-harness-optimizer`**: Sistema operacional de harness e otimizador de contexto/tokens de agentes (Everything Claude Code - ECC).
+13. **`superpowers-coding-agent`**: Agente de desenvolvimento disciplinado de código a partir de prompts (obra/superpowers).
 
 ---
 

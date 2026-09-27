@@ -49,6 +49,7 @@ Esta biblioteca reúne a destilação técnica de **13 repositórios** auditados
 | **23** | [[Master_Revisao_Cientifica_e_Escrita_Humanizada\|Master Revisão Científica & Escrita Humanizada]] | `#dominio/computacao` `#revisao-cientifica` `#escrita-tecnica` | `revisor-cientifico-peer-review`, `escrita-tecnica-humanizada`, PPGCA |
 | **24** | [[Master_SkillSpector_Seguranca_e_Auditoria_Skills\|Master SkillSpector Segurança & Auditoria de Skills]] | `#dominio/seguranca` `#skillspector` `#appsec` `#yara` | NVIDIA SkillSpector, Auditoria de Agentes & Skills GabeBrain |
 | **25** | [[Master_ECC_Harness_e_Otimizacao_Agentes\|Master ECC Harness & Otimização de Agentes]] | `#dominio/engenharia-software` `#ecc` `#harness` `#context-engineering` | Everything Claude Code, Gestão de Contexto e Otimização de Agentes |
+| **26** | [[Master_Superpowers_Engenharia_Codigo_e_Prompts\|Master Superpowers Engenharia de Código & Prompts]] | `#dominio/engenharia-software` `#superpowers` `#tdd` `#subagents` | Metodologia Superpowers, Brainstorming, Planos Atômicos e Subagentes |
 
 ---
 

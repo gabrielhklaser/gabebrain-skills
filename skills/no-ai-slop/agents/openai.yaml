@@ -1,0 +1,4 @@
+interface:
+  display_name: "/no-ai-slop"
+  short_description: "Audite e remova 20+ padrões de AI slop de textos acadêmicos e científicos preservando a voz autêntica do autor."
+  default_prompt: "Use $no-ai-slop para auditar e aprimorar este rascunho de artigo científico de mestrado, removendo clichês e padrões de IA mantendo o rigor acadêmico e a voz autêntica."

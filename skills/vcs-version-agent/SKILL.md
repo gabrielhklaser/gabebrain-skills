@@ -5,6 +5,12 @@ description: >-
   bidirecional entre ambiente local e GitHub (online e offline), reconcilia commits
   feitos na Arena.ai web (branches arena/* e bot merges), realiza snapshots automáticos
   e verificação pré-prompt e no boot da máquina.
+allowed-tools:
+  - bash
+  - read
+  - write
+  - fetch
+  - env
 ---
 
 # GabeBrain VCS Agent (Controlador e Gerenciador de Versões)

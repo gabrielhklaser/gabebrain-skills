@@ -15,14 +15,10 @@ $retries = 5
 $connected = $false
 while ($retries -gt 0 -and -not $connected) {
     try {
-        $tcp = New-Object System.Net.Sockets.TcpClient
-        $iar = $tcp.BeginConnect("github.com", 443, $null, $null)
-        $wait = $iar.AsyncWaitHandle.WaitOne(2000, $false)
-        if ($wait) {
-            $tcp.EndConnect($iar)
+        $result = Test-NetConnection -ComputerName "github.com" -Port 443 -WarningAction SilentlyContinue -InformationLevel Quiet
+        if ($result) {
             $connected = $true
         }
-        $tcp.Close()
     } catch {
         $connected = $false
     }

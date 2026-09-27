@@ -23,7 +23,7 @@ Consulte o detalhamento completo em [`protocols/arena_antigravity_bridge.md`](pr
 
 ---
 
-## 📚 Catálogo das 21 Master Skills
+## 📚 Catálogo das 24 Master Skills
 
 As Master Skills residem no diretório [`master-skills/`](master-skills/) e formam a base teórica e normativa de raciocínio de todos os agentes:
 
@@ -52,6 +52,7 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **21** | [`Master_Hidrogeologia_e_Modelagem_Fluxo`](master-skills/Master_Hidrogeologia_e_Modelagem_Fluxo.md) | Lei de Darcy, equação de Theis, ensaios de bombeamento, modelagem numérica |
 | **22** | [`Master_Canva_Image_e_Design_Agent`](master-skills/Master_Canva_Image_e_Design_Agent.md) | Automação Canva Pro Playwright, design gráfico, manipulação de imagem Pillow |
 | **23** | [`Master_Revisao_Cientifica_e_Escrita_Humanizada`](master-skills/Master_Revisao_Cientifica_e_Escrita_Humanizada.md) | Peer Review rigoroso (SBC/IEEE/ACM), Anti-AI Slop, conversão dissertação -> artigo |
+| **24** | [`Master_SkillSpector_Seguranca_e_Auditoria_Skills`](master-skills/Master_SkillSpector_Seguranca_e_Auditoria_Skills.md) | NVIDIA SkillSpector: auditoria AppSec de skills de IA, 71 padrões, YARA, AST e Least Privilege |
 
 ---
 
@@ -69,6 +70,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 8. **`canva-image-agent`**: Automação do Canva Pro via Playwright e motor local de manipulação gráfica (redimensionamento Lanczos, corte, otimização).
 9. **`revisor-cientifico-peer-review`**: Simulador de parecerista sênior (SBC/IEEE/ACM/Elsevier) com auditoria em 5 etapas e checklist canônico de manuscritos.
 10. **`escrita-tecnica-humanizada`**: Guia anti-AI slop, modulação de burstiness, voz ativa, densidade semântica e linter de estilo acadêmico.
+11. **`skillspector-auditor`**: Agente e scanner de segurança para skills de agentes de IA baseado no NVIDIA SkillSpector.
 
 ---
 

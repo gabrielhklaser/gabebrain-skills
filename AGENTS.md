@@ -22,7 +22,7 @@ Bem-vindo ao **GabeBrain Skills & Agents Hub**, o repositório central de inteli
 
 ## 🧭 Catálogo de Master Skills (GabeBrain)
 
-Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosamente as 21 Master Skills documentadas em master-skills/:
+Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosamente as 24 Master Skills documentadas em master-skills/:
 
 | # | Master Skill | Especialidade |
 |---|---|---|
@@ -49,6 +49,7 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 | **21** | Master_Hidrogeologia_e_Modelagem_Fluxo | Lei de Darcy, equação de Theis, ensaios de bombeamento, modelagem numérica |
 | **22** | Master_Canva_Image_e_Design_Agent | Automação Canva Pro Playwright, design gráfico, manipulação de imagem Pillow |
 | **23** | Master_Revisao_Cientifica_e_Escrita_Humanizada | Peer Review rigoroso (SBC/IEEE/ACM), Anti-AI Slop, conversão dissertação -> artigo |
+| **24** | Master_SkillSpector_Seguranca_e_Auditoria_Skills | Varredura e auditoria AppSec de skills de IA (NVIDIA SkillSpector, YARA, AST) |
 
 ---
 

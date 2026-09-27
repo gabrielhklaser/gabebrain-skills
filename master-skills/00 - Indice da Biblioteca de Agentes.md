@@ -47,6 +47,7 @@ Esta biblioteca reúne a destilação técnica de **13 repositórios** auditados
 | **21** | [[Master_Hidrogeologia_e_Modelagem_Fluxo\|Master Hidrogeologia & Modelagem de Fluxo]] | `#dominio/geociencias` `#hidrogeologia` `#darcy` `#theis` | Feitosa et al., Freeze & Cherry, Fetter |
 | **22** | [[Master_Canva_Image_e_Design_Agent\|Master Canva Image & Design Agent]] | `#dominio/design` `#canva` `#design-grafico` | `canva-image-agent`, automação visual e tratamento de imagem |
 | **23** | [[Master_Revisao_Cientifica_e_Escrita_Humanizada\|Master Revisão Científica & Escrita Humanizada]] | `#dominio/computacao` `#revisao-cientifica` `#escrita-tecnica` | `revisor-cientifico-peer-review`, `escrita-tecnica-humanizada`, PPGCA |
+| **24** | [[Master_SkillSpector_Seguranca_e_Auditoria_Skills\|Master SkillSpector Segurança & Auditoria de Skills]] | `#dominio/seguranca` `#skillspector` `#appsec` `#yara` | NVIDIA SkillSpector, Auditoria de Agentes & Skills GabeBrain |
 
 ---
 

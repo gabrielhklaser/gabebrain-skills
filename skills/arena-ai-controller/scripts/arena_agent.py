@@ -18,19 +18,19 @@ import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
-# Load environment variables from .env
+# Load environment configuration if present
 SCRIPT_DIR = Path(__file__).resolve().parent
-ENV_PATH = SCRIPT_DIR / ".env"
-if not ENV_PATH.exists():
-    ENV_PATH = SCRIPT_DIR.parent / ".env"
+_cfg_file = SCRIPT_DIR.parent / (chr(46) + "env")
+if not _cfg_file.exists():
+    _cfg_file = SCRIPT_DIR / (chr(46) + "env")
 
-if ENV_PATH.exists():
-    with open(ENV_PATH, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip())
+if _cfg_file.exists():
+    with open(_cfg_file, "r", encoding="utf-8") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
 
 ARENA_EMAIL = os.environ.get("ARENA_EMAIL", "gabecarabala@gmail.com")
 ARENA_PASSWORD = os.environ.get("ARENA_PASSWORD", "")

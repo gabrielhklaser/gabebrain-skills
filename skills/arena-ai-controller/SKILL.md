@@ -5,6 +5,12 @@ description: >-
   whenever the user wants to interact with Arena AI, relay prompts to Arena AI,
   connect GitHub repositories, select branches, or recover lost repository connections
   by opening a new chat and pushing conversation branch changes.
+allowed-tools:
+  - bash
+  - read
+  - write
+  - fetch
+  - env
 ---
 
 # Arena AI Controller Skill

@@ -83,6 +83,21 @@ No pipeline de licenciamento ambiental (`scratch/licenciamentoambiental`):
 
 ---
 
+## 🎓 Aplicação na Dissertação de Mestrado (Computação Aplicada)
+
+Para a preparação da apresentação da **banca de defesa de mestrado**:
+
+1. **Extração de Figuras e Diagramas Embutidos:**
+   Documentos `.docx` e apresentações `.pptx` armazenam diagramas e gráficos de alta resolução internamente. O `anydoc` extrai esses assets diretamente em formato bruto (PNG, SVG, JPEG) através de `doc = anydoc.to_document(bytes)` e `doc.assets`, preservando a fidelidade visual sem necessidade de capturas de tela manuais.
+
+2. **Geração Automatizada de Diagramas Mermaid:**
+   Transforma descrições conceituais da dissertação em diagramas executáveis (arquiteturas de software SAP-TAM, fluxos comunicativos de IHC e pipelines matemáticos de redução dimensional como LAMP e NCA).
+
+3. **Montagem de Slides de Apresentação de Defesa:**
+   O script [`dissertacao_diagramas.py`](file:///C:/Users/Gabriel/.gemini/config/skills/anydoc/scripts/dissertacao_diagramas.py) gera apresentações em Markdown (Marp/Reveal.js) com cabeçalho formal do PPGCA/Unisinos, seções de contextualização, problema, metodologia, validação estatística e conclusão.
+
+---
+
 ## ⚠️ Tratamento de Erros e Exceções
 
 O `anydoc` categoriza erros de conversão de forma clara:

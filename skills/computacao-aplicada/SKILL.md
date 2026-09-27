@@ -139,6 +139,28 @@ python $CLI listar --sessao "IHC"
 
 ---
 
+## 📊 Extração de Diagramas e Preparação da Defesa de Mestrado (anydoc)
+
+A ferramenta **anydoc** (`firecrawl-anydoc`) está integrada para apoiar a criação e extração de diagramas da dissertação e a montagem dos slides da apresentação da banca examinadora:
+
+```powershell
+$CLI_DIAG = "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Computacao Aplicada\Scripts\dissertacao_diagramas.py"
+
+# 1. Extrair todas as figuras e diagramas embutidos da dissertação (.docx, .pptx, .pdf):
+python $CLI_DIAG extrair --arquivo "caminho\dissertacao.docx" --saida "apresentacao_defesa\figuras"
+
+# 2. Gerar diagramas conceituais em Mermaid para os slides:
+python $CLI_DIAG diagrama --tipo lamp       # Pipeline de redução dimensional e Procrustes
+python $CLI_DIAG diagrama --tipo semiotica  # Modelo comunicativo IHC (Designer-Sistema-Usuário)
+python $CLI_DIAG diagrama --tipo saptam     # Arquitetura de software formal SAP-TAM / SWEBOK
+python $CLI_DIAG diagrama --tipo ontologia  # Hierarquia formal OWL e Description Logics
+
+# 3. Gerar template completo de slides Marp/Markdown para a defesa:
+python $CLI_DIAG slides --titulo "Título da Dissertação" --saida "slides_defesa.md"
+```
+
+---
+
 ## 🛡️ Protocolo Obrigatório para Agentes de IA
 
 1. **Evidência Documental Rígida:** Ao formular soluções baseadas em técnicas do mestrado (ex: justificar a escolha de LAMP vs PCA, definir axiomas em OWL, calcular métricas de usabilidade em semiotic inspection ou desenhar arquiteturas SAP-TAM), **cite expressamente os autores e o documento correspondente no acervo**.
@@ -147,3 +169,4 @@ python $CLI listar --sessao "IHC"
    - 2º: CLI `busca_computacao_aplicada.py` ou leitura seletiva no `Docling/`
    - 3º: Fichas Catalográficas em `Fichas/`
    - 4º: Conhecimento geral do modelo (sempre declarando quando for inferência externa).
+

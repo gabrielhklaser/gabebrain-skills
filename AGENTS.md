@@ -1,4 +1,4 @@
-﻿# Diretrizes Operacionais do GabeBrain para Agentes de IA
+# Diretrizes Operacionais do GabeBrain para Agentes de IA
 
 Bem-vindo ao **GabeBrain Skills & Agents Hub**, o repositório central de inteligência, Master Skills e personas especializadas do ecossistema de Gabriel (@gabrielhklaser).
 
@@ -47,6 +47,7 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 | **19** | Master_Geotectonica_e_Cinematica_Placas | Tectônica global, polos de Euler, abertura oceânica, ciclos de Wilson |
 | **20** | Master_Geologia_Estrutural_e_Tensores | Elipsóide de deformação, tensores de tensão, critério Mohr-Coulomb |
 | **21** | Master_Hidrogeologia_e_Modelagem_Fluxo | Lei de Darcy, equação de Theis, ensaios de bombeamento, modelagem numérica |
+| **22** | Master_Canva_Image_e_Design_Agent | Automação Canva Pro Playwright, design gráfico, manipulação de imagem Pillow |
 
 ---
 

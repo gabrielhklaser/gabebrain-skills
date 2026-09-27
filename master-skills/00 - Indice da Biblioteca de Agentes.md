@@ -43,6 +43,7 @@ Esta biblioteca reúne a destilação técnica de **13 repositórios** auditados
 | **19** | [[Master_Geotectonica_e_Cinematica_Placas\|Master Geotectônica & Cinemática de Placas]] | `#geotectonica` `#cinematica-placas` `#polos-euler` `#gplates` `#orogenese` | Kearey, Klepeis & Vine (2014), Hasui et al. (2012), Mantesso-Neto et al. (2004) |
 | **20** | [[Master_Geologia_Estrutural_e_Tensores\|Master Geologia Estrutural & Tensores]] | `#geologia-estrutural` `#tensores` `#tensao-deformacao` `#mohr-coulomb` | Davis, Reynolds & Kluth (2011, Wiley), Ramsay & Huber, Jaeger et al. |
 | **21** | [[Master_Hidrogeologia_e_Modelagem_Fluxo\|Master Hidrogeologia & Modelagem de Fluxo]] | `#hidrogeologia` `#darcy` `#theis` `#modelagem-fluxo` `#aquiferos` | Feitosa et al. (2008, CPRM/LABHID), Freeze & Cherry (1979) |
+| **22** | [[Master_Canva_Image_e_Design_Agent\|Master Canva Image & Design Agent]] | `#canva` `#design-grafico` `#manipulacao-imagem` `#playwright` | Automação Canva Pro Playwright & Engine Local Pillow |
 
 ---
 

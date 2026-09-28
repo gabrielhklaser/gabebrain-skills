@@ -51,7 +51,10 @@ This skill enables Antigravity to automate and control the **Arena AI** platform
 The automation engine (fonte canônica) is located at:
 `C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py`
 
-Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\…`, `GabeBrain\.agents\skills\…` e o repo `gabebrain-skills`. As pastas `scratch\arena-controller\` e `scratch\agentearena\` são versões antigas — não usar.
+Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\…`, `GabeBrain\.agents\skills\…`, o repo `gabebrain-skills` (`skills/arena-ai-controller/`) e o repo standalone `gabrielhklaser/agentearena` (mesma estrutura: `SKILL.md` + `scripts/arena_agent.py`). A pasta `scratch\arena-controller\` é versão antiga — não usar.
+
+- **Requisitos**: Python ≥ 3.10, `pip install playwright` e `python -m playwright install chromium`.
+- **Seleção de repo/branch estrita**: se o seletor de repositório ou a branch pedida não for encontrada, o script aborta com erro em vez de seguir (evita push na branch errada no `recover-push`).
 
 - **Credenciais**: Ficam só no `.env` da skill (`ARENA_EMAIL`, `ARENA_PASSWORD`, opcional `ARENA_USER_DATA_DIR`) ou variáveis de ambiente. Sem fallback ou credenciais embutidas no código.
 - **Privacidade & Logs**: Logs de login/status reportam apenas se o e-mail está configurado (`email_configured: true`), nunca o e-mail em texto puro. O relay de prompt registra contagem de caracteres sem expor o conteúdo sensível.
@@ -59,7 +62,7 @@ Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\�
 
 ### Dados de sessão são descartáveis
 
-O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padrão `C:\Users\Gabriel\.gemini\antigravity\scratch\arena_user_data` ou diretório de estado seguro do usuário. Ele **nunca** deve ficar dentro do vault ou do Google Drive: o script avisa se estiver.
+O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padrão `%LOCALAPPDATA%\gabebrain\arena-ai-controller` (Linux/macOS: `$XDG_STATE_HOME` ou `~/.local/state/gabebrain/arena-ai-controller`). Ele **nunca** deve ficar dentro do vault ou do Google Drive: o script avisa se estiver.
 
 - Pode ser apagado a qualquer momento: `arena_agent.py purge-session`. O próximo uso refaz o login pelo `.env`.
 - Com `ARENA_PURGE_AFTER_USE=1` no `.env`, o perfil é apagado ao fim de cada execução. É mais seguro, mas exige login a cada uso.

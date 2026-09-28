@@ -31,7 +31,7 @@ if _cfg_file.exists():
             _line = _line.strip()
             if _line and not _line.startswith("#") and "=" in _line:
                 _k, _v = _line.split("=", 1)
-                os.environ.setdefault(_k.strip(), _v.strip())
+                os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
 
 def _default_user_data_dir() -> Path:
     """Keep persistent browser cookies outside the repository by default."""
@@ -105,7 +105,6 @@ class ArenaController:
     def __init__(self, user_data_dir=None, headless=None):
         self.user_data_dir = str(_ensure_private_directory(user_data_dir or DEFAULT_USER_DATA_DIR))
         warn_if_synced(self.user_data_dir)
-        os.makedirs(self.user_data_dir, exist_ok=True)
         self.headless = ARENA_HEADLESS if headless is None else headless
         self.playwright = None
         self.context = None
@@ -186,7 +185,6 @@ class ArenaController:
         print("[+] Arena login flow completed.")
         self._session_ok = True
         return True
-        return True
 
     async def open_agent_mode(self):
         """Navigates to the Agent Mode workspace."""
@@ -259,28 +257,33 @@ class ArenaController:
             print(f"[+] Repository '{repo_name}' is already active.")
         else:
             repo_btn = await self._get_repo_button()
-            if repo_btn:
-                await repo_btn.click()
-                await self.page.wait_for_timeout(800)
-                target_option = self.page.locator(f'[role="option"]:has-text("{repo_name}")')
-                if await target_option.count() > 0:
-                    await target_option.first.click()
-                    await self.page.wait_for_timeout(1500)
-                    print(f"[+] Repository '{repo_name}' selected.")
-                else:
-                    raise ValueError(f"Repository '{repo_name}' not found in available list.")
+            # Sem seletor, o prompt iria para o repo errado (ou nenhum): falhar alto
+            if not repo_btn:
+                raise RuntimeError("Repository selector button not found. Rode `status` para checar os seletores.")
+            await repo_btn.click()
+            await self.page.wait_for_timeout(800)
+            target_option = self.page.locator(f'[role="option"]:has-text("{repo_name}")')
+            if await target_option.count() == 0:
+                raise ValueError(f"Repository '{repo_name}' not found in available list.")
+            await target_option.first.click()
+            await self.page.wait_for_timeout(1500)
+            print(f"[+] Repository '{repo_name}' selected.")
 
         if branch_name:
+            # Branch errada no recover-push = push no lugar errado: não seguir em silêncio
             print(f"[*] Selecting branch '{branch_name}'...")
             branch_btn = self.page.locator('button:has-text("Branch"), button[aria-label*="branch" i]').first
-            if await branch_btn.count() > 0:
-                await branch_btn.click()
-                await self.page.wait_for_timeout(800)
-                b_opt = self.page.locator(f'[role="option"]:has-text("{branch_name}")')
-                if await b_opt.count() > 0:
-                    await b_opt.first.click()
-                    await self.page.wait_for_timeout(1000)
-                    print(f"[+] Branch '{branch_name}' selected.")
+            if await branch_btn.count() == 0:
+                raise RuntimeError("Branch selector not found. Rode `status` para checar os seletores.")
+            await branch_btn.click()
+            await self.page.wait_for_timeout(800)
+            b_opt = self.page.locator(f'[role="option"]:has-text("{branch_name}")')
+            if await b_opt.count() == 0:
+                await self.page.keyboard.press("Escape")
+                raise ValueError(f"Branch '{branch_name}' not found for repository '{repo_name}'.")
+            await b_opt.first.click()
+            await self.page.wait_for_timeout(1000)
+            print(f"[+] Branch '{branch_name}' selected.")
 
     async def get_current_state(self):
         """Inspects current repository, branch, and connection status."""

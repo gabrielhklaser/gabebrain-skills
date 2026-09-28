@@ -1,0 +1,47 @@
+{
+  "_comment": "Fonte única das regras de roteamento. Lida por scripts/prompt_router.py e pelo plugin GabeBrain Hub (Obsidian). Regex em sintaxe comum a Python e JavaScript, avaliadas sem diferenciar maiúsculas.",
+  "version": 1,
+  "local": {
+    "model": "gemini-3.8-flash-high",
+    "patterns": [
+      "\\b(servidor local|subir servidor|iniciar servidor|rodar servidor)\\b",
+      "\\b(localhost|127\\.0\\.0\\.1|porta \\d{2,5}|port \\d{2,5}|:3000|:5173|:8000|:8080)\\b",
+      "\\b(npm (run dev|start|serve)|yarn dev|pnpm dev|vite|uvicorn|fastapi run|flask run)\\b",
+      "\\b(python -m http\\.server|node server|live-?server)\\b",
+      "\\b(teste local|rodar local|rodar localmente|testar localmente|executar localmente|executar local)\\b",
+      "\\b(na minha m[aá]quina|no meu pc|aqui no meu|ambiente local|no computador|offline)\\b",
+      "\\b(aqui no obsidian|no vault|plugin local|extens[aã]o local)\\b",
+      "\\b(biblioteca geol[oó]gica|cota\\s+[a-z0-9\\.\\-]+|acervo f[ií]sico|livro f[ií]sico)\\b",
+      "\\b(google drive|meu drive|drive local|10-trabalho|disco local|pasta c:\\\\)\\b",
+      "\\b(docling|acervo do mestrado|ppgca|computa[çc][aã]o aplicada|disserta[çc][aã]o)\\b",
+      "\\b(qgis|qgis desktop|shapefile|\\.shp|\\.geojson local|camadas gis|pyqgis)\\b",
+      "\\b(powershell local|terminal local|processo local|abrir janela|desktop)\\b"
+    ],
+    "reasons": [
+      { "when": "servidor|localhost|porta|npm|vite", "reason": "Demanda de servidor local detectada: subir/testar serviço no localhost da máquina." },
+      { "when": "biblioteca|drive|cota|mestrado|docling", "reason": "Acesso a acervo local do GabeBrain necessário (Biblioteca Geológica / Google Drive / Mestrado)." },
+      { "when": "qgis|shapefile|gis", "reason": "Demanda de ferramenta Desktop local (QGIS / GIS / Shapefiles)." }
+    ],
+    "default_reason": "Demanda de execução local detectada (ex: servidor local, teste na máquina física ou acervo GabeBrain)."
+  },
+  "claude": {
+    "model": "claude-sonnet-4-6",
+    "patterns": [
+      "\\b(claude code|no claude|usar claude|chamar o claude)\\b",
+      "\\b(racioc[ií]nio anal[ií]tico|an[aá]lise cr[ií]tica|refactor(ing)? anal[ií]tico)\\b",
+      "\\b(tdd|test-?driven|depura[çc][aã]o sistem[aá]tica|red-?green-?refactor)\\b",
+      "\\b(peer review acad[eê]mico|revisor cient[ií]fico rigoroso)\\b",
+      "\\b(no terminal|via terminal|pelo terminal|sess[aã]o terminal)\\b"
+    ],
+    "reason": "Demanda de raciocínio analítico profundo, depuração sistemática ou TDD interativo no terminal."
+  },
+  "arena": {
+    "model": "cloud-agent",
+    "patterns": [
+      "\\b(arena ai|na arena|no arena|arena agent|na nuvem|em nuvem)\\b",
+      "\\b(commit no github|criar pr|pull request|push para github|reposit[oó]rio remoto)\\b"
+    ],
+    "reason": "Arena AI (Nuvem / GitHub - P1): tarefa executável em nuvem para economia máxima de tokens locais.",
+    "keep_local_reason": "Mantendo no Antigravity: continuidade de contexto local."
+  }
+}

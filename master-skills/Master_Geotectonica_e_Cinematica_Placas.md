@@ -1,14 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - geotectonica
-  - cinematica-placas
-  - polos-euler
-  - gplates
-  - tectonica-global
-  - bacias-sedimentares
-  - orogenese
+tipo: agente-master
 origem:
   - "Kearey, Klepeis & Vine (2014; Tectônica Global - 3ª Edição)"
   - "Hasui et al. (2012; Geologia Tectônica)"
@@ -17,8 +8,19 @@ origem:
   - "Cox & Hart (1986; Plate Tectonics: How It Works)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - bacias-sedimentares
+  - cinematica-placas
+  - dominio/geociencias
+  - geotectonica
+  - gplates
+  - master-skill
+  - orogenese
+  - polos-euler
+  - tectonica-global
+  - tipo/agente-master
 ---
-
 # Master Geotectônica, Cinemática de Placas & Geodinâmica Global
 
 ## 🎯 Objetivo e Identidade

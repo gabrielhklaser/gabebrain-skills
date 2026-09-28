@@ -1,15 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - geoestatistica
-  - modelagem-espacial
-  - krigagem
-  - variograma
-  - simulacao-estocastica
-  - computacao-aplicada
-  - python
-  - r
+tipo: agente-master
 origem:
   - "Yamamoto & Landim (2013; Geoestatística: Conceitos e Aplicações)"
   - "Matheron (1963; Principles of Geostatistics)"
@@ -18,8 +8,20 @@ origem:
   - "Petrelli (2023; Machine Learning for Earth Sciences)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - computacao-aplicada
+  - dominio/geociencias
+  - geoestatistica
+  - krigagem
+  - master-skill
+  - modelagem-espacial
+  - python
+  - r
+  - simulacao-estocastica
+  - tipo/agente-master
+  - variograma
 ---
-
 # Master Geoestatística, Análise Espacial & Modelagem Estocástica
 
 ## 🎯 Objetivo e Identidade

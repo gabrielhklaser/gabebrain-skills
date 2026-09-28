@@ -1,18 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - machine-learning
-  - reconhecimento-de-padroes
-  - ciencia-de-dados
-  - reducao-dimensionalidade
-  - knn
-  - dbscan
-  - meanshift
-  - geociencias
-  - coda
-  - agentes-racionais
-  - python
+tipo: agente-master
 origem:
   - "Mestrado Gabriel Klaser (PPGInformática / D.I. PUC-Rio & PPGGeo UFRGS)"
   - "KNN & Aprendizagem por Instâncias: Cover & Hart (1967), Raschka (2018 - STAT 479 UW-Madison), Ribeiro et al. (2019 - Computers & Graphics), Schirmer et al. (2017)"
@@ -23,8 +10,23 @@ origem:
   - "Fundamentos de Inteligência Artificial: Russell & Norvig (Artificial Intelligence: A Modern Approach)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - agentes-racionais
+  - ciencia-de-dados
+  - coda
+  - dbscan
+  - dominio/computacao
+  - geociencias
+  - knn
+  - machine-learning
+  - master-skill
+  - meanshift
+  - python
+  - reconhecimento-de-padroes
+  - reducao-dimensionalidade
+  - tipo/agente-master
 ---
-
 # Master Machine Learning, Reconhecimento de Padrões & Métodos Espaciais
 
 ## 🎯 Objetivo

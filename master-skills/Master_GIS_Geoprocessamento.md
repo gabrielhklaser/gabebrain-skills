@@ -1,13 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - geoprocessamento
-  - gis
-  - geopandas
-  - shapely
-  - analise-espacial
-  - python
+tipo: agente-master
 origem:
   - "gabrielhklaser/outorgasys (skills/geomaster, skills/geopandas, skills/shapely-compute, agente2_gis.py)"
   - "gabrielhklaser/PCVS (postgis_converter.py, knn_predicate.ipynb)"
@@ -16,8 +8,18 @@ origem:
   - "gabrielhklaser/paleoclimate.github.io"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - analise-espacial
+  - dominio/geociencias
+  - geopandas
+  - geoprocessamento
+  - gis
+  - master-skill
+  - python
+  - shapely
+  - tipo/agente-master
 ---
-
 # Master GIS & Geoprocessamento
 
 ## 🎯 Objetivo

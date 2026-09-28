@@ -1,17 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - ihc
-  - engenharia-semiotica
-  - usabilidade
-  - design-de-interacao
-  - comunicabilidade
-  - semiotica
-  - epistemologia-design
-  - jakobson
-  - hcse
-  - gabebrain
+tipo: agente-master
 origem:
   - "Clarisse Sieckenius de Souza (2001, 2005) - The Semiotic Engineering of Human-Computer Interaction"
   - "Raquel O. Prates & Simone D. J. Barbosa (2007) - Introdução à Teoria e Prática da IHC fundamentada na Engenharia Semiótica (JAI/SBC)"
@@ -24,8 +12,22 @@ origem:
   - "Iara Margolis & Bernardo Providência (2021) - Design Centrado no Usuário: Concepções, Práticas e Soluções"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - comunicabilidade
+  - design-de-interacao
+  - dominio/computacao
+  - engenharia-semiotica
+  - epistemologia-design
+  - gabebrain
+  - hcse
+  - ihc
+  - jakobson
+  - master-skill
+  - semiotica
+  - tipo/agente-master
+  - usabilidade
 ---
-
 # Master IHC & Engenharia Semiótica
 
 ## 🎯 Objetivo

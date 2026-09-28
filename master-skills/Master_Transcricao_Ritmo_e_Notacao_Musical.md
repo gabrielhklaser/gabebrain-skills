@@ -1,20 +1,22 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - musica
-  - transcricao
-  - dsp
-  - musicxml
-  - bateria
-  - notacao-musical
-  - python
+tipo: agente-master
 origem:
   - "gabrielhklaser/partiturabatera.github.io (rules.py, plan.md, ERROS.md, pipeline.py, qa.py)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - bateria
+  - dominio/musica
+  - dsp
+  - master-skill
+  - musica
+  - musicxml
+  - notacao-musical
+  - python
+  - tipo/agente-master
+  - transcricao
 ---
-
 # Master Transcrição, Ritmo & Notação Musical
 
 ## 🎯 Objetivo

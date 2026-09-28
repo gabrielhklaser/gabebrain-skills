@@ -1,14 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - geofisica
-  - campos-potenciais
-  - sismica
-  - processamento-sinais
-  - inversao-numerica
-  - fft
-  - computacao-aplicada
+tipo: agente-master
 origem:
   - "Dentith & Mudge (2014; Geophysics for the Mineral Exploration Geoscientist)"
   - "Kearey, Brooks & Hill (2002; An Introduction to Geophysical Exploration)"
@@ -16,8 +7,19 @@ origem:
   - "Blakely (1996; Potential Theory in Gravity and Magnetic Applications)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - campos-potenciais
+  - computacao-aplicada
+  - dominio/geociencias
+  - fft
+  - geofisica
+  - inversao-numerica
+  - master-skill
+  - processamento-sinais
+  - sismica
+  - tipo/agente-master
 ---
-
 # Master Geofísica Computacional, Processamento de Sinais & Inversão
 
 ## 🎯 Objetivo e Identidade

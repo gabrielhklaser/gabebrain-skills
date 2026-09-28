@@ -37,7 +37,8 @@ Colunas de `Metadata/triagem.csv`:
 ### Pré-requisito: Conferir Trava e Hub
 1. Verifique se não há pipeline em execução:
    `Test-Path "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Metadata/pipeline.lock"`
-2. O método precisa de um Hub (ex: `00 - GPR (indice).md`). Se não existir, crie-o antes.
+2. O método precisa de um Hub (ex: `00 - GPR (indice).md`). Sem hub a nota nasce órfã — crie-o antes, linkando `[[00 - Biblioteca (indice)]]`.
+3. **O documento já tem nota?** `python $BIB saude --detalhe` lista "documento sem leitura destilada". Não reescreva o que já existe.
 
 ### Etapa A — Medir o Lote ANTES de Ler
 Cada texto extraído está em `.../Biblioteca Geologica/Metadata/texto/<slug>.txt`.
@@ -58,6 +59,7 @@ Lote: GPR, 5 documentos
   python $BIB ler <COTA> 1-20
   ```
   *(Nunca abra o `.txt` inteiro de uma vez).*
+- **Nunca escreva nota que dê a entender que leu o que não leu inteiro.**
 
 ### Etapa C — Classificação e Validação
 
@@ -74,7 +76,7 @@ Lote: GPR, 5 documentos
 
 #### C2 · Autoria e Ano (Folha de Rosto)
 Metadados internos de PDF frequentemente erram (ex: nome do software ou computador). **Leia a folha de rosto**.
-Se o documento não declarar ano ou autor com clareza, **deixe em branco em vez de chutar**.
+Se o documento não declarar ano ou autor com clareza, **deixe em branco em vez de chutar**. Grave `fonte_autoria: folha` quando conferir. Vazio é honesto; autor errado é citação falsa.
 
 #### C3 · Confiança da Fonte
 - `A`: Norma técnica, artigo revisado por pares (peer-reviewed) -> citação incondicional.
@@ -82,6 +84,22 @@ Se o documento não declarar ano ou autor com clareza, **deixe em branco em vez 
 - `C`: Relatório técnico institucional (CPRM/SGB, USGS, ANA, ANM, IG) -> citar identificando o órgão.
 - `D`: Apostila, material didático sem revisão -> contextualização, não como prova pericial.
 - `E`: Origem duvidosa ou desconhecida -> não citar até validar.
+
+Sempre com **uma linha de justificativa**.
+
+#### C4 · Confirmar ou Contestar o Método
+Se o documento está no método errado, **não mexa nos pesos do `03_classificar.py`** (todo ajuste conserta um caso e quebra outro). Reporte a divergência; se o usuário concordar, acrescente uma linha em `Metadata/classe_fixada.csv` (`arquivo,classe,motivo,data`, nome do arquivo em minúsculas) e rode o pipeline com `-So 3,4,5`.
+
+### Etapa D — Aprovação, e só então gravar
+Trabalhe em lotes de **~10 documentos**. Mostre o placar e **espere o usuário aprovar** antes de gravar CSV e notas:
+```
+Lote GPR 1/3 — 10 documentos, 118 k tokens lidos
+cota      tipo  autor/ano            fonte  método        nota
+GPR-004   A     Olhoeft 1998         A      ✓ confirmado  nova
+GPR-011   S     (apostila sem autor) D      ⚠ parece MASW nova
+Gravar?
+```
+Um lote por vez. Não siga para o próximo lote sem aprovação.
 
 ---
 
@@ -141,4 +159,13 @@ related:
    ```powershell
    powershell -NoProfile -File "...\00_rodar_pipeline.ps1" -So 5,9
    ```
-   para que o script `05_gerar_fichas.py` integre os dados automaticamente na ficha.
+   para que o script `05_gerar_fichas.py` integre os dados automaticamente na ficha. A ficha descobre sozinha as notas que a citam — basta a nota destilada linkar a ficha.
+4. **Link de entrada e de saída:** a nota aponta para ficha e hub; o hub aponta para ela.
+
+## ❌ O que não fazer
+- Editar ficha (`Obsidian/Fichas/*.md`) — é sobrescrita pelo `05` em silêncio.
+- Chutar autor/ano · registrar achado sem página.
+- Mexer nos pesos do `03_classificar.py` para consertar um caso.
+- Renomear/mover PDF na mão — só `12_renomear_documento.py` (leva PDF, texto, ficha e links juntos).
+- Apagar nota — mover para `99-Arquivo/lixeira/`.
+- Seguir para o próximo lote sem aprovação.

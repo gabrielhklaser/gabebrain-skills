@@ -1,3 +1,18 @@
+---
+tipo: agente-master
+origem:
+  - "gabebrain-skills/skills/skillspector-auditor"
+versao: 1.0
+data_consolidacao: 2026-09-28
+tags:
+  - agente
+  - appsec
+  - auditoria-skills
+  - dominio/engenharia-software
+  - master-skill
+  - seguranca
+  - tipo/agente-master
+---
 # Master Skill 24: SkillSpector — Segurança e Auditoria de Skills de IA
 
 ## 🎯 Objetivo e Identidade

@@ -1,13 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - frontend
-  - design-system
-  - ui-ux
-  - css-tokens
-  - acessibilidade
-  - web
+tipo: agente-master
 origem:
   - "gabrielhklaser/licenciamentoambiental (.claude/skills/frontend-design)"
   - "gabrielhklaser/agent-skills (skills/frontend-ui-engineering, references/accessibility-checklist.md)"
@@ -15,8 +7,18 @@ origem:
   - "gabrielhklaser/riodosinoscampobom (painel de telemetria e mapas interativos)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - acessibilidade
+  - agente
+  - css-tokens
+  - design-system
+  - dominio/engenharia-software
+  - frontend
+  - master-skill
+  - tipo/agente-master
+  - ui-ux
+  - web
 ---
-
 # Master Frontend Design & UI Engineering
 
 ## 🎯 Objetivo

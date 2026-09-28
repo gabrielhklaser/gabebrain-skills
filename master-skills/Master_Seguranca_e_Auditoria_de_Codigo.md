@@ -1,21 +1,23 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - seguranca
-  - appsec
-  - owasp
-  - pentest
-  - threat-modeling
-  - auditoria
+tipo: agente-master
 origem:
   - "gabrielhklaser/licenciamentoambiental (.claude/skills/security-audit, .claude/skills/senior-security, SEGURANCA.md)"
   - "gabrielhklaser/agent-skills (skills/security-and-hardening, references/security-checklist.md)"
   - "gabrielhklaser/AGENTEbuzz (examples/meadow-core/agents/lev.persona.md)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - appsec
+  - auditoria
+  - dominio/engenharia-software
+  - master-skill
+  - owasp
+  - pentest
+  - seguranca
+  - threat-modeling
+  - tipo/agente-master
 ---
-
 # Master Segurança & Auditoria de Código (AppSec)
 
 ## 🎯 Objetivo

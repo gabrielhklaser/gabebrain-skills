@@ -1,3 +1,18 @@
+---
+tipo: agente-master
+origem:
+  - "gabebrain-skills/skills/superpowers-coding-agent"
+versao: 1.0
+data_consolidacao: 2026-09-28
+tags:
+  - agente
+  - dominio/engenharia-software
+  - engenharia-prompts
+  - master-skill
+  - superpowers
+  - tdd
+  - tipo/agente-master
+---
 # Master Skill 26: Superpowers — Metodologia de Engenharia de Código e Transformação de Prompts
 
 ## 🎯 Objetivo e Identidade

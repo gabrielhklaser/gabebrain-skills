@@ -1,19 +1,21 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - automacao
-  - playwright
-  - arena-ai
-  - github
-  - resiliencia
-  - agentes-web
+tipo: agente-master
 origem:
   - "gabrielhklaser/agentearena (arena_agent.py, README.md)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - agentes-web
+  - arena-ai
+  - automacao
+  - dominio/engenharia-software
+  - github
+  - master-skill
+  - playwright
+  - resiliencia
+  - tipo/agente-master
 ---
-
 # Master Arena AI Agent Controller
 
 ## 🎯 Objetivo

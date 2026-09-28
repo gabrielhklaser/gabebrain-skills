@@ -1,22 +1,24 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - hidrologia
-  - recursos-hidricos
-  - drenagem
-  - scs-cn
-  - telemetria
-  - ana
-  - cheias
+tipo: agente-master
 origem:
   - "gabrielhklaser/riodosinoscampobom (.claude/skills/*, ESPECIFICACAO.md)"
   - "gabrielhklaser/pluvio_cb (lib/ana.ts, lib/openmeteo.ts, lib/servicos.ts)"
   - "gabrielhklaser/outorgasys (agente3_hidro.py, agente4_balanco.py)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - ana
+  - cheias
+  - dominio/geociencias
+  - drenagem
+  - hidrologia
+  - master-skill
+  - recursos-hidricos
+  - scs-cn
+  - telemetria
+  - tipo/agente-master
 ---
-
 # Master Hidrologia & Recursos Hídricos
 
 ## 🎯 Objetivo

@@ -17,11 +17,15 @@ New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $retries = 5
 $connected = $false
 while ($retries -gt 0 -and -not $connected) {
+    # TcpClient com timeout de 2s: Test-NetConnection pode travar ~20s sem rede.
     try {
-        $result = Test-NetConnection -ComputerName "github.com" -Port 443 -WarningAction SilentlyContinue -InformationLevel Quiet
-        if ($result) {
+        $tcp = New-Object System.Net.Sockets.TcpClient
+        $iar = $tcp.BeginConnect("github.com", 443, $null, $null)
+        if ($iar.AsyncWaitHandle.WaitOne(2000, $false)) {
+            $tcp.EndConnect($iar)
             $connected = $true
         }
+        $tcp.Close()
     } catch {
         $connected = $false
     }

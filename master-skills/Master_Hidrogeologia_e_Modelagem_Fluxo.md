@@ -1,14 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - hidrogeologia
-  - modelagem-fluxo
-  - darcy
-  - theis
-  - aquifero
-  - poco
-  - recursos-hidricos
+tipo: agente-master
 origem:
   - "Feitosa et al. (2008; Hidrogeologia: Conceitos e Aplicações - 3ª Edição, CPRM/LABHID)"
   - "Freeze & Cherry (1979; Groundwater)"
@@ -16,8 +7,19 @@ origem:
   - "Harbaugh (2005; MODFLOW-2005)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - aquifero
+  - darcy
+  - dominio/geociencias
+  - hidrogeologia
+  - master-skill
+  - modelagem-fluxo
+  - poco
+  - recursos-hidricos
+  - theis
+  - tipo/agente-master
 ---
-
 # Master Hidrogeologia Computacional, Dinâmica de Aquíferos & Modelagem de Fluxo
 
 ## 🎯 Objetivo e Identidade

@@ -26,13 +26,16 @@ Execute o script de estrutura para obter capítulos, intervalos de páginas e co
 
 ```powershell
 $SCRIPTS = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
-python "$SCRIPTS\17_estrutura_documento.py" "<parte do nome ou cota>" --max 60
+python "$SCRIPTS\17_estrutura_documento.py" "<parte do nome ou cota>" --metodo <Metodo> --max 60
 ```
+> O `17` usa PyMuPDF (`fitz`), que só existe no Python do Anaconda. Se der `ModuleNotFoundError: fitz`, chame pelo Anaconda (`& "$HOME\anaconda3\python.exe" ...`).
 
 ### Rotas de Detecção e Confiança:
 1. **Sumário embutido no PDF (Bookmarks / ToC)**: Confiança alta.
 2. **Sumário detectado no texto (OCR/Tabela de Conteúdo)**: Confiança média.
 3. **Fatia fixa (divisão por blocos de páginas)**: Confiança baixa (usada apenas como mapa de orçamento).
+
+⚠️ **Sumário embutido pode estar quebrado** (marcadores que viraram nome de arquivo, todos na p. 1): o script recusa e cai para a rota seguinte. Leia sempre a linha que diz qual rota foi usada.
 
 ⚠️ **Atenção para `TRECHO SEM ESTRUTURA`**: Se uma seção contiver mais de 15% do documento sem divisões identificadas, nunca envie para leitura direta. Em vez disso, busque termos específicos dentro do trecho:
 ```powershell
@@ -43,7 +46,7 @@ python "$SCRIPTS\06_buscar.py" "termo" --palavra --arquivo "<nome_do_arquivo>"
 
 ## 🎯 Etapa 2 — Seleção de Seções e Orçamento
 
-Apresente o mapa preliminar e as seções mais densas (marcadas com 🔥 pelo script) ao usuário:
+Apresente o mapa preliminar e as seções mais densas (marcadas com 🔥 pelo script) e **deixe o usuário escolher** onde mergulhar:
 
 ```
 Documento: Applied Geophysics (Telford et al.) — 790 p., 420 k tokens
@@ -65,7 +68,7 @@ python "$SCRIPTS\biblioteca.py" ler <COTA> 283-340
 
 Concentre a extração em 4 pilares:
 1. **Conclusões e Diretrizes de Campo**: Recomendações práticas e limitações de método.
-2. **Tabelas de Valores Físicos**: Faixas de resistividade, condutividade hidráulica, velocidades sísmicas e constantes dielétricas com unidades e litologias.
+2. **Tabelas de Valores Físicos**: Faixas de resistividade, condutividade hidráulica, velocidades sísmicas e constantes dielétricas com unidades e litologias. ⚠️ Se a ficha diz `fonte_texto: ocr`, número e unidade se conferem na página do PDF.
 3. **Equações Fundamentais**: Fórmulas com a descrição clara de cada variável. Se notar formatação matemática truncada por OCR, registre `"fórmula não conferida"`.
 4. **Critérios Normativos e Parâmetros de Projeto**: Limites de corte e parâmetros analíticos.
 
@@ -135,3 +138,9 @@ Ao concluir a elaboração do mapa, sempre reporte:
 - Rota de extração utilizada.
 - Economia obtida (ex: *"Lidos 55 k de 420 k tokens — cobertura cirúrgica de 13% da obra"*).
 - Alerta sobre seções ignoradas ou dados pendentes de validação gráfica.
+
+## ❌ Não fazer
+- Nota que dê a entender leitura completa — a seção "O que NÃO foi lido" é obrigatória.
+- Mandar ler um `TRECHO SEM ESTRUTURA` — busque dentro dele.
+- Registrar achado sem página · editar ficha (é gerada pelo `05`).
+- Passar ao próximo documento sem o usuário ver o anterior.

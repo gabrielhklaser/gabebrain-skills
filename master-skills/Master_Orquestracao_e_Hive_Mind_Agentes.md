@@ -1,20 +1,22 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - orquestracao
-  - hive-mind
-  - arquitetura-ia
-  - multi-agente
-  - buzz
-  - antigravity
+tipo: agente-master
 origem:
   - "gabrielhklaser/AGENTEbuzz (meadow-core/agents/skip.persona.md, bana.persona.md, lev.persona.md, docs/practical-information-flow-for-buzz-agents.md)"
   - "gabrielhklaser/outorgasys (orquestracao de pipeline dos agentes 1 a 6)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - antigravity
+  - arquitetura-ia
+  - buzz
+  - dominio/engenharia-software
+  - hive-mind
+  - master-skill
+  - multi-agente
+  - orquestracao
+  - tipo/agente-master
 ---
-
 # Master Orquestração & Hive Mind de Agentes
 
 ## 🎯 Objetivo

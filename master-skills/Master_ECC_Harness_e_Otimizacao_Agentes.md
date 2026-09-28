@@ -1,3 +1,18 @@
+---
+tipo: agente-master
+origem:
+  - "gabebrain-skills/skills/ecc-harness-optimizer"
+versao: 1.0
+data_consolidacao: 2026-09-28
+tags:
+  - agente
+  - dominio/engenharia-software
+  - ecc
+  - harness
+  - master-skill
+  - otimizacao-tokens
+  - tipo/agente-master
+---
 # Master Skill 25: ECC — Harness Operating System e Otimização de Agentes
 
 ## 🎯 Objetivo e Identidade

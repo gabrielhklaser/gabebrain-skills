@@ -78,6 +78,20 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 14. **`desktop-screenshot`**: Captura de telas de aplicações desktop e publicação em PRs do GitHub com URLs imutáveis e commits de snapshots (sem hosts de imagem terceiros).
 15. **`sprout-cli`**: Interface CLI multi-agente para mensageria Nostr (canais/DMs), workflows, feed de eventos, proteções de branch e memória persistente chave-valor (`mem`).
 16. **`github-research`**: Pesquisa especializada de histórico de issues, PRs mesclados e código via GitHub CLI (`gh`).
+17. **`anydoc`**, **`no-ai-slop`**, **`prompt-router-coordinator`**, **`scientific-writing`**, **`scientific-thinking-scholar-evaluation`**: conversão de documentos, filtro anti-slop, roteamento de prompts entre agentes e escrita/avaliação científica.
+
+### 🔁 Sincronização (este repo é a fonte da verdade)
+
+```bash
+python scripts/sync_gabebrain.py            # mostra o que mudaria
+python scripts/sync_gabebrain.py --apply    # aplica
+```
+
+- `skills/` → `~/.gemini/config/skills` (todas) e `.claude/skills` / `.agents/skills` do vault (só as que já estão lá).
+- `master-skills/` ← `📚 Biblioteca de Agentes/` do vault (lá é onde se edita).
+- Regenera as notas `20-Skills/` do vault.
+- Nunca copia `.env`/perfis de navegador para o vault; remove `.env` que encontrar lá.
+- Se um destino foi editado **depois** do repo, reporta `CONFLITO` e não sobrescreve.
 
 ---
 

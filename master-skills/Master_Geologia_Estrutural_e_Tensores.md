@@ -1,22 +1,24 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - geologia-estrutural
-  - tensores
-  - tensao-deformacao
-  - mohr-coulomb
-  - falhas
-  - dobras
-  - estereografia
+tipo: agente-master
 origem:
   - "Davis, Reynolds & Kluth (2011; Structural Geology of Rocks and Regions - 3rd Ed)"
   - "Ramsay & Huber (1987; The Techniques of Modern Structural Geology)"
   - "Twiss & Moores (2007; Structural Geology)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - dobras
+  - dominio/geociencias
+  - estereografia
+  - falhas
+  - geologia-estrutural
+  - master-skill
+  - mohr-coulomb
+  - tensao-deformacao
+  - tensores
+  - tipo/agente-master
 ---
-
 # Master Geologia Estrutural, Mecânica de Rochas & Tensores
 
 ## 🎯 Objetivo e Identidade
@@ -87,4 +89,4 @@ Ao processar atitudes estruturais, interpretar zonas de falha ou prever reativa�
 - **Obras Chave:**
   - [[Ficha - Structural Geology of Rocks and Regions (3rd Ed)]]
   - [[Structural Geology of Rocks and Regions (3rd Ed)]]
-  - [[Ficha - Para Entender a Terra (6ª Ed) - Cap 8: Deformação das Rochas]]
+  - [[Ficha - Para Entender a Terra (6ª Ed) - Cap 8 - Deformação das Rochas]]

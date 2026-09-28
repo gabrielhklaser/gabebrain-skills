@@ -1,21 +1,23 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - prompt-engineering
-  - sdd
-  - tdd
-  - context-engineering
-  - especificacao
-  - qualidade
+tipo: agente-master
 origem:
   - "gabrielhklaser/agent-skills (spec-driven-development, test-driven-development, context-engineering, idea-refine)"
   - "gabrielhklaser/riodosinoscampobom (ESPECIFICACAO.md - prompt mestre de reconstrucao)"
   - "gabrielhklaser/partiturabatera.github.io (plan.md, ERROS.md)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - context-engineering
+  - dominio/engenharia-software
+  - especificacao
+  - master-skill
+  - prompt-engineering
+  - qualidade
+  - sdd
+  - tdd
+  - tipo/agente-master
 ---
-
 # Master Spec-Driven Development & Engenharia de Contexto
 
 ## 🎯 Objetivo

@@ -1,26 +1,28 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - ontologia
-  - web-semantica
-  - modelagem-conceitual
-  - owl
-  - sparql
-  - rdf
-  - swrl
-  - gabebrain
-  - ufo
-  - bfo
-  - ontouml
-  - neuro-simbolico
+tipo: agente-master
 origem:
   - "C:\\Users\\Gabriel\\Meu Drive\\1_Mestrado\\Bibliografia\\ontologia (Tellus-Onto 2021, B-Track Onto 2023/2024, CIE Worker Health Framework 2024, IJMSO Social Influence 2019)"
   - "Laboratório de Computação Aplicada (PPGCA/UNISINOS) - Gabriel e Colaboradores (Barbosa, Bavaresco, Vianna, Heckler, Helfer, Gluz, Dias)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - bfo
+  - dominio/computacao
+  - gabebrain
+  - master-skill
+  - modelagem-conceitual
+  - neuro-simbolico
+  - ontologia
+  - ontouml
+  - owl
+  - rdf
+  - sparql
+  - swrl
+  - tipo/agente-master
+  - ufo
+  - web-semantica
 ---
-
 # Master Ontologias, Web Semântica & Modelagem do Conhecimento
 
 ## 🎯 Objetivo

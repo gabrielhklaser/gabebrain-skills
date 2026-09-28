@@ -1,21 +1,23 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - biblioteca-pesquisavel
-  - acervo-tecnico
-  - triagem
-  - destilacao-documental
-  - pdf-pesquisavel
-  - gabebrain
-  - python
+tipo: agente-master
 origem:
   - "GabeBrain / AFC Geofísica (Biblioteca Geológica)"
   - "Pipeline de 21 Scripts de Automação e Indexação Documental"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - acervo-tecnico
+  - agente
+  - biblioteca-pesquisavel
+  - destilacao-documental
+  - dominio/geociencias
+  - gabebrain
+  - master-skill
+  - pdf-pesquisavel
+  - python
+  - tipo/agente-master
+  - triagem
 ---
-
 # Master Biblioteca Pesquisável & Acervo Técnico
 
 ## 🎯 Objetivo

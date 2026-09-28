@@ -1,15 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - engenharia-de-software
-  - arquitetura-de-software
-  - swebok-v4
-  - sap-tam
-  - scrum
-  - algorithm-design
-  - ddd
-  - gabebrain
+tipo: agente-master
 origem:
   - "IEEE Computer Society - SWEBOK v4 (Guide to the Software Engineering Body of Knowledge, 2024)"
   - "SAP AG - SAP Technical Architecture Modeling Standard (SAP-TAM Standard, FMC/UML 2.0)"
@@ -18,8 +8,20 @@ origem:
   - "GabeBrain Architecture Ecosystem (Hive Mind, SDD, OutorgaSys, Rio dos Sinos)"
 versao: 1.0
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - algorithm-design
+  - arquitetura-de-software
+  - ddd
+  - dominio/engenharia-software
+  - engenharia-de-software
+  - gabebrain
+  - master-skill
+  - sap-tam
+  - scrum
+  - swebok-v4
+  - tipo/agente-master
 ---
-
 # Master Engenharia & Arquitetura de Software
 
 ## 🎯 Objetivo

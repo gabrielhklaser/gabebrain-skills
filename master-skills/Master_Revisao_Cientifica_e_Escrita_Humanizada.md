@@ -81,6 +81,15 @@ Ao redigir ou reescrever seções do artigo:
 
 ---
 
+### 🧩 Subagentes Integrados de Escrita e Validação Científica
+- **scientific-writing** (K-Dense-AI): Estruturação de seções, formulação matemática, diagramação de taxonomia e pirâmide invertida.
+- **scientific-thinking-scholar-evaluation** (ECC / Affaan M): Avaliação epistêmica, auditoria de baselines, equidade experimental e eliminação de viés de confirmação.
+- **escrita-tecnica-humanizada**: Ritmo sintático natural, autoridade acadêmica e voz ativa.
+- **no-ai-slop**: Filtro e expurgo de 20+ vícios de linguagem sintética de LLMs.
+- **revisor-cientifico-peer-review**: Avaliação formal pré-submissão no padrão SBC / IEEE.
+
+---
+
 ## 🔗 Navegação e Central
 - [[00 - Índice da Biblioteca de Agentes|📚 Voltar ao Índice da Biblioteca de Agentes]]
 - [[20-Skills/Skill_revisor-cientifico-peer-review|⚡ Skill Revisor Científico]]

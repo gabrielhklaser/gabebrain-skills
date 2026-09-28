@@ -1,21 +1,23 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - auditoria
-  - pdf
-  - ocr
-  - extracao-documental
-  - licenciamento
-  - compliance
-  - python
+tipo: agente-master
 origem:
   - "gabrielhklaser/licenciamentoambiental (.claude/skills/document-image-analysis, .claude/skills/pdf, agente_administrativo.py)"
   - "gabrielhklaser/outorgasys (agente1_triagem.py, agente5_relatorio.py)"
 versao: 1.1
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - auditoria
+  - compliance
+  - dominio/computacao
+  - extracao-documental
+  - licenciamento
+  - master-skill
+  - ocr
+  - pdf
+  - python
+  - tipo/agente-master
 ---
-
 # Master Auditoria Documental & Engenharia de PDF
 
 ## 🎯 Objetivo

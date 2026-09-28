@@ -1,22 +1,24 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - docling
-  - leitor-documentos
-  - rag
-  - markdown
-  - json
-  - gabebrain
-  - treinamento-ia
-  - python
+tipo: agente-master
 origem:
   - "IBM Docling (Deep Search Toolkit)"
   - "GabeBrain Knowledge Engine"
 versao: 1.1
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - docling
+  - dominio/computacao
+  - gabebrain
+  - json
+  - leitor-documentos
+  - markdown
+  - master-skill
+  - python
+  - rag
+  - tipo/agente-master
+  - treinamento-ia
 ---
-
 # Master Docling: Leitor & Engenheiro de Documentos para o GabeBrain
 
 ## 🎯 Objetivo

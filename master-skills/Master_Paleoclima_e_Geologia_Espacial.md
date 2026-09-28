@@ -1,18 +1,5 @@
 ---
-tags:
-  - agente
-  - master-skill
-  - paleoclima
-  - geologia
-  - geodinamica
-  - cretaceo
-  - series-temporais
-  - reconstrucao-espacial
-  - deep-time
-  - python
-  - bayesiano
-  - gplates
-  - gmt
+tipo: agente-master
 origem:
   - "gabrielhklaser/paleoclimate.github.io (CONTEXT.md, rotinas de interpolação KNN/IDW)"
   - "gabrielhklaser/PCVS (knn_predicate.ipynb, paleomap.py, timescale.py)"
@@ -23,8 +10,23 @@ origem:
   - "Petri (1991), Wessel et al. (2013), de Souza et al. (PROWIS)"
 versao: 2.1
 data_consolidacao: 2026-09-25
+tags:
+  - agente
+  - bayesiano
+  - cretaceo
+  - deep-time
+  - dominio/geociencias
+  - geodinamica
+  - geologia
+  - gmt
+  - gplates
+  - master-skill
+  - paleoclima
+  - python
+  - reconstrucao-espacial
+  - series-temporais
+  - tipo/agente-master
 ---
-
 # Master Paleoclima, Geodinâmica Computacional & Geologia Espacial (Deep-Time)
 
 ## 🎯 Objetivo e Identidade

@@ -77,7 +77,7 @@ Quando novos documentos forem colocados em `Arquivos pdf/_entrada/`:
 1. Verifique a ausência de travas ativas (`Metadata/pipeline.lock`).
 2. Execute o pipeline seguro:
    ```powershell
-   powershell -ExecutionPolicy Bypass -File "10-Trabalho/Geologia/Biblioteca Geologica/Scripts/00_rodar_pipeline.ps1" -PularOcr
+   powershell -NoProfile -File "10-Trabalho/Geologia/Biblioteca Geologica/Scripts/00_rodar_pipeline.ps1" -PularOcr
    ```
 3. Execute a geração de cotas, catálogo e manifesto:
    ```bash

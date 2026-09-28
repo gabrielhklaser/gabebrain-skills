@@ -59,6 +59,6 @@ Sua missão é conceber, diagramar, manipular e exportar ativos visuais com acab
 ---
 
 ## 🛡️ Diretrizes de Segurança de Credenciais
-- Credenciais de acesso ao Canva Pro (`anacondadopaul@gmail.com`) NUNCA devem ser enviadas em commits para repositórios remotos.
+- Credenciais de acesso ao Canva Pro NUNCA devem ser enviadas em commits para repositórios remotos.
 - O repositório armazena apenas `.env.example` com placeholders.
 - A persistência local de sessão garante agilidade sem necessidade de digitar credenciais continuamente.

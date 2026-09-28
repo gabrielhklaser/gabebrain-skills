@@ -3,10 +3,11 @@
 """
 GabeBrain VCS Agent - Controlador e Gerenciador de Versões de Projetos
 ---------------------------------------------------------------------
-Gerencia a paridade bidirecional entre o ambiente local (GabeBrain) e o GitHub.
-- Funciona 100% offline (commits locais de segurança) e online (pull/push/rebase).
-- Detecta e sincroniza commits feitos na Arena.ai web (branches arena/* e merges do bot).
-- Executa verificação inicial na inicialização do Windows (boot do GabeBrain) e antes de prompts.
+Inspeciona o estado dos projetos entre o ambiente local (GabeBrain) e o GitHub.
+- `status`/`check` atualizam referências remotas quando online, sem alterar a árvore de trabalho.
+- Pull, merge, commit e push só são executados pelo comando explícito `sync`.
+- Alterações não commitadas exigem `--commit-dirty` e um único `--repo` informado.
+- Detecta branches da Arena.ai; a verificação no boot e pré-prompt é sem escrita.
 """
 
 import os
@@ -28,30 +29,50 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-# Caminhos padrão do GabeBrain
-CONFIG_DIR = Path(r"C:\Users\Gabriel\.gemini\config")
+# User-specific state belongs in OS config/state directories, never in a repository.
+def _default_config_dir() -> Path:
+    """Preserve the existing per-user Gemini config location without hard-coded usernames."""
+    return Path.home() / ".gemini" / "config"
+
+
+def _default_log_dir() -> Path:
+    """Preserve the existing per-user log location without hard-coded usernames."""
+    return Path.home() / ".gemini" / "antigravity" / "logs"
+
+
+def _ensure_private_dir(path: Path) -> Path:
+    path.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if os.name != "nt":
+        path.chmod(0o700)
+    return path
+
+
+CONFIG_DIR = Path(os.environ.get("GABEBRAIN_CONFIG_DIR") or _default_config_dir()).expanduser()
 PROJECTS_CONFIG_FILE = CONFIG_DIR / "vcs_projects.json"
 STATE_LEDGER_FILE = CONFIG_DIR / "vcs_state.json"
-LOG_DIR = Path(r"C:\Users\Gabriel\.gemini\antigravity\logs")
+LOG_DIR = Path(os.environ.get("GABEBRAIN_LOG_DIR") or _default_log_dir()).expanduser()
 LOG_FILE = LOG_DIR / "vcs_sync.log"
 
+home = Path.home()
 DEFAULT_SEARCH_PATHS = [
-    Path(r"C:\Users\Gabriel\.gemini\antigravity\scratch"),
-    Path(r"C:\Users\Gabriel\Meu Drive\Github - projetos"),
-    Path(r"C:\Users\Gabriel\Documents\GitHub"),
+    home / ".gemini" / "antigravity" / "scratch",
+    home / "Meu Drive" / "Github - projetos",
+    home / "Documents" / "GitHub",
 ]
 
-# Configurar logging
-LOG_DIR.mkdir(parents=True, exist_ok=True)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_FILE, encoding="utf-8"),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
 logger = logging.getLogger("vcs_agent")
+
+
+def configure_logging() -> None:
+    """Initialize private file logging only when the CLI actually runs."""
+    _ensure_private_dir(LOG_DIR)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[logging.FileHandler(LOG_FILE, encoding="utf-8"), logging.StreamHandler(sys.stdout)],
+    )
+    if os.name != "nt" and LOG_FILE.exists():
+        LOG_FILE.chmod(0o600)
 
 
 def is_online(host: str = "github.com", port: int = 443, timeout: float = 3.0) -> bool:
@@ -96,45 +117,40 @@ def load_config() -> Dict[str, Any]:
     default_config = {
         "version": "1.0.0",
         "search_paths": [str(p) for p in DEFAULT_SEARCH_PATHS],
-        "auto_commit_message_prefix": "chore(auto-sync)",
         "track_arena_branches": True,
-        "auto_merge_arena": True,
+        "auto_merge_arena": False,
+        "arena_merge_reviewed": False,
         "notify_on_sync": True,
         "projects": [
             {
                 "name": "licenciamentoambiental",
-                "path": r"C:\Users\Gabriel\.gemini\antigravity\scratch\licenciamentoambiental",
+                "path": str(DEFAULT_SEARCH_PATHS[0] / "licenciamentoambiental"),
                 "repo": "gabrielhklaser/licenciamentoambiental",
                 "default_branch": "main",
-                "auto_sync": True
             },
             {
                 "name": "agentearena",
-                "path": r"C:\Users\Gabriel\.gemini\antigravity\scratch\agentearena",
+                "path": str(DEFAULT_SEARCH_PATHS[0] / "agentearena"),
                 "repo": "gabrielhklaser/agentearena",
                 "default_branch": "main",
-                "auto_sync": True
             },
             {
                 "name": "gabriel_agent_skills",
-                "path": r"C:\Users\Gabriel\.gemini\antigravity\scratch\gabriel_agent_skills",
+                "path": str(DEFAULT_SEARCH_PATHS[0] / "gabriel_agent_skills"),
                 "repo": "gabrielhklaser/agent-skills",
                 "default_branch": "main",
-                "auto_sync": True
             },
             {
                 "name": "outorgasys",
-                "path": r"C:\Users\Gabriel\Meu Drive\Github - projetos\outorgasys",
+                "path": str(DEFAULT_SEARCH_PATHS[1] / "outorgasys"),
                 "repo": "gabrielhklaser/outorgasys",
                 "default_branch": "main",
-                "auto_sync": True
             },
             {
                 "name": "partiturabatera.github.io",
-                "path": r"C:\Users\Gabriel\Documents\GitHub\partiturabatera.github.io",
+                "path": str(DEFAULT_SEARCH_PATHS[2] / "partiturabatera.github.io"),
                 "repo": "gabrielhklaser/partiturabatera.github.io",
                 "default_branch": "main",
-                "auto_sync": True
             }
         ]
     }
@@ -144,9 +160,11 @@ def load_config() -> Dict[str, Any]:
 
 def save_config(config: Dict[str, Any]):
     """Salva a configuração de projetos."""
-    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    _ensure_private_dir(CONFIG_DIR)
     with open(PROJECTS_CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=2, ensure_ascii=False)
+    if os.name != "nt":
+        PROJECTS_CONFIG_FILE.chmod(0o600)
 
 
 def load_state() -> Dict[str, Any]:
@@ -162,9 +180,11 @@ def load_state() -> Dict[str, Any]:
 
 def save_state(state: Dict[str, Any]):
     """Salva o livro de registros de estado."""
-    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    _ensure_private_dir(CONFIG_DIR)
     with open(STATE_LEDGER_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2, ensure_ascii=False)
+    if os.name != "nt":
+        STATE_LEDGER_FILE.chmod(0o600)
 
 
 def scan_and_register_projects() -> List[str]:
@@ -194,7 +214,6 @@ def scan_and_register_projects() -> List[str]:
                             "path": str(item),
                             "repo": remote_url or f"gabrielhklaser/{repo_name}",
                             "default_branch": branch or "main",
-                            "auto_sync": True
                         }
                         config.setdefault("projects", []).append(proj_entry)
                         existing_paths.add(norm_path)
@@ -330,16 +349,18 @@ def analyze_project(proj: Dict[str, Any], online: bool) -> Dict[str, Any]:
     return info
 
 
-def sync_project(proj: Dict[str, Any], online: bool, auto_merge_arena: bool = True) -> Dict[str, Any]:
-    """
-    Executa a sincronização completa de um projeto.
-    - Offline: Commita alterações locais limpas com mensagem estruturada.
-    - Online: Commita alterações locais, puxa atualizações remotas/Arena.ai e sobe commits pendentes para o GitHub.
-    """
+def sync_project(
+    proj: Dict[str, Any],
+    online: bool,
+    auto_merge_arena: bool = False,
+    commit_dirty: bool = False,
+) -> Dict[str, Any]:
+    """Sincroniza um projeto; alterações não commitadas só entram com opt-in explícito."""
     repo_path = Path(proj["path"])
     result = {
         "name": proj["name"],
         "success": True,
+        "skipped": False,
         "online": online,
         "actions": [],
         "errors": []
@@ -356,11 +377,20 @@ def sync_project(proj: Dict[str, Any], online: bool, auto_merge_arena: bool = Tr
     _, status_out, _ = run_git(["status", "--porcelain"], repo_path)
     dirty_lines = [l for l in status_out.splitlines() if l.strip()]
 
+    if dirty_lines and not commit_dirty:
+        result["skipped"] = True
+        result["actions"].append(
+            f"Ignorado: há {len(dirty_lines)} arquivo(s) localmente modificados; "
+            "nada foi staged, commitado ou enviado. Revise `git status` e execute "
+            "`sync --repo <nome> --commit-dirty` somente se desejar incluir essas alterações."
+        )
+        return result
+
     if dirty_lines:
-        prefix = "chore(offline-sync)" if not online else "chore(auto-sync)"
+        prefix = "chore(offline-sync)" if not online else "chore(manual-sync)"
         msg = f"{prefix}: snapshot local ({len(dirty_lines)} arquivos) [{now_str}]"
         
-        # Stage all files
+        # Stage all files only after the explicit --commit-dirty opt-in.
         add_code, _, add_err = run_git(["add", "-A"], repo_path)
         if add_code != 0:
             result["success"] = False
@@ -456,32 +486,36 @@ def sync_project(proj: Dict[str, Any], online: bool, auto_merge_arena: bool = Tr
 
 
 def send_windows_notification(title: str, message: str):
-    """Envia uma notificação visual no Windows informando a conclusão da sincronização."""
+    """Envia uma notificação visual sem interpolar dados em código PowerShell."""
     try:
-        ps_script = f"""
+        ps_script = """
         [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms') | Out-Null
         $notify = New-Object System.Windows.Forms.NotifyIcon
         $notify.Icon = [System.Drawing.SystemIcons]::Information
-        $notify.BalloonTipTitle = "{title}"
-        $notify.BalloonTipText = "{message}"
+        $notify.BalloonTipTitle = [Environment]::GetEnvironmentVariable('GABEBRAIN_NOTIFY_TITLE')
+        $notify.BalloonTipText = [Environment]::GetEnvironmentVariable('GABEBRAIN_NOTIFY_MESSAGE')
         $notify.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::Info
         $notify.Visible = $True
         $notify.ShowBalloonTip(4000)
         Start-Sleep -Seconds 1
         $notify.Dispose()
         """
+        env = os.environ.copy()
+        env["GABEBRAIN_NOTIFY_TITLE"] = title
+        env["GABEBRAIN_NOTIFY_MESSAGE"] = message
         subprocess.run(
-            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_script],
+            ["powershell", "-NoProfile", "-Command", ps_script],
             capture_output=True,
-            timeout=10
+            timeout=10,
+            env=env,
+            check=False,
         )
     except Exception as e:
         logger.debug(f"Notificação visual do Windows ignorada: {e}")
 
 
 def cmd_status(args):
-    """Exibe o status completo de todos os projetos cadastrados."""
-    scan_and_register_projects()
+    """Exibe o status completo dos projetos já cadastrados, sem registrar outros."""
     config = load_config()
     online = is_online()
     mode_str = "[ONLINE] Conectado ao GitHub" if online else "[OFFLINE] Modo Local Seguro"
@@ -516,32 +550,54 @@ def cmd_status(args):
     print("\n" + "="*80 + "\n")
 
 
+def _project_matches(proj: Dict[str, Any], target: str) -> bool:
+    """Match only an exact project name or exact expanded filesystem path."""
+    target = str(target).strip()
+    if not target:
+        return False
+    if str(proj.get("name", "")).casefold() == target.casefold():
+        return True
+    project_path = proj.get("path")
+    if not project_path:
+        return False
+    try:
+        return Path(project_path).expanduser().resolve() == Path(target).expanduser().resolve()
+    except (OSError, RuntimeError, TypeError):
+        return False
+
+
 def cmd_sync(args):
-    """Executa a sincronização de todos os projetos ou de um projeto específico."""
-    scan_and_register_projects()
+    """Sincroniza somente os projetos já cadastrados na configuração local."""
     config = load_config()
     force_offline = getattr(args, "force_offline", False)
-    online = False if force_offline else is_online()
-    
     target_repo = getattr(args, "repo", None)
+    commit_dirty = bool(getattr(args, "commit_dirty", False))
     projects = config.get("projects", [])
     if target_repo:
-        projects = [p for p in projects if p["name"].lower() == target_repo.lower() or target_repo.lower() in p["path"].lower()]
+        projects = [p for p in projects if _project_matches(p, target_repo)]
+    if commit_dirty and len(projects) != 1:
+        raise SystemExit("[ERRO] --commit-dirty exige identificar exatamente um projeto com --repo.")
 
+    online = False if force_offline else is_online()
     print(f"\n[GABEBRAIN VCS] Iniciando sincronização... [{'ONLINE' if online else 'OFFLINE'}]")
     synced_count = 0
     total_actions = []
 
     for proj in projects:
-        res = sync_project(proj, online, auto_merge_arena=config.get("auto_merge_arena", True))
-        status_tag = "OK" if res["success"] else "ERRO"
+        res = sync_project(
+            proj,
+            online,
+            auto_merge_arena=bool(config.get("auto_merge_arena", False) and config.get("arena_merge_reviewed", False)),
+            commit_dirty=commit_dirty,
+        )
+        status_tag = "PULADO" if res.get("skipped") else ("OK" if res["success"] else "ERRO")
         print(f"\n[{status_tag}] {proj['name']}:")
         for a in res["actions"]:
             print(f"  ✓ {a}")
             total_actions.append(f"{proj['name']}: {a}")
         for err in res["errors"]:
             print(f"  ✗ {err}")
-        if res["success"]:
+        if res["success"] and not res.get("skipped"):
             synced_count += 1
 
     # Atualiza livro de registros de estado
@@ -561,16 +617,13 @@ def cmd_sync(args):
 
 
 def cmd_check(args):
-    """
-    Verificação ultrarrápida executada antes dos primeiros prompts dos projetos.
-    Se detectar novidades na Arena.ai ou no GitHub, sincroniza imediatamente.
-    """
+    """Verifica o estado sem alterar a árvore de trabalho ou enviar commits; pode fazer fetch."""
     config = load_config()
     online = is_online(timeout=2.0)
     target_repo = getattr(args, "repo", None)
     projects = config.get("projects", [])
     if target_repo:
-        projects = [p for p in projects if p["name"].lower() == target_repo.lower() or target_repo.lower() in p["path"].lower()]
+        projects = [p for p in projects if _project_matches(p, target_repo)]
 
     needs_sync = False
     reasons = []
@@ -588,23 +641,21 @@ def cmd_check(args):
             reasons.append(f"{proj['name']} tem novas versões criadas na Arena.ai web.")
 
     if needs_sync:
-        print("[ALERTA VCS] Atualizações detectadas no repositório/Arena.ai antes de iniciar o prompt!")
-        for r in reasons:
-            print(f"  -> {r}")
-        print("[ALERTA VCS] Sincronizando automaticamente agora para garantir paridade total...")
-        cmd_sync(args)
+        print("[ALERTA VCS] Divergências detectadas antes de iniciar o prompt:")
+        for reason in reasons:
+            print(f"  -> {reason}")
+        print("[ALERTA VCS] Nenhuma alteração foi aplicada automaticamente. Revise o estado e execute `sync` manualmente se desejar.")
+        print("[ALERTA VCS] Para incluir arquivos não commitados, revise `git status` e informe `--commit-dirty` junto com `--repo`.")
     else:
-        print("[OK VCS] Projetos 100% atualizados. Pronto para processar prompts com segurança.")
+        print("[OK VCS] Projetos cadastrados sem divergências detectadas. Nenhuma alteração foi aplicada.")
 
 
 def cmd_startup(args):
-    """Executado na inicialização do Windows (Logon do GabeBrain)."""
-    logger.info("=== GABEBRAIN STARTUP VCS SYNC INICIADO ===")
-    args.notify = True
-    args.force_offline = False
+    """Verifica repositórios no logon; não altera a árvore de trabalho nem envia commits."""
+    logger.info("=== GABEBRAIN STARTUP VCS CHECK INICIADO ===")
     args.repo = None
-    cmd_sync(args)
-    logger.info("=== GABEBRAIN STARTUP VCS SYNC CONCLUÍDO ===")
+    cmd_check(args)
+    logger.info("=== GABEBRAIN STARTUP VCS CHECK CONCLUÍDO ===")
 
 
 def cmd_add(args):
@@ -627,7 +678,6 @@ def cmd_add(args):
         "path": str(path),
         "repo": remote_url or f"gabrielhklaser/{name}",
         "default_branch": branch or "main",
-        "auto_sync": True
     }
     config["projects"].append(new_proj)
     save_config(config)
@@ -642,17 +692,22 @@ def main():
     subparsers.add_parser("status", help="Exibe o status de versões de todos os projetos")
 
     # sync
-    sync_parser = subparsers.add_parser("sync", help="Sincroniza projetos (bidirecional GitHub <-> Local)")
-    sync_parser.add_argument("--repo", help="Nome ou caminho do repositório específico")
+    sync_parser = subparsers.add_parser("sync", help="Sincroniza projetos; alterações não commitadas são ignoradas por padrão")
+    sync_parser.add_argument("--repo", help="Nome exato ou caminho do repositório específico")
     sync_parser.add_argument("--force-offline", action="store_true", help="Força modo offline")
     sync_parser.add_argument("--notify", action="store_true", help="Dispara notificação visual no Windows")
+    sync_parser.add_argument(
+        "--commit-dirty",
+        action="store_true",
+        help="Inclui arquivos não commitados; exige --repo e revisão prévia de git status",
+    )
 
     # check
-    check_parser = subparsers.add_parser("check", help="Verifica antes de iniciar prompts")
-    check_parser.add_argument("--repo", help="Repositório a verificar")
+    check_parser = subparsers.add_parser("check", help="Verifica divergências sem sincronizar automaticamente")
+    check_parser.add_argument("--repo", help="Nome exato ou caminho do repositório a verificar")
 
     # startup
-    subparsers.add_parser("startup", help="Executado na inicialização da máquina")
+    subparsers.add_parser("startup", help="Verificação sem escrita executada no logon")
 
     # add
     add_parser = subparsers.add_parser("add", help="Adiciona um repositório git")
@@ -663,9 +718,13 @@ def main():
     subparsers.add_parser("scan", help="Escaneia diretórios e adiciona projetos git automaticamente")
 
     args = parser.parse_args()
+    if args.command == "sync" and args.commit_dirty and not args.repo:
+        parser.error("--commit-dirty exige --repo para limitar o escopo a um único projeto")
     if not args.command:
         parser.print_help()
         sys.exit(0)
+
+    configure_logging()
 
     if args.command == "status":
         cmd_status(args)

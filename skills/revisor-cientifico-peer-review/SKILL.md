@@ -87,5 +87,5 @@ O parecer final do revisor deve conter:
 ## ⚡ Ferramenta de Apoio: `peer_review_checklist.py`
 Para auditar a estrutura de um arquivo `.md` ou `.tex`:
 ```powershell
-python "C:\Users\Gabriel\.gemini\config\skills\revisor-cientifico-peer-review\scripts\peer_review_checklist.py" "caminho\artigo.md"
+python "$HOME/.gemini/config/skills/revisor-cientifico-peer-review/scripts/peer_review_checklist.py" "caminho\artigo.md"
 ```

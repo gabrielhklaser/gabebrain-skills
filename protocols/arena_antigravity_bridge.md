@@ -65,11 +65,11 @@ Para despachar comandos diretamente do terminal local ou via subagente Antigravi
 
 ```bash
 # 1. Enviar prompt para Arena conectado ao repositório do projeto
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" send \
+python "$HOME/.gemini/config/skills/arena-ai-controller/scripts/arena_agent.py" send \
   --prompt "Leia as diretrizes do gabebrain-skills e refatore o módulo de cálculo..." \
   --repo "gabrielhklaser/outorgasys" \
   --branch "main"
 
 # 2. Reconciliar alterações feitas pelo Arena com o ambiente local
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" sync
+python "$HOME/.gemini/config/skills/vcs-version-agent/scripts/vcs_agent.py" sync
 ```

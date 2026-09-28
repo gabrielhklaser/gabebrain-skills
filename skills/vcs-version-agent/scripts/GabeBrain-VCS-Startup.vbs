@@ -1,6 +1,13 @@
-' GabeBrain VCS Agent - Inicializador Silencioso do Windows Boot
-' Executa a sincronizacao de versoes local <-> GitHub em segundo plano sem janela preta
+' GabeBrain VCS Agent - Verificação silenciosa de estado no logon do Windows
+' O checkout pode ser configurado via GABEBRAIN_SKILLS_DIR.
 Set WshShell = CreateObject("WScript.Shell")
-strCommand = "powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File ""C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\startup_sync.ps1"""
+Set FSO = CreateObject("Scripting.FileSystemObject")
+strSkillsDir = WshShell.ExpandEnvironmentStrings("%GABEBRAIN_SKILLS_DIR%")
+If strSkillsDir = "%GABEBRAIN_SKILLS_DIR%" Or strSkillsDir = "" Then
+    strSkillsDir = WshShell.ExpandEnvironmentStrings("%USERPROFILE%") & "\.gemini\config\skills"
+End If
+strScript = FSO.BuildPath(FSO.BuildPath(FSO.BuildPath(strSkillsDir, "vcs-version-agent"), "scripts"), "startup_sync.ps1")
+strCommand = "powershell.exe -NoProfile -WindowStyle Hidden -File """ & strScript & """"
 WshShell.Run strCommand, 0, False
+Set FSO = Nothing
 Set WshShell = Nothing

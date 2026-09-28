@@ -35,7 +35,7 @@ This skill enables Antigravity to automate and control the **Arena AI** platform
 
 ## Capabilities
 
-1. **Persistent Authentication**: Automatically signs in using user credentials and keeps session cookies active.
+1. **Persistent Authentication**: Reuses an authenticated session and signs in only when needed and configured.
 2. **Prompt Relaying**: Takes user prompts from chat and sends them to Arena AI Agent Mode, streaming and returning the agent's responses.
 3. **GitHub Repository & Branch Management**: Automatically enables the GitHub toggle, lists repositories, and selects target repositories and branches.
 4. **Automated Failover & Recovery**: If Arena AI loses its connection to the working repository, this skill:
@@ -48,32 +48,36 @@ This skill enables Antigravity to automate and control the **Arena AI** platform
 
 ## Tooling & Helper Scripts
 
-The automation engine is located at:
-`C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py`
-and in the workspace scratch at:
-`C:\Users\Gabriel\.gemini\antigravity\scratch\arena-controller\arena_agent.py`
+The automation engine is `skills/arena-ai-controller/scripts/arena_agent.py`.
+
+- Configure `ARENA_EMAIL` and `ARENA_PASSWORD` through the environment or a local, Git-ignored `skills/arena-ai-controller/.env`. No account email or password is embedded in the source.
+- The persistent browser profile defaults to a per-user state directory outside this repository; `ARENA_USER_DATA_DIR` overrides it. Protect this directory like a credential because cookies can authenticate the account.
+- `ARENA_HEADLESS` defaults to `true`; set it to `false` when an interactive browser window is needed.
+- Login/status output reports only whether an email was configured, not the email itself. Prompt relay logs report length only, not prompt content.
 
 ### CLI Commands
 
+Run commands from the repository root.
+
 #### 1. Verify Login & Session Status
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" login
+python skills/arena-ai-controller/scripts/arena_agent.py login
 ```
 
 #### 2. List Connected GitHub Repositories
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" list-repos
+python skills/arena-ai-controller/scripts/arena_agent.py list-repos
 ```
 
 #### 3. Send Prompt to Arena AI Agent
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" send --prompt "YOUR PROMPT HERE" --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
+python skills/arena-ai-controller/scripts/arena_agent.py send --prompt "YOUR PROMPT HERE" --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
 ```
 
 #### 4. Automatic Reconnection & Push Recovery
 When Arena AI drops the repository connection or fails to sync:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" recover-push --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
+python skills/arena-ai-controller/scripts/arena_agent.py recover-push --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
 ```
 
 This command will:

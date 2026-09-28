@@ -36,7 +36,7 @@ Colunas de `Metadata/triagem.csv`:
 
 ### Pré-requisito: Conferir Trava e Hub
 1. Verifique se não há pipeline em execução:
-   `Test-Path "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Geologia\Biblioteca Geologica\Metadata\pipeline.lock"`
+   `Test-Path "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Metadata/pipeline.lock"`
 2. O método precisa de um Hub (ex: `00 - GPR (indice).md`). Se não existir, crie-o antes.
 
 ### Etapa A — Medir o Lote ANTES de Ler
@@ -54,7 +54,7 @@ Lote: GPR, 5 documentos
 - **Acima de 50 k tokens**: Desvie para `biblioteca-mapa-documento`.
 - **Abaixo de 50 k tokens**: Faça leitura seletiva/fatiada:
   ```powershell
-  $BIB = "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Geologia\Biblioteca Geologica\Scripts\biblioteca.py"
+  $BIB = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/biblioteca.py"
   python $BIB ler <COTA> 1-20
   ```
   *(Nunca abra o `.txt` inteiro de uma vez).*
@@ -139,6 +139,6 @@ related:
 2. **Fórmulas de PDF:** Muitas vezes fontes matemáticas de PDFs saem truncadas. Marque como `"não conferida"` se houver ambiguidade.
 3. **Fichas são intocáveis:** Metadados vão para `triagem.csv`. Depois de salvar o lote no CSV e as notas, rode:
    ```powershell
-   powershell -ExecutionPolicy Bypass -File "...\00_rodar_pipeline.ps1" -So 5,9
+   powershell -NoProfile -File "...\00_rodar_pipeline.ps1" -So 5,9
    ```
    para que o script `05_gerar_fichas.py` integre os dados automaticamente na ficha.

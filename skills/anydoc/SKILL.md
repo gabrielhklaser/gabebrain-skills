@@ -50,13 +50,13 @@ Para converter arquivos ou lotes inteiros de processos de licenciamento:
 
 ```powershell
 # Converter um arquivo para stdout:
-python "C:\Users\Gabriel\.gemini\config\skills\anydoc\scripts\anydoc_cli.py" "laudo_geologico.docx"
+python "$HOME/.gemini/config/skills/anydoc/scripts/anydoc_cli.py" "laudo_geologico.docx"
 
 # Salvar o markdown resultante em arquivo:
-python "C:\Users\Gabriel\.gemini\config\skills\anydoc\scripts\anydoc_cli.py" "planilha_efluentes.xlsx" -o "saida.md"
+python "$HOME/.gemini/config/skills/anydoc/scripts/anydoc_cli.py" "planilha_efluentes.xlsx" -o "saida.md"
 
 # Converter todos os documentos de uma pasta de processo:
-python "C:\Users\Gabriel\.gemini\config\skills\anydoc\scripts\anydoc_cli.py" "entradas_reais/processo_123" --batch-dir "docs_extraidos/processo_123"
+python "$HOME/.gemini/config/skills/anydoc/scripts/anydoc_cli.py" "entradas_reais/processo_123" --batch-dir "docs_extraidos/processo_123"
 ```
 
 ### 3. Via CLI Global Node / npx

@@ -22,8 +22,9 @@ Agente especialista em **design gráfico, criação e manipulação visual** do 
 ## 🏛️ Diretrizes de Operação Híbrida
 
 1. **Credenciais e Sessão Segura**:
-   - As credenciais de acesso ao Canva Pro residem no arquivo seguro local `.env` em `C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\.env`.
-   - A sessão do navegador é mantida persistente em `C:\Users\Gabriel\.gemini\antigravity\scratch\canva_user_data`, evitando logins repetitivos.
+   - Configure `CANVA_EMAIL` e `CANVA_PASSWORD` no ambiente ou copie `.env.example` para `.env` nesta pasta. O `.env` é local e ignorado pelo Git; nunca versione credenciais reais.
+   - O perfil persistente do navegador fica, por padrão, no diretório de estado do usuário fora do repositório. `CANVA_USER_DATA_DIR` pode apontar para outro diretório privado. Não compartilhe nem versione esse perfil: ele contém cookies de sessão reutilizáveis.
+   - Rotacione imediatamente qualquer senha que já tenha aparecido no histórico público do Git; removê-la do código atual não invalida cópias antigas.
 
 2. **Criação e Design no Canva Pro**:
    - Automação de login e controle de templates para mídias sociais, pranchas de apresentação, capas de relatórios técnicos e diagramas.
@@ -38,30 +39,29 @@ Agente especialista em **design gráfico, criação e manipulação visual** do 
 
 ## 🛠️ Comandos da CLI (`canva_agent.py`)
 
-Localização do script:
-`C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py`
+Execute a partir da raiz do repositório; o script está em `skills/canva-image-agent/scripts/canva_agent.py`.
 
 ### 1. Verificar Estado da Sessão no Canva Pro
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py" status
+python skills/canva-image-agent/scripts/canva_agent.py status
 ```
 
 ### 2. Autenticar no Canva Pro
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py" login
+python skills/canva-image-agent/scripts/canva_agent.py login
 ```
 
 ### 3. Inspecionar Imagem Local
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py" inspect --image "caminho/para/imagem.png"
+python skills/canva-image-agent/scripts/canva_agent.py inspect --image "caminho/para/imagem.png"
 ```
 
 ### 4. Redimensionar Imagem Local
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py" resize --image "origem.png" --output "destino.png" --width 1200
+python skills/canva-image-agent/scripts/canva_agent.py resize --image "origem.png" --output "destino.png" --width 1200
 ```
 
 ### 5. Otimizar / Comprimir Imagem
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\canva-image-agent\scripts\canva_agent.py" optimize --image "origem.png" --output "otimizada.jpg" --quality 85
+python skills/canva-image-agent/scripts/canva_agent.py optimize --image "origem.png" --output "otimizada.jpg" --quality 85
 ```

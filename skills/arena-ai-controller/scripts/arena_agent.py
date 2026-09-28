@@ -15,6 +15,7 @@ import sys
 import json
 import time
 import argparse
+import shutil
 import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
@@ -46,11 +47,50 @@ AGENT_URL = "https://arena.ai/agent"
 # Prompts curtos iguais ao texto de um botão viram clique (ex: "Approve", "Sim")
 MAX_BUTTON_PROMPT_LEN = 35
 MESSAGE_SELECTOR = '[data-message-author="assistant"], div.prose, [data-testid="agent-message"]'
+EDITOR_SELECTOR = 'div.tiptap.ProseMirror, [contenteditable="true"], textarea'
+
+# Instrui o Arena a aplicar as skills do GabeBrain na nuvem (só em conversas novas)
+SKILL_PREFIX = os.environ.get("ARENA_SKILL_PREFIX") or (
+    "[GabeBrain] Antes de executar, consulte no repositório gabrielhklaser/gabebrain-skills "
+    "(skills/<nome>/SKILL.md) as skills pertinentes à tarefa — em especial superpowers-coding-agent "
+    "para código e no-ai-slop / escrita-tecnica-humanizada para textos. Responda em português brasileiro.\n\n"
+)
+
+# DADOS DE SESSÃO (cookies/perfil Chrome) SÃO DESCARTÁVEIS.
+# - O perfil vive em ARENA_USER_DATA_DIR, FORA de pastas sincronizadas (Google Drive / vault).
+# - Pode ser apagado a qualquer momento (`purge-session`); o próximo uso refaz o login pelo .env.
+# - ARENA_PURGE_AFTER_USE=1 apaga o perfil ao fim de cada execução (mais seguro, exige login a cada uso).
+# - Pastas `.session_data` de versões antigas da skill são removidas automaticamente.
+PURGE_AFTER_USE = os.environ.get("ARENA_PURGE_AFTER_USE", "").strip() in ("1", "true", "yes")
+SYNCED_DIR_MARKERS = ("meu drive", "my drive", "google drive", "onedrive", "dropbox", "obsidian_gabebrain")
+LEGACY_SESSION_DIR = ".session_data"
+
+
+def purge_session_dir(path):
+    """Apaga um perfil de navegador/sessão. Retorna True se algo foi removido."""
+    p = Path(path)
+    if not p.exists():
+        return False
+    shutil.rmtree(p, ignore_errors=True)
+    return not p.exists()
+
+
+def purge_legacy_session_dirs():
+    for base in (SCRIPT_DIR.parent, SCRIPT_DIR):
+        legacy = base / LEGACY_SESSION_DIR
+        if purge_session_dir(legacy):
+            print(f"[*] Sessão legada removida: {legacy}")
+
+
+def warn_if_synced(path):
+    if any(m in str(path).lower() for m in SYNCED_DIR_MARKERS):
+        print(f"[!] ARENA_USER_DATA_DIR está em pasta sincronizada ({path}). Cookies de login vão para a nuvem — mova para fora.")
 
 
 class ArenaController:
     def __init__(self, user_data_dir=None, headless=True):
         self.user_data_dir = user_data_dir or DEFAULT_USER_DATA_DIR
+        warn_if_synced(self.user_data_dir)
         os.makedirs(self.user_data_dir, exist_ok=True)
         self.headless = headless
         self.playwright = None
@@ -74,6 +114,8 @@ class ArenaController:
             await self.context.close()
         if self.playwright:
             await self.playwright.stop()
+        if PURGE_AFTER_USE and purge_session_dir(self.user_data_dir):
+            print("[*] Perfil de sessão apagado após uso (ARENA_PURGE_AFTER_USE).")
 
     async def ensure_logged_in(self):
         """Verifies authentication and performs login if necessary.
@@ -238,10 +280,29 @@ class ArenaController:
         return {
             "url": url,
             "connected": "Select a repository" not in body_text,
-            "elements": elements[:10]
+            "elements": elements[:10],
+            "selectors": await self.check_selectors(),
         }
 
-    async def send_prompt(self, prompt, repo=None, branch=None, timeout_seconds=180, conversation_url=None):
+    async def check_selectors(self):
+        """Health check dos seletores da UI do Arena: detecta quando o site mudou e o script ficou cego."""
+        checks = {
+            "editor": EDITOR_SELECTOR,
+            "repo_selector": 'button:has-text("Select a repository"), button:has-text("/")',
+            "add_connections": 'button[aria-label="Add files and connections"]',
+            "messages": MESSAGE_SELECTOR,
+        }
+        counts = {name: await self.page.locator(sel).count() for name, sel in checks.items()}
+        # Obrigatórios: editor sempre; mensagens só dentro de uma conversa. Os demais variam com o estado do GitHub.
+        in_conversation = "/agent/" in self.page.url and not self.page.url.rstrip("/").endswith("/agent")
+        required = ["editor"] + (["messages"] if in_conversation else [])
+        broken = [n for n in required if counts[n] == 0]
+        if counts["repo_selector"] == 0 and counts["add_connections"] == 0:
+            broken.append("github_controls")
+        return {"ok": not broken, "counts": counts, "broken": broken}
+
+    async def send_prompt(self, prompt, repo=None, branch=None, timeout_seconds=180, conversation_url=None,
+                          skill_prefix=True):
         """
         Sends a prompt to the Arena AI Agent.
         Supports:
@@ -282,8 +343,10 @@ class ArenaController:
 
         # 2. Se não clicou em botão direto, insere no editor de texto e envia
         if not clicked_button:
+            if skill_prefix and not conversation_url:
+                prompt = SKILL_PREFIX + prompt
             print(f"[*] Inserting prompt: {prompt[:80]}...")
-            editor = self.page.locator('div.tiptap.ProseMirror, [contenteditable="true"], textarea')
+            editor = self.page.locator(EDITOR_SELECTOR)
             await editor.first.wait_for(state="visible", timeout=15000)
             await editor.first.click()
             await self.page.keyboard.insert_text(prompt)
@@ -379,9 +442,17 @@ class ArenaController:
             status = "timeout"
             print(f"[!] Timeout de {timeout_seconds}s: agente ainda em execução no Arena AI.")
 
+        warnings = []
+        if not await self._read_messages():
+            warnings.append(
+                "Nenhuma mensagem encontrada com MESSAGE_SELECTOR — a UI do Arena pode ter mudado. Rode `status` para diagnosticar."
+            )
+            print(f"[!] {warnings[-1]}")
+
         conversation_url = self.page.url
         return {
             "conversation_url": conversation_url,
+            "warnings": warnings,
             "response": current_text or "Prompt dispatched successfully to Arena AI Agent.",
             "status": status,
             "requires_confirmation": requires_confirmation,
@@ -421,7 +492,7 @@ class ArenaController:
         )
 
         print(f"[*] Step 3: Sending reload and push command...")
-        result = await self.send_prompt(push_instruction, repo=None, branch=None)
+        result = await self.send_prompt(push_instruction, repo=None, branch=None, skill_prefix=False)
         print("[+] Recovery prompt executed. Changes reloaded and push triggered.")
         return result
 
@@ -450,6 +521,10 @@ def main():
     send_parser.add_argument("--repo", default=None, help="Target GitHub repository")
     send_parser.add_argument("--branch", default=None, help="Target branch name")
     send_parser.add_argument("--timeout", type=int, default=180, help="Timeout in seconds")
+    send_parser.add_argument("--no-skill-prefix", action="store_true",
+                             help="Não prefixar a instrução de uso das skills GabeBrain (conversas novas)")
+
+    subparsers.add_parser("purge-session", help="Apaga o perfil de sessão (cookies); o próximo uso refaz login pelo .env")
 
     recover_parser = subparsers.add_parser("recover-push", help="Recover lost repo connection and push")
     recover_parser.add_argument("--repo", required=True, help="GitHub repository name")
@@ -457,6 +532,12 @@ def main():
     recover_parser.add_argument("--message", default=None, help="Custom push instruction")
 
     args = parser.parse_args()
+    purge_legacy_session_dirs()
+
+    if args.command == "purge-session":
+        removed = purge_session_dir(DEFAULT_USER_DATA_DIR)
+        print(json.dumps({"purged": removed, "path": DEFAULT_USER_DATA_DIR}, indent=2))
+        return
 
     async def run():
         async with ArenaController(headless=True) as controller:
@@ -491,7 +572,8 @@ def main():
                     repo=args.repo,
                     branch=args.branch,
                     timeout_seconds=args.timeout,
-                    conversation_url=args.conversation_url
+                    conversation_url=args.conversation_url,
+                    skill_prefix=not args.no_skill_prefix
                 )
                 emit_result(res)
 

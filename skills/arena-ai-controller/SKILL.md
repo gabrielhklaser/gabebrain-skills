@@ -55,9 +55,25 @@ Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\�
 
 Credenciais ficam só no `.env` da skill (`ARENA_EMAIL`, `ARENA_PASSWORD`, opcional `ARENA_USER_DATA_DIR`). Sem fallback no código.
 
+### Dados de sessão são descartáveis
+
+O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padrão `C:\Users\Gabriel\.gemini\antigravity\scratch\arena_user_data`. Ele **nunca** deve ficar dentro do vault ou do Google Drive: o script avisa se estiver.
+
+- Pode ser apagado a qualquer momento: `arena_agent.py purge-session`. O próximo uso refaz o login pelo `.env`.
+- Com `ARENA_PURGE_AFTER_USE=1` no `.env`, o perfil é apagado ao fim de cada execução. É mais seguro, mas exige login a cada uso.
+- Pastas `.session_data` de versões antigas da skill são removidas automaticamente a cada execução.
+
+### Skills GabeBrain na nuvem
+
+Em conversas **novas**, o `send` prefixa o prompt com uma instrução para o Arena consultar as skills do repo `gabebrain-skills`: `superpowers-coding-agent` para código, `no-ai-slop` e `escrita-tecnica-humanizada` para texto. Desative com `--no-skill-prefix` ou troque o texto via `ARENA_SKILL_PREFIX` no `.env`. Follow-ups e cliques de confirmação não recebem o prefixo.
+
+### Verificação dos seletores
+
+`status` retorna `selectors: {ok, counts, broken}`. Se `ok` for `false`, a UI do Arena mudou e os seletores em `arena_agent.py` (`EDITOR_SELECTOR`, `MESSAGE_SELECTOR`) precisam de ajuste. O `send` também inclui `warnings` no resultado quando não encontra nenhuma mensagem, e o Hub mostra esses avisos na nota.
+
 ### Roteamento antes de despachar
 
-Antes de enviar ao Arena, passe o prompt pelo `prompt-router-coordinator`. Se ele indicar `antigravity` (localhost, Drive, Biblioteca, QGIS) ou `claude`, não despache para o Arena.
+Antes de enviar ao Arena, passe o prompt pelo `prompt-router-coordinator` (regras em `routing_rules.json`, as mesmas que o Hub usa). Se ele indicar `antigravity` (localhost, Drive, Biblioteca, QGIS) ou `claude`, não despache para o Arena.
 
 ### Contrato de saída (`send` / `recover-push`)
 

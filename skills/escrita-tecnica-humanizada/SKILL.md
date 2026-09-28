@@ -72,5 +72,5 @@ Ao redigir seções do artigo em Computação Aplicada:
 
 Execute o linter estilístico para identificar clichês, calcular a variabilidade de frases e detectar muletas de linguagem:
 ```powershell
-python "C:\Users\Gabriel\.gemini\config\skills\escrita-tecnica-humanizada\scripts\anti_slop_audit.py" "caminho\artigo.md"
+python "$HOME/.gemini/config/skills/escrita-tecnica-humanizada/scripts/anti_slop_audit.py" "caminho\artigo.md"
 ```

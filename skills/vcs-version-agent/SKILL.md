@@ -1,10 +1,9 @@
 ---
 name: vcs-version-agent
 description: >-
-  Controlador e gerenciador de versões dos projetos GabeBrain. Garante paridade
-  bidirecional entre ambiente local e GitHub (online e offline), reconcilia commits
-  feitos na Arena.ai web (branches arena/* e bot merges), realiza snapshots automáticos
-  e verificação pré-prompt e no boot da máquina.
+  Controlador e gerenciador de versões dos projetos GabeBrain. Verifica o estado
+  local e remoto, reconcilia commits feitos na Arena.ai web (branches arena/* e
+  bot merges) e executa sincronizações somente sob comando explícito do usuário.
 allowed-tools:
   - bash
   - read
@@ -21,83 +20,95 @@ O **GabeBrain VCS Agent** é o agente autônomo responsável pelo ciclo de vida,
 
 ## 🎯 Objetivos Centrais
 
-1. **Paridade Absoluta Local <-> GitHub**:
-   - Manter a versão local idêntica à versão do GitHub e vice-versa.
-   - Puxar automaticamente atualizações remotas antes de iniciar trabalho local.
-   - Enviar commits locais para o repositório remoto assim que houver conectividade.
+1. **Inspeção Local <-> GitHub**:
+   - Exibir alterações locais, commits à frente/atrás e branches `arena/*` pendentes.
+   - O modo de verificação pode atualizar referências com `git fetch`, mas não altera a árvore de trabalho nem envia commits.
+   - Pull, merge, commit e push só ocorrem após comando explícito `sync`.
 
 2. **Resiliência Offline / Online**:
-   - **Offline**: Salva qualquer modificação em commits estruturados de snapshot local (`chore(offline-sync): ...`), garantindo que nenhum trabalho seja perdido ou sobrescrito por falha de rede.
-   - **Online**: Executa reconciliação de histórico, rebase/merge defensivo e sobe commits pendentes com segurança.
+   - **Offline**: a sincronização manual pode criar um commit local; não há snapshot automático de arquivos modificados.
+   - **Online**: a sincronização manual pode fazer rebase/pull e enviar commits já existentes.
+   - Arquivos não commitados são preservados por padrão; incluí-los requer `--commit-dirty` e um único `--repo` explícito.
 
 3. **Reconciliação com a Arena.ai Web**:
-   - O usuário frequentemente interage diretamente pelo navegador em `https://arena.ai/`, gerando commits remotos pelo bot da Arena ou em branches dedicadas (`origin/arena/<uuid>-<repo>`).
-   - O agente detecta automaticamente o surgimento dessas branches e commits no GitHub, incorporando as novidades ao ambiente local.
+   - O usuário pode interagir pelo navegador em `https://arena.ai/`, criando commits remotos em branches `origin/arena/<uuid>-<repo>`.
+   - O agente detecta essas branches e commits para revisão; auto-merge exige as duas opções locais de aprovação documentadas abaixo.
 
-4. **Automação no Boot do Sistema e Pré-Prompt**:
-   - **Boot do Windows**: Executado silenciosamente via `Startup\GabeBrain-VCS-Startup.vbs` no logon da máquina, preparando todos os repositórios antes mesmo do usuário abrir o terminal ou a IDE.
-   - **Pré-Prompt**: Verificação instantânea antes de processar tarefas ou prompts que alterem código.
+4. **Verificação no Boot e Pré-Prompt**:
+   - **Boot do Windows**: `Startup\GabeBrain-VCS-Startup.vbs` executa uma verificação, sem commit, pull, merge ou push.
+   - **Pré-prompt**: `check` informa divergências e não sincroniza automaticamente.
 
 ---
 
 ## 🛠️ Localização e Ferramentas
 
-- **Script Principal do Motor**:
-  `C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py`
-  *(cópia de trabalho em `C:\Users\Gabriel\.gemini\antigravity\scratch\vcs-agent\vcs_agent.py`)*
-- **Script de Inicialização do Windows**:
-  `C:\Users\Gabriel\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\GabeBrain-VCS-Startup.vbs`
-- **Registro de Projetos**:
-  `C:\Users\Gabriel\.gemini\config\vcs_projects.json`
-- **Ledger de Estado & Histórico**:
-  `C:\Users\Gabriel\.gemini\config\vcs_state.json`
-- **Arquivo de Log**:
-  `C:\Users\Gabriel\.gemini\antigravity\logs\vcs_sync.log`
-
----
+- **Script principal**: `skills/vcs-version-agent/scripts/vcs_agent.py` (execute da raiz deste repositório).
+- **Script de inicialização do Windows**: `skills/vcs-version-agent/scripts/GabeBrain-VCS-Startup.vbs`; sem `GABEBRAIN_SKILLS_DIR`, espera o checkout instalado em `%USERPROFILE%\.gemini\config\skills`.
+- **Configuração e estado**: `%USERPROFILE%\.gemini\config\vcs_projects.json` e `vcs_state.json` no Windows, ou `~/.gemini/config/` nos demais sistemas. `GABEBRAIN_CONFIG_DIR` permite substituir esse diretório.
+- **Logs**: `%USERPROFILE%\.gemini\antigravity\logs\vcs_sync.log` no Windows, ou `~/.gemini/antigravity/logs/` nos demais sistemas. No POSIX, diretórios e arquivos de configuração/log recebem permissões privadas.
+- URLs remotas podem conter credenciais; mantenha a configuração local protegida e prefira credenciais Git gerenciadas pelo sistema, não URLs com senha.
 
 ## 💻 Comandos CLI do Agente
 
+Execute os exemplos a partir da raiz do repositório.
+
 ### 1. Painel de Status Completo
-Exibe uma tabela com o status de cada projeto cadastrado, branch ativa, quantidade de commits adiante/atrás, alterações não commitadas e detecção da Arena.ai:
+Exibe o status dos projetos já cadastrados, branch ativa, quantidade de commits adiante/atrás e alterações não commitadas. Não descobre nem registra repositórios automaticamente:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" status
+python skills/vcs-version-agent/scripts/vcs_agent.py status
 ```
 
-### 2. Sincronização Geral (Todos os Projetos)
-Executa o ciclo completo de commit local + pull remoto + merge de branches Arena + push para o GitHub:
+### 2. Sincronização Geral (Projetos Cadastrados)
+Executa pull/rebase e push de commits já existentes nos projetos cadastrados e limpos. Projetos com arquivos não commitados são **ignorados sem alterações**; por padrão, o comando não faz `git add`, commit ou push de mudanças de trabalho:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" sync
+python skills/vcs-version-agent/scripts/vcs_agent.py sync
 ```
 
 ### 3. Sincronização de Projeto Específico
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" sync --repo licenciamentoambiental
+python skills/vcs-version-agent/scripts/vcs_agent.py sync --repo licenciamentoambiental
 ```
 
-### 4. Verificação Pré-Prompt (Rápida)
-Verifica se há novidades no GitHub ou na Arena.ai antes de iniciar prompts de código. Se houver, sincroniza imediatamente:
+### Incluir alterações locais após revisão (opt-in)
+Confira `git status` e inspecione cada arquivo. `--commit-dirty` exige `--repo` para limitar a operação a um projeto; online, o commit pode ser enviado ao GitHub:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" check --repo licenciamentoambiental
+python skills/vcs-version-agent/scripts/vcs_agent.py sync --repo licenciamentoambiental --commit-dirty
 ```
 
-### 5. Modo Forçado Offline (Garantir Commits Locais de Segurança)
+### 4. Verificação Pré-Prompt e no Boot
+`check` atualiza referências remotas com `git fetch` quando online e apenas informa divergências. Não faz commit, pull, merge ou push; o script executado no boot usa o mesmo modo de verificação:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" sync --force-offline
+python skills/vcs-version-agent/scripts/vcs_agent.py check --repo licenciamentoambiental
+```
+
+### 5. Modo Forçado Offline (sem push)
+O modo offline não envia dados. Alterações locais continuam preservadas; para criar um snapshot, use `--commit-dirty` junto de `--repo` após revisar os arquivos:
+```bash
+python skills/vcs-version-agent/scripts/vcs_agent.py sync --repo licenciamentoambiental --force-offline --commit-dirty
 ```
 
 ### 6. Escanear e Cadastrar Novos Projetos
-Escaneia automaticamente pastas do GabeBrain e adiciona repositórios Git recém-criados:
+A descoberta de repositórios é explícita; `status` e `sync` atuam apenas na lista local já cadastrada:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" scan
+python skills/vcs-version-agent/scripts/vcs_agent.py scan
 ```
 
 ### 7. Cadastrar Repositório Manualmente
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py" add "C:\Caminho\Do\Projeto" --name "meu-projeto"
+python skills/vcs-version-agent/scripts/vcs_agent.py add "/caminho/do/projeto" --name "meu-projeto"
 ```
 
----
+### Auto-merge de branches da Arena.ai
+Por padrão, branches `origin/arena/*` são apenas detectadas; não são incorporadas automaticamente. O merge permanece desativado até que o proprietário inspecione explicitamente os commits e defina **ambas** as opções no arquivo local `vcs_projects.json`:
+
+```json
+{
+  "auto_merge_arena": true,
+  "arena_merge_reviewed": true
+}
+```
+
+Configurações antigas que tenham apenas `auto_merge_arena: true` continuam sem merge automático.
 
 ## 🔄 Protocolo de Resolução de Conflitos e Segurança
 

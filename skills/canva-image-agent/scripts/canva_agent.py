@@ -19,28 +19,41 @@ import asyncio
 from pathlib import Path
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
-# Load environment configuration if present
+# Load secrets only from the ignored, per-skill .env file or the process environment.
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
-ENV_PATH = SKILL_DIR / (chr(46) + "env")
-CONFIG_ENV_PATH = Path(r"C:\Users\Gabriel\.gemini\config\skills\canva-image-agent") / (chr(46) + "env")
+ENV_PATH = SKILL_DIR / ".env"
 
-for p in [ENV_PATH, CONFIG_ENV_PATH]:
-    if p.exists():
-        with open(p, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    os.environ.setdefault(k.strip(), v.strip())
+if ENV_PATH.exists():
+    with ENV_PATH.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, value = line.split("=", 1)
+                os.environ.setdefault(key.strip(), value.strip())
 
-CANVA_EMAIL = os.environ.get("CANVA_EMAIL", "anacondadopaul@gmail.com")
-CANVA_PASSWORD = os.environ.get("CANVA_PASSWORD", "trident5150")
+
+def _default_user_data_dir() -> Path:
+    """Keep persistent browser cookies outside the repository by default."""
+    if os.name == "nt":
+        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
+    else:
+        base = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local" / "state")
+    return base.expanduser() / "gabebrain" / "canva-image-agent"
+
+
+def _ensure_private_directory(path: str | Path) -> Path:
+    directory = Path(path).expanduser()
+    directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if os.name != "nt":
+        directory.chmod(0o700)
+    return directory
+
+
+CANVA_EMAIL = os.environ.get("CANVA_EMAIL", "").strip()
+CANVA_PASSWORD = os.environ.get("CANVA_PASSWORD", "")
 CANVA_HEADLESS = os.environ.get("CANVA_HEADLESS", "false").lower() in ("true", "1", "yes")
-CANVA_USER_DATA_DIR = os.environ.get(
-    "CANVA_USER_DATA_DIR",
-    r"C:\Users\Gabriel\.gemini\antigravity\scratch\canva_user_data"
-)
+CANVA_USER_DATA_DIR = os.environ.get("CANVA_USER_DATA_DIR") or str(_default_user_data_dir())
 
 CANVA_BASE_URL = "https://www.canva.com"
 CANVA_LOGIN_URL = "https://www.canva.com/login"
@@ -97,8 +110,7 @@ class CanvaController:
     """Controlador Playwright para automação do Canva Pro no navegador."""
 
     def __init__(self, user_data_dir=None, headless=None):
-        self.user_data_dir = user_data_dir or CANVA_USER_DATA_DIR
-        os.makedirs(self.user_data_dir, exist_ok=True)
+        self.user_data_dir = str(_ensure_private_directory(user_data_dir or CANVA_USER_DATA_DIR))
         self.headless = CANVA_HEADLESS if headless is None else headless
         self.playwright = None
         self.context = None
@@ -153,7 +165,9 @@ class CanvaController:
             print(f"[+] Sessão Canva Pro ativa e autenticada.")
             return True
 
-        print(f"[*] Iniciando fluxo de login para {CANVA_EMAIL}...")
+        if not CANVA_EMAIL or not CANVA_PASSWORD:
+            raise RuntimeError("Configure CANVA_EMAIL e CANVA_PASSWORD no ambiente ou no .env local ignorado pelo Git.")
+        print("[*] Iniciando fluxo de login no Canva...")
         await self.page.goto(CANVA_LOGIN_URL, wait_until="domcontentloaded", timeout=30000)
         await self.page.wait_for_timeout(2000)
 
@@ -253,10 +267,10 @@ def main():
         async with CanvaController() as controller:
             if args.command == "login":
                 success = await controller.ensure_login()
-                print(json.dumps({"success": success, "email": CANVA_EMAIL}, indent=2))
+                print(json.dumps({"success": success, "email_configured": bool(CANVA_EMAIL)}, indent=2))
             elif args.command == "status":
                 logged = await controller.is_logged_in()
-                print(json.dumps({"logged_in": logged, "email": CANVA_EMAIL, "url": controller.page.url}, indent=2))
+                print(json.dumps({"logged_in": logged, "email_configured": bool(CANVA_EMAIL), "url": controller.page.url}, indent=2))
             elif args.command == "dashboard":
                 dash = await controller.open_dashboard()
                 print(json.dumps(dash, indent=2))

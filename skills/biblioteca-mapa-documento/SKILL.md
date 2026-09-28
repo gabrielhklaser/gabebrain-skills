@@ -25,7 +25,7 @@ Livros técnicos, tratados geológicos e manuais de 500 a 1000 páginas não dev
 Execute o script de estrutura para obter capítulos, intervalos de páginas e contagem de tokens sem gastar leitura com a LLM:
 
 ```powershell
-$SCRIPTS = "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Geologia\Biblioteca Geologica\Scripts"
+$SCRIPTS = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
 python "$SCRIPTS\17_estrutura_documento.py" "<parte do nome ou cota>" --max 60
 ```
 

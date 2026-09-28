@@ -101,7 +101,7 @@ Ao revisar ou gerar textos para a publicação da dissertação de mestrado (PPG
 Você pode rodar a auditoria em qualquer arquivo Markdown (`.md`), LaTeX (`.tex`) ou texto puro (`.txt`):
 
 ```powershell
-python "C:\Users\Gabriel\.gemini\config\skills\no-ai-slop\scripts\no_ai_slop_audit.py" "caminho\meu_artigo.md"
+python "$HOME/.gemini/config/skills/no-ai-slop/scripts/no_ai_slop_audit.py" "caminho\meu_artigo.md"
 ```
 
 O linter varre os 20+ padrões, analisa o desvio padrão de comprimento de frases (métrica de *burstiness* humana) e sinaliza passagens com características sintéticas.

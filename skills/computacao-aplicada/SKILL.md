@@ -18,7 +18,7 @@ Esta skill conecta os agentes ao acervo de literatura científica do **Mestrado 
 
 ## 📍 Estrutura e Localização no GabeBrain
 
-- **Raiz do Acervo**: `C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Computacao Aplicada\`
+- **Raiz do Acervo**: `$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Computacao Aplicada/`
 - **Índice Geral (MOC)**: `[[00 - Mestrado em Computacao Aplicada (indice)]]`
 - **Texto Estruturado Docling**: `.../Computacao Aplicada/Docling/` (arquivos `.md` completos com tabelas e fórmulas)
 - **Fichas Catalográficas**: `.../Computacao Aplicada/Fichas/` (`Ficha - <Nome>.md` com metadados, autores e resumo)
@@ -32,7 +32,7 @@ Esta skill conecta os agentes ao acervo de literatura científica do **Mestrado 
 Para consultar citações exatas, autores e trechos sem carregar arquivos gigantes na janela de contexto:
 
 ```powershell
-$CLI = "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Computacao Aplicada\Scripts\busca_computacao_aplicada.py"
+$CLI = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Computacao Aplicada/Scripts/busca_computacao_aplicada.py"
 
 # 1. Buscar termo no acervo (mostra documento, linha e trecho contextualizado):
 python $CLI buscar "termo de busca" --limite 5
@@ -144,7 +144,7 @@ python $CLI listar --sessao "IHC"
 A ferramenta **anydoc** (`firecrawl-anydoc`) está integrada para apoiar a criação e extração de diagramas da dissertação e a montagem dos slides da apresentação da banca examinadora:
 
 ```powershell
-$CLI_DIAG = "C:\Users\Gabriel\Meu Drive\Obsidian_GabeBrain\GabeBrain\10-Trabalho\Computacao Aplicada\Scripts\dissertacao_diagramas.py"
+$CLI_DIAG = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Computacao Aplicada/Scripts/dissertacao_diagramas.py"
 
 # 1. Extrair todas as figuras e diagramas embutidos da dissertação (.docx, .pptx, .pdf):
 python $CLI_DIAG extrair --arquivo "caminho\dissertacao.docx" --saida "apresentacao_defesa\figuras"

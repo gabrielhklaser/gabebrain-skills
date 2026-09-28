@@ -35,7 +35,7 @@ This skill enables Antigravity to automate and control the **Arena AI** platform
 
 ## Capabilities
 
-1. **Persistent Authentication**: Automatically signs in using user credentials and keeps session cookies active.
+1. **Persistent Authentication**: Reuses an authenticated session and signs in only when needed and configured.
 2. **Prompt Relaying**: Takes user prompts from chat and sends them to Arena AI Agent Mode, streaming and returning the agent's responses.
 3. **GitHub Repository & Branch Management**: Automatically enables the GitHub toggle, lists repositories, and selects target repositories and branches.
 4. **Automated Failover & Recovery**: If Arena AI loses its connection to the working repository, this skill:
@@ -53,11 +53,13 @@ The automation engine (fonte canônica) is located at:
 
 Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\…`, `GabeBrain\.agents\skills\…` e o repo `gabebrain-skills`. As pastas `scratch\arena-controller\` e `scratch\agentearena\` são versões antigas — não usar.
 
-Credenciais ficam só no `.env` da skill (`ARENA_EMAIL`, `ARENA_PASSWORD`, opcional `ARENA_USER_DATA_DIR`). Sem fallback no código.
+- **Credenciais**: Ficam só no `.env` da skill (`ARENA_EMAIL`, `ARENA_PASSWORD`, opcional `ARENA_USER_DATA_DIR`) ou variáveis de ambiente. Sem fallback ou credenciais embutidas no código.
+- **Privacidade & Logs**: Logs de login/status reportam apenas se o e-mail está configurado (`email_configured: true`), nunca o e-mail em texto puro. O relay de prompt registra contagem de caracteres sem expor o conteúdo sensível.
+- **Headless**: `ARENA_HEADLESS` tem padrão `true`; configure como `false` quando for necessário acompanhar a janela interativa.
 
 ### Dados de sessão são descartáveis
 
-O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padrão `C:\Users\Gabriel\.gemini\antigravity\scratch\arena_user_data`. Ele **nunca** deve ficar dentro do vault ou do Google Drive: o script avisa se estiver.
+O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padrão `C:\Users\Gabriel\.gemini\antigravity\scratch\arena_user_data` ou diretório de estado seguro do usuário. Ele **nunca** deve ficar dentro do vault ou do Google Drive: o script avisa se estiver.
 
 - Pode ser apagado a qualquer momento: `arena_agent.py purge-session`. O próximo uso refaz o login pelo `.env`.
 - Com `ARENA_PURGE_AFTER_USE=1` no `.env`, o perfil é apagado ao fim de cada execução. É mais seguro, mas exige login a cada uso.
@@ -91,19 +93,21 @@ Um prompt curto (≤35 caracteres) que coincide exatamente com o texto de um bot
 
 ### CLI Commands
 
+Run commands from the repository root.
+
 #### 1. Verify Login & Session Status
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" login
+python skills/arena-ai-controller/scripts/arena_agent.py login
 ```
 
 #### 2. List Connected GitHub Repositories
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" list-repos
+python skills/arena-ai-controller/scripts/arena_agent.py list-repos
 ```
 
 #### 3. Send Prompt to Arena AI Agent
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" send --prompt "YOUR PROMPT HERE" --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
+python skills/arena-ai-controller/scripts/arena_agent.py send --prompt "YOUR PROMPT HERE" --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
 ```
 
 #### 3b. Status / Connect
@@ -115,7 +119,7 @@ python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena
 #### 4. Automatic Reconnection & Push Recovery
 When Arena AI drops the repository connection or fails to sync:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" recover-push --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
+python skills/arena-ai-controller/scripts/arena_agent.py recover-push --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
 ```
 
 This command will:

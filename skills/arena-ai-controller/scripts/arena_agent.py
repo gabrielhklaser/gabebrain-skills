@@ -20,11 +20,10 @@ import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
-# Load environment configuration if present
+# Load secrets only from the ignored, per-skill .env file or process environment.
 SCRIPT_DIR = Path(__file__).resolve().parent
-_cfg_file = SCRIPT_DIR.parent / (chr(46) + "env")
-if not _cfg_file.exists():
-    _cfg_file = SCRIPT_DIR / (chr(46) + "env")
+SKILL_DIR = SCRIPT_DIR.parent
+_cfg_file = SKILL_DIR / ".env"
 
 if _cfg_file.exists():
     with open(_cfg_file, "r", encoding="utf-8") as _f:
@@ -34,12 +33,27 @@ if _cfg_file.exists():
                 _k, _v = _line.split("=", 1)
                 os.environ.setdefault(_k.strip(), _v.strip())
 
-ARENA_EMAIL = os.environ.get("ARENA_EMAIL", "")
+def _default_user_data_dir() -> Path:
+    """Keep persistent browser cookies outside the repository by default."""
+    if os.name == "nt":
+        base = Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local")
+    else:
+        base = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local" / "state")
+    return base.expanduser() / "gabebrain" / "arena-ai-controller"
+
+
+def _ensure_private_directory(path: str | Path) -> Path:
+    directory = Path(path).expanduser()
+    directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if os.name != "nt":
+        directory.chmod(0o700)
+    return directory
+
+
+ARENA_EMAIL = os.environ.get("ARENA_EMAIL", "").strip()
 ARENA_PASSWORD = os.environ.get("ARENA_PASSWORD", "")
-DEFAULT_USER_DATA_DIR = os.environ.get(
-    "ARENA_USER_DATA_DIR",
-    r"C:\Users\Gabriel\.gemini\antigravity\scratch\arena_user_data"
-)
+ARENA_HEADLESS = os.environ.get("ARENA_HEADLESS", "true").lower() in ("true", "1", "yes")
+DEFAULT_USER_DATA_DIR = os.environ.get("ARENA_USER_DATA_DIR") or str(_default_user_data_dir())
 
 BASE_URL = "https://arena.ai"
 AGENT_URL = "https://arena.ai/agent"
@@ -88,11 +102,11 @@ def warn_if_synced(path):
 
 
 class ArenaController:
-    def __init__(self, user_data_dir=None, headless=True):
-        self.user_data_dir = user_data_dir or DEFAULT_USER_DATA_DIR
+    def __init__(self, user_data_dir=None, headless=None):
+        self.user_data_dir = str(_ensure_private_directory(user_data_dir or DEFAULT_USER_DATA_DIR))
         warn_if_synced(self.user_data_dir)
         os.makedirs(self.user_data_dir, exist_ok=True)
-        self.headless = headless
+        self.headless = ARENA_HEADLESS if headless is None else headless
         self.playwright = None
         self.context = None
         self.page = None
@@ -122,6 +136,7 @@ class ArenaController:
         Cached per run: repeated calls must not navigate away (would drop repo/branch selection)."""
         if self._session_ok:
             return True
+
         print(f"[*] Navigating to {BASE_URL}...")
         await self.page.goto(BASE_URL, wait_until="domcontentloaded", timeout=30000)
         await self.page.wait_for_timeout(2000)
@@ -129,7 +144,7 @@ class ArenaController:
         if ARENA_EMAIL:
             user_btn = self.page.locator(f'button:has-text("{ARENA_EMAIL}")')
             if await user_btn.count() > 0 and await user_btn.first.is_visible():
-                print(f"[+] Already logged in as {ARENA_EMAIL}")
+                print("[+] An authenticated Arena session is active.")
                 self._session_ok = True
                 return True
 
@@ -139,37 +154,38 @@ class ArenaController:
             await self.page.wait_for_timeout(500)
 
         login_btn = self.page.locator('button:has-text("Log In")')
-        if await login_btn.count() > 0 and await login_btn.first.is_visible():
-            if not ARENA_EMAIL or not ARENA_PASSWORD:
-                raise RuntimeError("Sessão expirada e ARENA_EMAIL/ARENA_PASSWORD ausentes no .env da skill.")
-            print(f"[*] Performing login with {ARENA_EMAIL}...")
-            await login_btn.first.click()
-            await self.page.wait_for_timeout(1000)
-
-            email_input = self.page.locator('input[type="email"]')
-            await email_input.fill(ARENA_EMAIL)
-            await self.page.wait_for_timeout(500)
-            await self.page.click('button:has-text("Continue with email")')
-
-            await self.page.wait_for_selector('input[type="password"]', timeout=15000)
-            await self.page.fill('input[type="password"]', ARENA_PASSWORD)
-            await self.page.wait_for_timeout(500)
-
-            modal_login = self.page.locator('div[role="dialog"] button:has-text("Log In"), button[type="submit"]:has-text("Log In")')
-            if await modal_login.count() > 0:
-                await modal_login.first.click()
-            else:
-                await self.page.click('button:has-text("Log In")')
-
-            await self.page.wait_for_timeout(5000)
-            if await self.page.locator('input[type="password"]:visible').count() > 0:
-                raise RuntimeError("Login falhou (formulário de senha ainda visível). Verifique as credenciais no .env.")
-            print("[+] Login successfully completed.")
+        if await login_btn.count() == 0 or not await login_btn.first.is_visible():
             self._session_ok = True
             return True
 
-        # Sem botão "Log In" visível: sessão persistente já autenticada
+        if not ARENA_EMAIL or not ARENA_PASSWORD:
+            raise ValueError("Configure ARENA_EMAIL e ARENA_PASSWORD no ambiente ou no .env local ignorado pelo Git.")
+
+        print("[*] Performing Arena sign-in...")
+        await login_btn.first.click()
+        await self.page.wait_for_timeout(1000)
+
+        email_input = self.page.locator('input[type="email"]')
+        await email_input.fill(ARENA_EMAIL)
+        await self.page.wait_for_timeout(500)
+        await self.page.click('button:has-text("Continue with email")')
+
+        await self.page.wait_for_selector('input[type="password"]', timeout=15000)
+        await self.page.fill('input[type="password"]', ARENA_PASSWORD)
+        await self.page.wait_for_timeout(500)
+
+        modal_login = self.page.locator('div[role="dialog"] button:has-text("Log In"), button[type="submit"]:has-text("Log In")')
+        if await modal_login.count() > 0:
+            await modal_login.first.click()
+        else:
+            await self.page.click('button:has-text("Log In")')
+
+        await self.page.wait_for_timeout(5000)
+        if await self.page.locator('input[type="password"]:visible').count() > 0:
+            raise RuntimeError("Login falhou (formulário de senha ainda visível). Verifique as credenciais no .env.")
+        print("[+] Arena login flow completed.")
         self._session_ok = True
+        return True
         return True
 
     async def open_agent_mode(self):
@@ -345,7 +361,7 @@ class ArenaController:
         if not clicked_button:
             if skill_prefix and not conversation_url:
                 prompt = SKILL_PREFIX + prompt
-            print(f"[*] Inserting prompt: {prompt[:80]}...")
+            print(f"[*] Inserting prompt ({len(prompt)} characters)...")
             editor = self.page.locator(EDITOR_SELECTOR)
             await editor.first.wait_for(state="visible", timeout=15000)
             await editor.first.click()
@@ -540,10 +556,10 @@ def main():
         return
 
     async def run():
-        async with ArenaController(headless=True) as controller:
+        async with ArenaController() as controller:
             if args.command == "login":
                 logged_in = await controller.ensure_logged_in()
-                print(json.dumps({"logged_in": logged_in, "email": ARENA_EMAIL}, indent=2))
+                print(json.dumps({"logged_in": logged_in, "email_configured": bool(ARENA_EMAIL)}, indent=2))
 
             elif args.command == "list-repos":
                 repos = await controller.list_repositories()

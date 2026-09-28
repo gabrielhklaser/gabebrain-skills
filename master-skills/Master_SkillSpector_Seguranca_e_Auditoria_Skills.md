@@ -29,7 +29,7 @@ Especialista em segurança de aplicações e agentes autônomos (AppSec for AI A
 ### 1. Auditoria Pré-Instalação / Pré-Deploy
 Antes de homologar qualquer nova skill no repositório `gabebrain-skills` ou no diretório local `.gemini/config/skills`:
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\skillspector-auditor\scripts\run_audit.py" "<CAMINHO_DA_SKILL>" terminal
+python "$HOME/.gemini/config/skills/skillspector-auditor/scripts/run_audit.py" "<CAMINHO_DA_SKILL>" terminal
 ```
 
 ### 2. Geração de Relatórios e Auditoria Contínua

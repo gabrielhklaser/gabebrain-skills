@@ -1,16 +1,19 @@
-# PowerShell Startup Sync Script para o GabeBrain
-# Executado no boot da maquina local para sincronizar projetos com GitHub e Arena.ai
+# PowerShell Startup Status Check para o GabeBrain
+# Executado no logon para verificar divergências sem commitar, fazer pull ou push.
 
 $ErrorActionPreference = "SilentlyContinue"
-$pythonPath = (Get-Command python -ErrorAction SilentlyContinue).Source
-if (-not $pythonPath) {
-    $pythonPath = "C:\Users\Gabriel\AppData\Local\Programs\Python\Python314\python.exe"
+$pythonCommand = Get-Command python -ErrorAction SilentlyContinue
+if (-not $pythonCommand) {
+    Write-Error "Python nao foi encontrado no PATH."
+    exit 1
 }
+$pythonPath = $pythonCommand.Source
+$agentScript = Join-Path $PSScriptRoot "vcs_agent.py"
+$logDir = Join-Path $HOME ".gemini\antigravity\logs"
+$logFile = Join-Path $logDir "vcs_sync.log"
+New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 
-$agentScript = "C:\Users\Gabriel\.gemini\config\skills\vcs-version-agent\scripts\vcs_agent.py"
-$logFile = "C:\Users\Gabriel\.gemini\antigravity\logs\vcs_sync.log"
-
-# Aguarda até 15 segundos para estabilização de rede (WiFi / Ethernet)
+# Aguarda ate 15 segundos para estabilizacao de rede (WiFi / Ethernet)
 $retries = 5
 $connected = $false
 while ($retries -gt 0 -and -not $connected) {
@@ -28,5 +31,5 @@ while ($retries -gt 0 -and -not $connected) {
     }
 }
 
-# Executa o GabeBrain VCS Agent em modo startup
+# Executa a verificação de status; nenhuma alteração de trabalho é sincronizada.
 & $pythonPath $agentScript startup 2>&1 | Out-File -FilePath $logFile -Append -Encoding utf8

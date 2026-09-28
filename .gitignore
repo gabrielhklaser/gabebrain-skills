@@ -1,4 +1,4 @@
-﻿# Environment & Secrets
+# Environment & Secrets
 .env
 *.env
 .env.*
@@ -6,6 +6,29 @@
 .session_data/
 credentials.json
 token.json
+*.pem
+*.p12
+*.pfx
+*.p8
+*.ppk
+*.key
+*.keystore
+*.jks
+**/id_rsa
+**/id_dsa
+**/id_ecdsa
+**/id_ed25519
+
+# Persistent browser profiles contain reusable cookies/tokens
+**/canva_user_data/
+**/arena_user_data/
+**/canva-image-agent-user-data/
+**/arena-ai-controller-user-data/
+**/user_data/
+**/user-data/
+**/browser_data/
+**/browser-profile/
+**/playwright/.auth/
 
 # Python
 __pycache__/
@@ -17,9 +40,9 @@ env/
 venv/
 .venv/
 
-# Runtime locks & logs
-*.log
+# Runtime locks, logs, and state
 *.lock
+*.log
 vcs_state.json
 
 # OS & IDE

@@ -48,16 +48,16 @@ O QGIS MCP conecta Antigravity ao QGIS 3.40+ em execução via socket `localhost
 
 ### Pré-requisito
 ```
-1. Abrir QGIS 3.40+ em C:\Program Files\QGIS 3.40.7\bin\qgis-ltr-bin.exe
+1. Abrir QGIS 3.40+ em C:/Program Files/QGIS 3.40.7/bin/qgis-ltr-bin.exe
 2. Plugins → QGIS MCP → Start Server  (porta 9876)
 ```
 
 ### Iniciar o MCP Server
 ```bash
-python "C:\Users\Gabriel\.gemini\antigravity\scratch\qgis_mcp\src\qgis_mcp\qgis_mcp_server.py"
+python "$HOME/.gemini/antigravity/scratch/qgis_mcp/src/qgis_mcp/qgis_mcp_server.py"
 ```
 
-### Ferramentas MCP disponíveis (lazy tools em C:\Users\Gabriel\.gemini\antigravity\mcp\qgis-mcp\)
+### Ferramentas MCP disponíveis (lazy tools em $HOME/.gemini/antigravity/mcp/qgis-mcp/)
 
 | Ferramenta | Descrição |
 |---|---|
@@ -76,15 +76,16 @@ python "C:\Users\Gabriel\.gemini\antigravity\scratch\qgis_mcp\src\qgis_mcp\qgis_
 ### Uso via QgisMCPClient (Python direto)
 ```python
 import sys
-sys.path.insert(0, r"C:\Users\Gabriel\.gemini\antigravity\scratch\qgis_mcp\src\qgis_mcp")
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / ".gemini" / "antigravity" / "scratch" / "qgis_mcp" / "src" / "qgis_mcp"))
 from qgis_socket_client import QgisMCPClient
 
 with QgisMCPClient() as qgis:
-    qgis.add_vector_layer(r"C:\...\outorgasys\data\vetoriais\geologia.gpkg", name="Geologia")
-    qgis.add_vector_layer(r"C:\...\outorgasys\data\vetoriais\hidrogeologia.gpkg", name="Hidrogeologia")
+    qgis.add_vector_layer(r"C:/.../outorgasys/data/vetoriais/geologia.gpkg", name="Geologia")
+    qgis.add_vector_layer(r"C:/.../outorgasys/data/vetoriais/hidrogeologia.gpkg", name="Hidrogeologia")
     qgis.zoom_to_layer(qgis.get_layers()[0]["id"])
     # Renderiza prancha A4 a 300 DPI
-    qgis.render_map(r"C:\tmp\prancha_qgis.png", width=2480, height=3508)
+    qgis.render_map(r"C:/tmp/prancha_qgis.png", width=2480, height=3508)
     # Tematização PyQGIS
     qgis.execute_code("""
 from qgis.core import QgsCategorizedSymbolRenderer, QgsRendererCategory, QgsSymbol
@@ -174,7 +175,7 @@ Antigravity:
 
 ### Como delegar tarefa de mapas ao Arena AI
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" send \
+python "$HOME/.gemini/config/skills/arena-ai-controller/scripts/arena_agent.py" send \
   --repo "gabrielhklaser/outorgasys" \
   --branch "main" \
   --prompt "Revise o arquivo outorgasys/gis/multicamadas_map.py e adicione suporte a leafmap como alternativa ao Folium. Adicione também um método para baixar e exibir imagens Sentinel-2 via geoai-py na área do poço. Commit as mudanças."
@@ -194,7 +195,7 @@ python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena
 
 ### Recover/Push quando Arena perde conexão
 ```bash
-python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" \
+python "$HOME/.gemini/config/skills/arena-ai-controller/scripts/arena_agent.py" \
   recover-push --repo "gabrielhklaser/outorgasys" --branch "main"
 ```
 
@@ -209,7 +210,7 @@ skills/gis-multicamadas/
     ├── multicamadas_map.py           # Motor Folium multicamadas
     └── layer_manipulation.py         # Utilidades vetoriais (reparo, reprojeção, clip)
 
-C:\Users\Gabriel\.gemini\antigravity\mcp\qgis-mcp\
+$HOME/.gemini/antigravity/mcp/qgis-mcp/
 ├── instructions.md                   # Pré-requisitos e comandos MCP
 ├── ping.json                         # Ferramentas MCP (schemas)
 ├── get_qgis_info.json

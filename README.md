@@ -75,6 +75,18 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 11. **`skillspector-auditor`**: Agente e scanner de segurança para skills de agentes de IA baseado no NVIDIA SkillSpector.
 12. **`ecc-harness-optimizer`**: Sistema operacional de harness e otimizador de contexto/tokens de agentes (Everything Claude Code - ECC).
 13. **`superpowers-coding-agent`**: Agente de desenvolvimento disciplinado de código a partir de prompts (obra/superpowers).
+14. **`desktop-screenshot`**: Captura de telas de aplicações desktop e publicação em PRs do GitHub com URLs imutáveis e commits de snapshots (sem hosts de imagem terceiros).
+15. **`sprout-cli`**: Interface CLI multi-agente para mensageria Nostr (canais/DMs), workflows, feed de eventos, proteções de branch e memória persistente chave-valor (`mem`).
+16. **`github-research`**: Pesquisa especializada de histórico de issues, PRs mesclados e código via GitHub CLI (`gh`).
+
+---
+
+## 👥 Personas & Agentes Especializados (`agents/`)
+
+- **`meadow-core/`**: Pack multi-agente derivado do ecossistema Buzz:
+  - **`@Skip`** (`agents/skip.persona.md`): Orquestrador central que coordena a equipe, delega trabalho e sintetiza resultados.
+  - **`@Bana`** (`agents/bana.persona.md`): Revisor arquitetural com foco no big picture, simplicidade e integridade.
+  - **`@Lev`** (`agents/lev.persona.md`): Especialista em segurança, auditoria de código, auth, injeção e superfície de ataque.
 
 ---
 

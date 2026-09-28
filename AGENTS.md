@@ -55,6 +55,15 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 
 ---
 
+## 🛠️ Habilidades Executáveis Adicionais & Personas (Origem: Buzz / Meadow Core)
+
+- **`skills/desktop-screenshot`**: Captura de interface desktop e publicação em PRs do GitHub com URLs imutáveis de commits (sem hosts terceiros).
+- **`skills/sprout-cli`**: Interface CLI para mensageria descentralizada Nostr (canais/DMs), workflows, feeds de eventos e memória persistente (`mem`).
+- **`skills/github-research`**: Busca cirúrgica de PRs mesclados, issues fechadas e decisões de maintainers via GitHub CLI (`gh`).
+- **`agents/meadow-core/`**: Personas especializadas de cooperação multi-agente (`@Skip`, `@Bana`, `@Lev`).
+
+---
+
 ## 🛡️ Regras de Ouro de Execução
 
 1. **Paridade Git Rigorosa:** Qualquer alteração produzida pelo Arena AI deve ser commitada de forma atômica e enviada via git push para sua respectiva branch (ou main), permitindo ao Antigravity e ao ambiente local sincronizarem de imediato.

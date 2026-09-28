@@ -6,10 +6,12 @@ description: >-
   Folium com LayerControl (ligar/desligar camadas), alternância de mapa base (Satélite Esri, OSM,
   CartoDB, Topografia), régua métrica de medição de distâncias, inspeção de atributos e pranchas
   cartográficas. Integra QGIS MCP (renderização profissional via PyQGIS), geoai-py (imagens de
-  satélite, SAM segmentation, leafmap), e delegação de tarefas pesadas ao Arena AI.
+  satélite, SAM segmentation, leafmap), e delegação de tarefas pesadas ao Arena AI. Georreferencia
+  mapas em PDF vetorial (zoneamento, plano diretor) sobre o limite municipal do IBGE, com validação
+  de resíduos, e corrige mapa em branco no streamlit-folium (folium >= 0.20).
 ---
 
-# GIS Multicamadas (Layer Master) — v2.0
+# GIS Multicamadas (Layer Master) — v2.1
 
 Esta skill capacita os agentes de geoprocessamento e inteligência espacial a construir mapas
 temáticos com **camadas distintas independentes**, integração com **QGIS via MCP**, análise de
@@ -254,3 +256,53 @@ html_path = gerar_mapa_multicamadas(
 - `reparar_geometrias(gdf)`: `make_valid` + `buffer(0)` para geometrias corrompidas
 - `reprojetar_seguro(gdf, crs_alvo)`: reprojeção com fallback para EPSG:4326
 - `recortar_por_raio(gdf, lat, lon, raio_m)`: clip espacial por buffer centrado no poço
+
+---
+
+## 8. Georreferenciar mapa em PDF vetorial sobre limite oficial (v2.1)
+
+Mapas de lei (zoneamento, plano diretor, macrozonas) costumam vir em PDF
+**vetorial** exportado de CAD. Não georreferencie a imagem: extraia os vetores.
+Implementação de referência: `ferramentas/georreferenciar_zoneamento.py` do
+projeto `licenciamentoambiental` (pymupdf, shapely, pyproj, geopandas, scipy,
+rasterio).
+
+1. **Limite de referência** — Malha Municipal do IBGE (shapefile por UF no
+   geoftp: `malhas_municipais/municipio_AAAA/UFs/<UF>/<UF>_Municipios_AAAA.zip`,
+   EPSG:4674). A API `servicodados.ibge.gov.br/api/v3/malhas` devolve polígono
+   generalizado (~46 vértices) — insuficiente para ajuste.
+2. **Diagnóstico do PDF** — `page.get_drawings()` agrupado por (tipo, cor de
+   preenchimento, cor/espessura do traço). Cor → classe pela LEGENDA (amostras
+   em x fixo + texto à direita via `get_text("dict")`).
+3. **Vetorização respeitando a ordem de pintura** — cada preenchimento vira
+   polígono (subcaminhos separados por descontinuidade; regra par-ímpar com
+   `symmetric_difference`) e é RECORTADO pelos que vêm depois (`STRtree` +
+   `difference`). Hachuras (segmentos soltos inclinados) → `buffer` + união =
+   polígono de sobreposição.
+4. **Ajuste PDF → UTM** — contorno = união das classes (`buffer(3).buffer(-3)`).
+   Transformação de **similaridade** (escala, rotação, translação; y do PDF
+   invertido) por **ICP robusto**: pares nos dois sentidos, corte em
+   3×mediana, `least_squares`. Se o afim sair com cisalhamento ≈ 0, prefira
+   a similaridade (menos parâmetros).
+5. **Validação obrigatória** — resíduo nos trechos concordantes (mediana/p90),
+   IoU com o limite, % do contorno concordante e uma camada INDEPENDENTE
+   (ex.: arroios da prefeitura contra a hidrografia do mapa) + sobreposição
+   visual no OSM. Referência obtida em Campo Bom: mediana 17,6 m, p90 42 m.
+   Divergências limite IBGE × mapa municipal são reais (divisas): reporte a
+   área de cada uma e trate pontos nelas como "fora da área mapeada".
+6. **Saídas** — GeoJSON das classes (EPSG:4674, simplificado ~1 pt), limite
+   IBGE, GeoTIFF rotacionado (`Affine(a/k, b/k, c', d/k, e/k, f')`, EPSG:31982,
+   JPEG/YCbCr) e `georreferenciamento.json` com parâmetros e resíduos.
+7. **Consulta** — ponto/poligonal × classes sem shapely no runtime (par-ímpar
+   em todos os anéis, projeção local equiretangular); zona "limítrofe" quando a
+   borda está a menos de (incerteza p90 + faixa legal) — confirmar por documento.
+
+## 9. Armadilha streamlit-folium + folium ≥ 0.20
+
+`Map.render()` injeta filhos `<camada>_add` no próprio objeto. Reaproveitar o
+MESMO `folium.Map` entre reruns (cache para manter desenhos) faz o
+`streamlit-folium` emitir variáveis sem definição (`ReferenceError
+geo_json_...`) e o mapa fica em branco no 1º rerun. Guarde o mapa intacto e
+passe `copy.deepcopy(mapa)` ao `st_folium` a cada render — o HTML é idêntico
+e os desenhos do usuário persistem. Diagnóstico: comparar a árvore
+`m._children` antes/depois de `render()`.

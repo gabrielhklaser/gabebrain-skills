@@ -48,10 +48,30 @@ This skill enables Antigravity to automate and control the **Arena AI** platform
 
 ## Tooling & Helper Scripts
 
-The automation engine is located at:
+The automation engine (fonte canônica) is located at:
 `C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py`
-and in the workspace scratch at:
-`C:\Users\Gabriel\.gemini\antigravity\scratch\arena-controller\arena_agent.py`
+
+Cópias espelhadas (manter idênticas à canônica): `GabeBrain\.claude\skills\…`, `GabeBrain\.agents\skills\…` e o repo `gabebrain-skills`. As pastas `scratch\arena-controller\` e `scratch\agentearena\` são versões antigas — não usar.
+
+Credenciais ficam só no `.env` da skill (`ARENA_EMAIL`, `ARENA_PASSWORD`, opcional `ARENA_USER_DATA_DIR`). Sem fallback no código.
+
+### Roteamento antes de despachar
+
+Antes de enviar ao Arena, passe o prompt pelo `prompt-router-coordinator`. Se ele indicar `antigravity` (localhost, Drive, Biblioteca, QGIS) ou `claude`, não despache para o Arena.
+
+### Contrato de saída (`send` / `recover-push`)
+
+A última linha do stdout é `[RESULT_JSON] {…}` (JSON em uma linha). Durante a execução, `[CONVERSATION_URL] <url>` é emitido assim que a conversa existe.
+
+| `status` | Significado | Ação |
+|---|---|---|
+| `success` | Geração terminou | Registrar resposta |
+| `waiting_user_input` | Agente pediu confirmação/escolha (`options`) | Responder com `send --conversation-url <url> --prompt "<opção>"` |
+| `timeout` | Tempo local esgotou, agente segue rodando na nuvem | Não reenviar o prompt; retomar pela mesma `conversation_url` |
+
+`response` contém apenas as mensagens novas desde o envio (não o histórico inteiro da conversa).
+
+Um prompt curto (≤35 caracteres) que coincide exatamente com o texto de um botão visível vira clique, mas só quando `--conversation-url` é informado.
 
 ### CLI Commands
 
@@ -68,6 +88,12 @@ python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena
 #### 3. Send Prompt to Arena AI Agent
 ```bash
 python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" send --prompt "YOUR PROMPT HERE" --repo "gabrielhklaser/REPO_NAME" --branch "BRANCH_NAME"
+```
+
+#### 3b. Status / Connect
+```bash
+python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" status
+python "C:\Users\Gabriel\.gemini\config\skills\arena-ai-controller\scripts\arena_agent.py" connect --repo "gabrielhklaser/REPO_NAME" [--branch "BRANCH_NAME"]
 ```
 
 #### 4. Automatic Reconnection & Push Recovery

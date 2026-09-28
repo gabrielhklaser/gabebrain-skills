@@ -10,6 +10,7 @@ Supports:
 """
 
 import os
+import re
 import sys
 import json
 import time
@@ -32,7 +33,7 @@ if _cfg_file.exists():
                 _k, _v = _line.split("=", 1)
                 os.environ.setdefault(_k.strip(), _v.strip())
 
-ARENA_EMAIL = os.environ.get("ARENA_EMAIL", "gabecarabala@gmail.com")
+ARENA_EMAIL = os.environ.get("ARENA_EMAIL", "")
 ARENA_PASSWORD = os.environ.get("ARENA_PASSWORD", "")
 DEFAULT_USER_DATA_DIR = os.environ.get(
     "ARENA_USER_DATA_DIR",
@@ -41,6 +42,10 @@ DEFAULT_USER_DATA_DIR = os.environ.get(
 
 BASE_URL = "https://arena.ai"
 AGENT_URL = "https://arena.ai/agent"
+
+# Prompts curtos iguais ao texto de um botão viram clique (ex: "Approve", "Sim")
+MAX_BUTTON_PROMPT_LEN = 35
+MESSAGE_SELECTOR = '[data-message-author="assistant"], div.prose, [data-testid="agent-message"]'
 
 
 class ArenaController:
@@ -51,6 +56,7 @@ class ArenaController:
         self.playwright = None
         self.context = None
         self.page = None
+        self._session_ok = False
 
     async def __aenter__(self):
         self.playwright = await async_playwright().start()
@@ -70,15 +76,20 @@ class ArenaController:
             await self.playwright.stop()
 
     async def ensure_logged_in(self):
-        """Verifies authentication and performs login if necessary."""
+        """Verifies authentication and performs login if necessary.
+        Cached per run: repeated calls must not navigate away (would drop repo/branch selection)."""
+        if self._session_ok:
+            return True
         print(f"[*] Navigating to {BASE_URL}...")
         await self.page.goto(BASE_URL, wait_until="domcontentloaded", timeout=30000)
         await self.page.wait_for_timeout(2000)
 
-        user_btn = self.page.locator(f'button:has-text("{ARENA_EMAIL}")')
-        if await user_btn.count() > 0 and await user_btn.first.is_visible():
-            print(f"[+] Already logged in as {ARENA_EMAIL}")
-            return True
+        if ARENA_EMAIL:
+            user_btn = self.page.locator(f'button:has-text("{ARENA_EMAIL}")')
+            if await user_btn.count() > 0 and await user_btn.first.is_visible():
+                print(f"[+] Already logged in as {ARENA_EMAIL}")
+                self._session_ok = True
+                return True
 
         toggle_btn = self.page.locator('button[aria-label="Toggle Sidebar"], button[aria-label="Open sidebar"]')
         if await toggle_btn.count() > 0:
@@ -87,6 +98,8 @@ class ArenaController:
 
         login_btn = self.page.locator('button:has-text("Log In")')
         if await login_btn.count() > 0 and await login_btn.first.is_visible():
+            if not ARENA_EMAIL or not ARENA_PASSWORD:
+                raise RuntimeError("Sessão expirada e ARENA_EMAIL/ARENA_PASSWORD ausentes no .env da skill.")
             print(f"[*] Performing login with {ARENA_EMAIL}...")
             await login_btn.first.click()
             await self.page.wait_for_timeout(1000)
@@ -107,10 +120,15 @@ class ArenaController:
                 await self.page.click('button:has-text("Log In")')
 
             await self.page.wait_for_timeout(5000)
+            if await self.page.locator('input[type="password"]:visible').count() > 0:
+                raise RuntimeError("Login falhou (formulário de senha ainda visível). Verifique as credenciais no .env.")
             print("[+] Login successfully completed.")
+            self._session_ok = True
             return True
 
-        return False
+        # Sem botão "Log In" visível: sessão persistente já autenticada
+        self._session_ok = True
+        return True
 
     async def open_agent_mode(self):
         """Navigates to the Agent Mode workspace."""
@@ -223,29 +241,61 @@ class ArenaController:
             "elements": elements[:10]
         }
 
-    async def send_prompt(self, prompt, repo=None, branch=None, timeout_seconds=120):
+    async def send_prompt(self, prompt, repo=None, branch=None, timeout_seconds=180, conversation_url=None):
         """
         Sends a prompt to the Arena AI Agent.
-        Monitors output until completion and returns the generated response.
+        Supports:
+        - Navigating to an existing conversation_url to continue discussion or answer questions.
+        - Clicking directly on confirmation buttons if prompt matches a button label.
+        - Detecting when the agent asks a question or requires confirmation/choices.
         """
-        await self.open_agent_mode()
-        if repo:
-            await self.select_repository(repo, branch)
-
-        print(f"[*] Inserting prompt: {prompt[:80]}...")
-        editor = self.page.locator('div.tiptap.ProseMirror, [contenteditable="true"], textarea')
-        await editor.first.wait_for(state="visible", timeout=15000)
-        await editor.first.click()
-        await self.page.keyboard.insert_text(prompt)
-        await self.page.wait_for_timeout(800)
-
-        send_btn = self.page.locator('button[aria-label="Send message"], button[aria-label="Send"], button[type="submit"]')
-        if await send_btn.count() > 0 and await send_btn.first.is_visible():
-            await send_btn.first.click()
+        if conversation_url and "/agent/" in conversation_url:
+            print(f"[*] Navigating to existing conversation: {conversation_url}...")
+            await self.ensure_logged_in()
+            await self.page.goto(conversation_url, wait_until="domcontentloaded", timeout=45000)
+            await self.page.wait_for_timeout(3000)
+            print(f"[CONVERSATION_URL] {conversation_url}", flush=True)
         else:
-            await self.page.keyboard.press("Enter")
-        print("[*] Prompt sent. Checking for Agree modal...")
+            await self.open_agent_mode()
+            if repo:
+                await self.select_repository(repo, branch)
 
+        # Baseline: só as mensagens que surgirem depois do envio compõem a resposta
+        baseline_count = len(await self._read_messages())
+
+        # 1. Resposta a confirmação: só em conversa existente, prompt curto e match exato com o botão
+        clean_prompt = prompt.strip().lower()
+        clicked_button = False
+
+        if conversation_url and 0 < len(clean_prompt) <= MAX_BUTTON_PROMPT_LEN:
+            btn_candidates = await self.page.locator('button:visible, [role="button"]:visible').all()
+            for b in btn_candidates:
+                try:
+                    b_text = (await b.inner_text()).strip()
+                    if b_text and b_text.lower() == clean_prompt:
+                        print(f"[*] Found matching action button '{b_text}'. Clicking button...")
+                        await b.click()
+                        clicked_button = True
+                        break
+                except Exception:
+                    continue
+
+        # 2. Se não clicou em botão direto, insere no editor de texto e envia
+        if not clicked_button:
+            print(f"[*] Inserting prompt: {prompt[:80]}...")
+            editor = self.page.locator('div.tiptap.ProseMirror, [contenteditable="true"], textarea')
+            await editor.first.wait_for(state="visible", timeout=15000)
+            await editor.first.click()
+            await self.page.keyboard.insert_text(prompt)
+            await self.page.wait_for_timeout(800)
+
+            send_btn = self.page.locator('button[aria-label="Send message"], button[aria-label="Send"], button[type="submit"]')
+            if await send_btn.count() > 0 and await send_btn.first.is_visible():
+                await send_btn.first.click()
+            else:
+                await self.page.keyboard.press("Enter")
+
+        # Verifica se apareceu modal Agree automático
         await self.page.wait_for_timeout(1500)
         agree_btn = self.page.locator('button:has-text("Agree")')
         if await agree_btn.count() > 0 and await agree_btn.first.is_visible():
@@ -253,11 +303,24 @@ class ArenaController:
             await agree_btn.first.click()
             await self.page.wait_for_timeout(2000)
 
+        # Captura e emite a URL da conversa imediatamente para que o usuário possa abrir e acompanhar na Web
+        await self.page.wait_for_timeout(1000)
+        detected_url = self.page.url
+        for _ in range(4):
+            if "/agent/" in detected_url and not detected_url.endswith("/agent") and not detected_url.endswith("/agent/"):
+                break
+            await self.page.wait_for_timeout(1000)
+            detected_url = self.page.url
+        print(f"[CONVERSATION_URL] {detected_url}", flush=True)
+
         print("[*] Waiting for agent generation...")
 
         start_time = time.time()
         last_text_length = 0
         stable_count = 0
+        new_messages = []
+        current_text = ""
+        finished = False
 
         while time.time() - start_time < timeout_seconds:
             await self.page.wait_for_timeout(3000)
@@ -265,27 +328,72 @@ class ArenaController:
             stop_btn = self.page.locator('button[aria-label*="Stop" i], button:has-text("Stop")')
             is_generating = await stop_btn.count() > 0 and await stop_btn.first.is_visible()
 
-            messages = await self.page.eval_on_selector_all(
-                '[data-message-author="assistant"], div.prose, [data-testid="agent-message"]',
-                """els => els.map(e => e.innerText.trim()).filter(Boolean)"""
-            )
+            messages = await self._read_messages()
+            if len(messages) > baseline_count:
+                new_messages = messages[baseline_count:]
+            elif clicked_button:
+                # Aprovação costuma continuar a mesma mensagem em vez de criar uma nova
+                new_messages = messages[-1:]
+            else:
+                new_messages = []
 
-            current_text = "\n\n".join(messages) if messages else ""
+            current_text = "\n\n".join(new_messages)
             if len(current_text) == last_text_length and len(current_text) > 0 and not is_generating:
                 stable_count += 1
                 if stable_count >= 2:
                     print("[+] Generation finished.")
+                    finished = True
                     break
             else:
                 stable_count = 0
                 last_text_length = len(current_text)
 
+        # 3. Análise de pedidos de confirmação e perguntas pendentes
+        last_msg = new_messages[-1] if new_messages else ""
+        
+        # Procura por botões de ação ou escolha que ficaram disponíveis na tela
+        detected_options = []
+        try:
+            detected_options = await self.page.eval_on_selector_all(
+                'button:visible, [role="button"]:visible',
+                r"""els => els
+                    .map(e => e.innerText.trim())
+                    .filter(t => t && t.length < 35 && /^(approve|run|allow|confirm|agree|reject|deny|cancel|yes|no|sim|n[ãa]o|aprovar|executar|continuar|op[çc][ãa]o \d+)/i.test(t))
+                """
+            )
+            detected_options = list(dict.fromkeys(detected_options))
+        except Exception:
+            pass
+
+        # Verifica se o texto pede confirmação / termina em pergunta
+        is_question = bool(re.search(r"\?\s*$", last_msg.strip()))
+        needs_confirmation_text = bool(re.search(r"(voc[eê] gostaria|devo prosseguir|deseja continuar|confirma|qual op[çc][ãa]o|proceder com|do you want|should i|please confirm|choose an option|waiting for your confirmation)", last_msg, re.IGNORECASE))
+        
+        requires_confirmation = (len(detected_options) > 0) or is_question or needs_confirmation_text
+        if requires_confirmation:
+            status = "waiting_user_input"
+        elif finished:
+            status = "success"
+        else:
+            # Agente ainda trabalhando na nuvem: não reportar como concluído
+            status = "timeout"
+            print(f"[!] Timeout de {timeout_seconds}s: agente ainda em execução no Arena AI.")
+
         conversation_url = self.page.url
         return {
             "conversation_url": conversation_url,
             "response": current_text or "Prompt dispatched successfully to Arena AI Agent.",
-            "status": "success"
+            "status": status,
+            "requires_confirmation": requires_confirmation,
+            "last_message": last_msg,
+            "options": detected_options
         }
+
+    async def _read_messages(self):
+        return await self.page.eval_on_selector_all(
+            MESSAGE_SELECTOR,
+            """els => els.map(e => e.innerText.trim()).filter(Boolean)"""
+        )
 
     async def recover_and_push(self, repo, branch, custom_message=None):
         """
@@ -318,6 +426,11 @@ class ArenaController:
         return result
 
 
+def emit_result(res):
+    """Uma linha com prefixo fixo: o GabeBrain Hub faz parse sem regex frágil sobre o stdout inteiro."""
+    print("[RESULT_JSON] " + json.dumps(res, ensure_ascii=False), flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Arena AI Platform Controller")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -326,8 +439,14 @@ def main():
     subparsers.add_parser("list-repos", help="List connected GitHub repositories")
     subparsers.add_parser("status", help="Check current session and repository status")
 
+    connect_parser = subparsers.add_parser("connect", help="Select repository/branch in Agent Mode and report state")
+    connect_parser.add_argument("--repo", required=True, help="Target GitHub repository")
+    connect_parser.add_argument("--branch", default=None, help="Target branch name")
+
     send_parser = subparsers.add_parser("send", help="Send a prompt to Arena AI agent")
-    send_parser.add_argument("--prompt", required=True, help="Prompt text to send")
+    send_parser.add_argument("--prompt", default=None, help="Prompt text to send")
+    send_parser.add_argument("--prompt-file", default=None, help="Path to text file containing prompt")
+    send_parser.add_argument("--conversation-url", default=None, help="Existing Arena AI conversation URL to continue")
     send_parser.add_argument("--repo", default=None, help="Target GitHub repository")
     send_parser.add_argument("--branch", default=None, help="Target branch name")
     send_parser.add_argument("--timeout", type=int, default=180, help="Timeout in seconds")
@@ -353,13 +472,32 @@ def main():
                 state = await controller.get_current_state()
                 print(json.dumps(state, indent=2))
 
+            elif args.command == "connect":
+                await controller.select_repository(args.repo, args.branch)
+                state = await controller.get_current_state()
+                print(json.dumps(state, indent=2))
+
             elif args.command == "send":
-                res = await controller.send_prompt(args.prompt, repo=args.repo, branch=args.branch, timeout_seconds=args.timeout)
-                print(json.dumps(res, indent=2))
+                prompt_text = args.prompt or ""
+                if args.prompt_file and not os.path.exists(args.prompt_file):
+                    raise FileNotFoundError(f"--prompt-file não encontrado: {args.prompt_file}")
+                if args.prompt_file:
+                    with open(args.prompt_file, "r", encoding="utf-8") as f:
+                        prompt_text = f.read()
+                if not prompt_text.strip():
+                    raise ValueError("Prompt cannot be empty (provide --prompt or --prompt-file).")
+                res = await controller.send_prompt(
+                    prompt_text,
+                    repo=args.repo,
+                    branch=args.branch,
+                    timeout_seconds=args.timeout,
+                    conversation_url=args.conversation_url
+                )
+                emit_result(res)
 
             elif args.command == "recover-push":
                 res = await controller.recover_and_push(args.repo, args.branch, args.message)
-                print(json.dumps(res, indent=2))
+                emit_result(res)
 
     asyncio.run(run())
 

@@ -30,6 +30,9 @@ token.json
 **/browser-profile/
 **/playwright/.auth/
 
+# Skills de terceiros sem licença de redistribuição: uso local, não publicar
+skills/environmentalist-analyst/
+
 # Python
 __pycache__/
 *.py[cod]

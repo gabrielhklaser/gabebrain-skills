@@ -11,6 +11,7 @@ deploy principal, que recebe todas):
   ~/.gemini/config/skills                   (Antigravity - recebe todas)
   <vault>/.claude/skills                    (Claude Code, projeto do vault)
   <vault>/.agents/skills                    (Codex / agentes genericos)
+  ~/.claude/skills                          (Claude Code, global)
 
 Tambem regenera as notas de leitura em <vault>/20-Skills (geradas: nao editar).
 
@@ -39,7 +40,8 @@ HOME = Path.home()
 VAULT = Path(os.environ.get(
     "GABEBRAIN_VAULT", r"C:\GabeBrain\GabeBrain"))
 DEPLOY_MAIN = HOME / ".gemini" / "config" / "skills"
-DEPLOY_MIRRORS = [VAULT / ".claude" / "skills", VAULT / ".agents" / "skills"]
+DEPLOY_MIRRORS = [VAULT / ".claude" / "skills", VAULT / ".agents" / "skills",
+                  HOME / ".claude" / "skills"]
 VAULT_MASTERS = VAULT / "📚 Biblioteca de Agentes"
 SKILL_NOTES = VAULT / "20-Skills"
 
@@ -61,6 +63,10 @@ DOMAINS = {
     "biblioteca-triagem": "dominio/geociencias",
     "biblioteca-mapa-documento": "dominio/geociencias",
     "gis-multicamadas": "dominio/geociencias",
+    "flow-report": "dominio/geociencias",
+    "hydro-context": "dominio/geociencias",
+    "environmentalist-analyst": "dominio/geociencias",
+    "run-tests": "dominio/engenharia-software",
     "canva-image-agent": "dominio/design",
 }
 

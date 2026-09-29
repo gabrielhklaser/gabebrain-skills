@@ -37,7 +37,7 @@ REPO_SKILLS = REPO / "skills"
 REPO_MASTERS = REPO / "master-skills"
 HOME = Path.home()
 VAULT = Path(os.environ.get(
-    "GABEBRAIN_VAULT", HOME / "Meu Drive" / "Obsidian_GabeBrain" / "GabeBrain"))
+    "GABEBRAIN_VAULT", r"C:\GabeBrain\GabeBrain"))
 DEPLOY_MAIN = HOME / ".gemini" / "config" / "skills"
 DEPLOY_MIRRORS = [VAULT / ".claude" / "skills", VAULT / ".agents" / "skills"]
 VAULT_MASTERS = VAULT / "📚 Biblioteca de Agentes"

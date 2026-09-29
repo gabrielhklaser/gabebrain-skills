@@ -25,7 +25,7 @@ Livros técnicos, tratados geológicos e manuais de 500 a 1000 páginas não dev
 Execute o script de estrutura para obter capítulos, intervalos de páginas e contagem de tokens sem gastar leitura com a LLM:
 
 ```powershell
-$SCRIPTS = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
+$SCRIPTS = "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
 python "$SCRIPTS\17_estrutura_documento.py" "<parte do nome ou cota>" --metodo <Metodo> --max 60
 ```
 > O `17` usa PyMuPDF (`fitz`), que só existe no Python do Anaconda. Se der `ModuleNotFoundError: fitz`, chame pelo Anaconda (`& "$HOME\anaconda3\python.exe" ...`).

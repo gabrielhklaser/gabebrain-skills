@@ -16,8 +16,8 @@ Esta skill conecta o Antigravity à **Biblioteca Técnica Pesquisável** do Gabe
 
 ## 📍 Localização dos Scripts e Acervo
 
-- **Raiz da Biblioteca**: `$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/`
-- **Scripts**: `$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/`
+- **Raiz da Biblioteca**: `C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/`
+- **Scripts**: `C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/`
 - **Porta de Entrada CLI**: `biblioteca.py`
 - **Launcher do Pipeline**: `00_rodar_pipeline.ps1`
 - **Pasta de Entrada de Novos PDFs**: `.../Biblioteca Geologica/Arquivos pdf/_entrada/`
@@ -42,7 +42,7 @@ Siga a ordem de evidência:
 Execute os comandos usando o Python configurado (`BIBLIOTECA_PYTHON` ou `python`):
 
 ```powershell
-$BIB = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/biblioteca.py"
+$BIB = "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/biblioteca.py"
 ```
 
 ### 1. Buscar Termo no Acervo (Documento + Página + Trecho)
@@ -91,12 +91,12 @@ Quando novos PDFs forem colocados em `Arquivos pdf/_entrada/`:
 1. Verifique se não há trava ativa (`Metadata/pipeline.lock`).
 2. Execute o pipeline:
    ```powershell
-   powershell -NoProfile -File "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/00_rodar_pipeline.ps1" -PularOcr
+   powershell -NoProfile -File "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/00_rodar_pipeline.ps1" -PularOcr
    ```
    A chamada respeita a política de execução vigente; não use `-ExecutionPolicy Bypass` para contorná-la.
 3. Atualize cotas, catálogo e manifesto:
    ```powershell
-   $SCRIPTS = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
+   $SCRIPTS = "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts"
    python "$SCRIPTS\14_codificar.py"
    python "$SCRIPTS\19_catalogo.py"
    python "$SCRIPTS\21_manifesto.py"

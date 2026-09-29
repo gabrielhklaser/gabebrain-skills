@@ -36,7 +36,7 @@ Colunas de `Metadata/triagem.csv`:
 
 ### Pré-requisito: Conferir Trava e Hub
 1. Verifique se não há pipeline em execução:
-   `Test-Path "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Metadata/pipeline.lock"`
+   `Test-Path "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Metadata/pipeline.lock"`
 2. O método precisa de um Hub (ex: `00 - GPR (indice).md`). Sem hub a nota nasce órfã — crie-o antes, linkando `[[00 - Biblioteca (indice)]]`.
 3. **O documento já tem nota?** `python $BIB saude --detalhe` lista "documento sem leitura destilada". Não reescreva o que já existe.
 
@@ -55,7 +55,7 @@ Lote: GPR, 5 documentos
 - **Acima de 50 k tokens**: Desvie para `biblioteca-mapa-documento`.
 - **Abaixo de 50 k tokens**: Faça leitura seletiva/fatiada:
   ```powershell
-  $BIB = "$HOME/Meu Drive/Obsidian_GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/biblioteca.py"
+  $BIB = "C:/GabeBrain/GabeBrain/10-Trabalho/Geologia/Biblioteca Geologica/Scripts/biblioteca.py"
   python $BIB ler <COTA> 1-20
   ```
   *(Nunca abra o `.txt` inteiro de uma vez).*

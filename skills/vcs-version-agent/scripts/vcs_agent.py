@@ -56,7 +56,7 @@ LOG_FILE = LOG_DIR / "vcs_sync.log"
 home = Path.home()
 DEFAULT_SEARCH_PATHS = [
     home / ".gemini" / "antigravity" / "scratch",
-    home / "Meu Drive" / "Github - projetos",
+    Path(r"C:\GabeBrain\projetos"),
     home / "Documents" / "GitHub",
 ]
 

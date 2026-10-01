@@ -75,6 +75,9 @@ DOMAINS = {
     "research-add-items": "dominio/pesquisa-web",
     "research-deep": "dominio/pesquisa-web",
     "research-report": "dominio/pesquisa-web",
+    "context7-cli": "dominio/engenharia-software",
+    "context7-mcp": "dominio/engenharia-software",
+    "find-docs": "dominio/engenharia-software",
 }
 
 

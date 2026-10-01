@@ -81,6 +81,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 17. **`anydoc`**, **`no-ai-slop`**, **`prompt-router-coordinator`**, **`scientific-writing`**, **`scientific-thinking-scholar-evaluation`**: conversão de documentos, filtro anti-slop, roteamento de prompts entre agentes e escrita/avaliação científica.
 18. **`web-asset-generator`**: Geração profissional de web assets (favicons, ícones PWA Android/iOS, imagens Open Graph/Twitter Cards e metatags HTML) a partir de logos, textos ou emojis, com validação de dimensões e contraste WCAG.
 19. **`deep-research`** (`research`, `research-add-items`, `research-add-fields`, `research-deep`, `research-report`): Pesquisa profunda em 3 fases inspirada no paper RhinoInsight (geração de outline, investigação paralela com validação estrita de esquema JSON e compilação de relatório Markdown com índice ancorado).
+20. **`context7`** (`context7-cli`, `context7-mcp`, `find-docs`): Recuperação em tempo real de documentação oficial e exemplos de código verificados para qualquer biblioteca, framework ou SDK via CLI (`ctx7`) e MCP nativo (`resolve-library-id`, `query-docs`). Elimina alucinações de APIs obsoletas ou inexistentes.
 
 ### 🔁 Sincronização (este repo é a fonte da verdade)
 

@@ -55,6 +55,23 @@ Esta biblioteca reúne a destilação técnica de **13 repositórios** auditados
 
 ---
 
+
+---
+
+## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 16 Subagentes)
+
+Esta arquitetura fraciona o ecossistema GabeBrain em 5 clusters especializados com subagentes atômicos:
+
+| Cluster Principal | Subagentes Atômicos | Domínio & Foco | Master Note |
+|---|---|---|---|
+| **🌍 GeoAgent** | `geo-gis`, `geo-hidro`, `geo-licencia`, `geo-acervo` | Geociências, Hidrologia, Licenciamento & Acervo | [[Master_GeoAgent_Geociencias_e_Licenciamento]] |
+| **🔍 DeepResearchAgent** | `research-lead`, `web-scout`, `report-synth`, `gh-researcher` | Pesquisa Profunda Web & Extração em 3 Fases | [[Master_DeepResearchAgent_Investigacao_Web]] |
+| **💻 DevAgent** | `coder-tdd`, `context7-verifier`, `appsec-auditor`, `vcs-sync` | TDD, Anti-Alucinação Context7, AppSec & Git | [[Master_DevAgent_Engenharia_AppSec_e_Context7]] |
+| **🎓 ScienceAgent** | `ppgca-corpus`, `paper-writer`, `peer-reviewer` | Mestrado PPGCA, Redação Sem AI Slop & Peer Review | [[Master_ScienceAgent_PPGCA_e_Producao_Cientifica]] |
+| **🎨 DesignAgent** | `canva-designer`, `web-asset-maker` | Canva Pro Automatizado, Favicons & Social Assets | [[Master_DesignAgent_Identidade_e_Assets]] |
+
+![[00-Dashboard/gabebrain_ecossistema.png|800]]
+
 ## 🔗 Navegação e Central
 - [[MOC - GabeBrain|🏠 Voltar à Central do GabeBrain]]
 - [[20-Skills/00 - Índice de Skills|⚡ Ir para o Catálogo de Skills Executáveis]]

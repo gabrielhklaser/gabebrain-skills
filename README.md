@@ -98,14 +98,52 @@ python scripts/sync_gabebrain.py --apply    # aplica
 
 ---
 
-## 👥 Personas & Agentes Especializados (`agents/`)
+## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 16 Subagentes)
 
-- **`meadow-core/`**: Pack multi-agente derivado do ecossistema Buzz:
-  - **`@Skip`** (`agents/skip.persona.md`): Orquestrador central que coordena a equipe, delega trabalho e sintetiza resultados.
-  - **`@Bana`** (`agents/bana.persona.md`): Revisor arquitetural com foco no big picture, simplicidade e integridade.
-  - **`@Lev`** (`agents/lev.persona.md`): Especialista em segurança, auditoria de código, auth, injeção e superfície de ataque.
+O GabeBrain adota uma divisão em 5 clusters especializados com 16 subagentes atômicos para execução paralela, baixo consumo de tokens e contexto limpo:
+
+![Ecossistema GabeBrain](gabebrain_ecossistema.png)
+
+### 🌍 1. GeoAgent (`agents/geo-agent.md`)
+*Geociências, Hidrologia, Licenciamento & Acervo Técnico*
+- `sub: geo-gis` (`agents/geo-gis.md`): Cartografia digital, mapas interativos Folium multicamadas e refinador de paleomapas.
+- `sub: geo-hidro` (`agents/geo-hidro.md`): Análise de séries de vazões, Q95, Q7,10 e convenções hidrológicas ANA/USGS.
+- `sub: geo-licencia` (`agents/geo-licencia.md`): Enquadramento ambiental municipal de Campo Bom/RS e CONSEMA 372/2018.
+- `sub: geo-acervo` (`agents/geo-acervo.md`): Busca e leitura cirúrgica por cota/página na Biblioteca Geológica do Drive.
+
+### 🔍 2. DeepResearchAgent (`agents/deep-research-agent.md`)
+*Pesquisa Profunda na Internet & Extração Estruturada em 3 Fases*
+- `sub: research-lead` (`agents/research-lead.md`): Fase 1 - Estruturação de `outline.yaml` e matriz de campos `fields.yaml`.
+- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos.
+- `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de dados via JSON, notas limpas e relatório final.
+- `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI.
+
+### 💻 3. DevAgent (`agents/dev-agent.md`)
+*Engenharia de Software, AppSec, Context7 & Harness*
+- `sub: coder-tdd` (`agents/coder-tdd.md`): Ciclo TDD Red/Green/Refactor, planos atômicos e suíte de testes pytest.
+- `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial.
+- `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy.
+- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer.
+
+### 🎓 4. ScienceAgent (`agents/science-agent.md`)
+*Produção Científica, Mestrado PPGCA & Peer Review*
+- `sub: ppgca-corpus` (`agents/ppgca-corpus.md`): Acervo estruturado Docling do mestrado e leitor documental universal.
+- `sub: paper-writer` (`agents/paper-writer.md`): Redação científica de alta densidade sem clichês de IA (anti-AI slop) e k-dense.
+- `sub: peer-reviewer` (`agents/peer-reviewer.md`): Simulação de parecerista sênior (IEEE/ACM/SBC) e triagem rápida Jev.
+
+### 🎨 5. DesignAgent (`agents/design-agent.md`)
+*Identidade Visual, Branding & Assets Digitais*
+- `sub: canva-designer` (`agents/canva-designer.md`): Automação de designs com Canva Pro autenticado via Playwright.
+- `sub: web-asset-maker` (`agents/web-asset-maker.md`): Geração completa de favicons, ícones PWA e imagens Open Graph.
 
 ---
+
+## 👥 Personas Adicionais (`agents/meadow-core/`)
+
+- **`@Skip`** (`agents/meadow-core/skip.persona.md`): Orquestrador central de equipe.
+- **`@Bana`** (`agents/meadow-core/bana.persona.md`): Revisor arquitetural com foco no big picture.
+- **`@Lev`** (`agents/meadow-core/lev.persona.md`): Especialista em segurança, auditoria de código e superfície de ataque.
+- **`web-search-agent`** (`agents/web-search-agent.md`): Motor de busca profunda modular (`web-search-modules/`).
 
 ## 🚀 Como Usar no Arena AI
 

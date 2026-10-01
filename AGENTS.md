@@ -65,6 +65,46 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 
 ---
 
+## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 16 Subagentes)
+
+O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters especializados com subagentes atômicos, garantindo economia de tokens e contexto hiper-especializado:
+
+![Ecossistema GabeBrain](gabebrain_ecossistema.png)
+
+### 🌍 1. GeoAgent (`agents/geo-agent.md`)
+*Cluster Líder de Geociências, Hidrologia, Licenciamento & Acervo Técnico*
+- `sub: geo-gis` (`agents/geo-gis.md`): Cartografia digital, mapas interativos Folium multicamadas e refinador de paleomapas (`gis-multicamadas`, `paleomap-refiner`).
+- `sub: geo-hidro` (`agents/geo-hidro.md`): Análise de vazões, Q95, Q7,10 e convenções hidrológicas ANA/USGS (`flow-report`, `hydro-context`).
+- `sub: geo-licencia` (`agents/geo-licencia.md`): Enquadramento ambiental municipal de Campo Bom/RS, CODRAM e conselhos de classe (`licenciamento-campo-bom`, `environmentalist-analyst`).
+- `sub: geo-acervo` (`agents/geo-acervo.md`): Busca e leitura cirúrgica por cota/página na Biblioteca Geológica (`biblioteca-pesquisavel`, `biblioteca-triagem`, `biblioteca-mapa-documento`).
+
+### 🔍 2. DeepResearchAgent (`agents/deep-research-agent.md`)
+*Cluster Líder de Pesquisa Profunda na Internet & Extração Estruturada em 3 Fases*
+- `sub: research-lead` (`agents/research-lead.md`): Fase 1 - Estruturação de `outline.yaml` e matriz de campos `fields.yaml` (`deep-research`, `research`).
+- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`).
+- `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de campos via JSON, notas limpas e relatório consolidado (`research-report`, `web-para-nota`).
+- `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`).
+
+### 💻 3. DevAgent (`agents/dev-agent.md`)
+*Cluster Líder de Engenharia de Software, AppSec, Context7 & Harness*
+- `sub: coder-tdd` (`agents/coder-tdd.md`): Desenvolvimento disciplinado com TDD Red/Green/Refactor e planos atômicos (`superpowers-coding-agent`, `run-tests`).
+- `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial (`context7-mcp`, `context7-cli`, `find-docs`).
+- `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy (`skillspector-auditor`, `karpathy-guidelines`).
+- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer (`vcs-version-agent`, `arena-ai-controller`, `ecc-harness-optimizer`).
+
+### 🎓 4. ScienceAgent (`agents/science-agent.md`)
+*Cluster Líder de Produção Científica, Mestrado PPGCA & Peer Review*
+- `sub: ppgca-corpus` (`agents/ppgca-corpus.md`): Acervo estruturado Docling do mestrado e leitor documental universal (`computacao-aplicada`, `anydoc`).
+- `sub: paper-writer` (`agents/paper-writer.md`): Redação científica de alta densidade sem clichês de IA (anti-AI slop) e k-dense (`scientific-writing`, `scientific-writing-kdense`, `no-ai-slop`).
+- `sub: peer-reviewer` (`agents/peer-reviewer.md`): Simulação de parecerista sênior (IEEE/ACM/SBC), auditoria epistêmica e triagem rápida Jev (`revisor-cientifico-peer-review`, `scientific-thinking-scholar-evaluation`, `jev`).
+
+### 🎨 5. DesignAgent (`agents/design-agent.md`)
+*Cluster Líder de Identidade Visual, Branding & Assets Digitais*
+- `sub: canva-designer` (`agents/canva-designer.md`): Automação de designs e infográficos com Canva Pro autenticado via Playwright (`canva-image-agent`).
+- `sub: web-asset-maker` (`agents/web-asset-maker.md`): Geração completa de favicons, ícones PWA e imagens Open Graph (`web-asset-generator`).
+
+---
+
 ## 🛡️ Regras de Ouro de Execução
 
 1. **Paridade Git Rigorosa:** Qualquer alteração produzida pelo Arena AI deve ser commitada de forma atômica e enviada via git push para sua respectiva branch (ou main), permitindo ao Antigravity e ao ambiente local sincronizarem de imediato.

@@ -86,11 +86,12 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 - `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`).
 
 ### 💻 3. DevAgent (`agents/dev-agent.md`)
-*Cluster Líder de Engenharia de Software, AppSec, Context7 & Harness*
-- `sub: coder-tdd` (`agents/coder-tdd.md`): Desenvolvimento disciplinado com TDD Red/Green/Refactor e planos atômicos (`superpowers-coding-agent`, `run-tests`).
+*Cluster Líder de Engenharia de Software, AppSec, Context7, Ponytail & Harness*
+- `sub: coder-tdd` (`agents/coder-tdd.md`): Desenvolvimento disciplinado com TDD Red/Green/Refactor, minimalismo e planos atômicos (`superpowers-coding-agent`, `run-tests`, `ponytail`).
 - `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial (`context7-mcp`, `context7-cli`, `find-docs`).
 - `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy (`skillspector-auditor`, `karpathy-guidelines`).
 - `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer (`vcs-version-agent`, `arena-ai-controller`, `ecc-harness-optimizer`).
+- *Suíte Ponytail*: Anti-overengineering, ladder YAGNI, código mínimo e auditoria (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`).
 
 ### 🎓 4. ScienceAgent (`agents/science-agent.md`)
 *Cluster Líder de Produção Científica, Mestrado PPGCA & Peer Review*

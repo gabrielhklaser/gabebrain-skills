@@ -78,6 +78,12 @@ DOMAINS = {
     "context7-cli": "dominio/engenharia-software",
     "context7-mcp": "dominio/engenharia-software",
     "find-docs": "dominio/engenharia-software",
+    "ponytail": "dominio/engenharia-software",
+    "ponytail-review": "dominio/engenharia-software",
+    "ponytail-audit": "dominio/engenharia-software",
+    "ponytail-debt": "dominio/engenharia-software",
+    "ponytail-gain": "dominio/engenharia-software",
+    "ponytail-help": "dominio/engenharia-software",
 }
 
 

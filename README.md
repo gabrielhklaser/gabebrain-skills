@@ -82,6 +82,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 18. **`web-asset-generator`**: Geração profissional de web assets (favicons, ícones PWA Android/iOS, imagens Open Graph/Twitter Cards e metatags HTML) a partir de logos, textos ou emojis, com validação de dimensões e contraste WCAG.
 19. **`deep-research`** (`research`, `research-add-items`, `research-add-fields`, `research-deep`, `research-report`): Pesquisa profunda em 3 fases inspirada no paper RhinoInsight (geração de outline, investigação paralela com validação estrita de esquema JSON e compilação de relatório Markdown com índice ancorado).
 20. **`context7`** (`context7-cli`, `context7-mcp`, `find-docs`): Recuperação em tempo real de documentação oficial e exemplos de código verificados para qualquer biblioteca, framework ou SDK via CLI (`ctx7`) e MCP nativo (`resolve-library-id`, `query-docs`). Elimina alucinações de APIs obsoletas ou inexistentes.
+21. **`ponytail`** (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`): Filosofia e ferramental de desenvolvedor sênior pragmático (DietrichGebert/ponytail). Aplica a escada YAGNI (recurso nativo/stdlib antes de dependências e código customizado), gerando código mínimo funcional sem abrir mão de validação, segurança e tratamento de erros. Inclui auditoria e revisão anti-overengineering.
 
 ### 🔁 Sincronização (este repo é a fonte da verdade)
 

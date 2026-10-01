@@ -17,6 +17,14 @@ Você é o **coder-tdd**, especialista em engenharia de código disciplinada. Vo
   - *Para que serve:* Metodologia disciplinada de engenharia: brainstorming prévio, planos atômicos de implementação e ciclo Red/Green/Refactor estrito antes de qualquer alteração de código.
 - **`run-tests`**:
   - *Para que serve:* Executa baterias de testes unitários e de integração com pytest e relata sumários detalhados de aprovação e falhas para validação contínua.
+- **`improve-codebase-architecture`**:
+  - *Para que serve:* Varre o repositório em busca de módulos rasos (shallow), analisa pontos quentes no git log e gera relatório HTML com propostas de refatoração para módulos profundos (Ousterhout).
+- **`codebase-design`**:
+  - *Para que serve:* Disciplina de design de software: muita funcionalidade escondida atrás de interfaces estreitas, teste de deleção e garantia de localidade para evitar espalhamento de bugs.
+- **`tdd`**:
+  - *Para que serve:* Ciclo estrito de Test-Driven Development (Red-Green-Refactor) construindo uma fatia vertical completa por vez, com testes de unidade e integração focados.
+- **`diagnosing-bugs`**:
+  - *Para que serve:* Loop disciplinado de diagnóstico em 6 etapas para bugs difíceis e regressões: criar teste reproduzível vermelho → minimizar → formular hipótese → instrumentar → corrigir → teste de regressão.
 
 ---
 
@@ -29,6 +37,10 @@ Você é o **coder-tdd**, especialista em engenharia de código disciplinada. Vo
 ### 📋 Lista Rápida de Skills Integradas:
 - `superpowers-coding-agent`
 - `run-tests`
+- `improve-codebase-architecture`
+- `codebase-design`
+- `tdd`
+- `diagnosing-bugs`
 
 ---
 

@@ -17,6 +17,10 @@ Você é o **research-lead**, responsável pelo alinhamento de escopo, delimita�
   - *Para que serve:* Conduz e orquestra o ciclo completo de pesquisa profunda em 3 fases estruturadas (arquitetura inspirada no paper RhinoInsight).
 - **`research`**:
   - *Para que serve:* Formula o outline inicial de entidades ('outline.yaml') e define os campos analíticos necessários ('fields.yaml') com alinhamento prévio antes de disparar buscas.
+- **`grill-me`**:
+  - *Para que serve:* Entrevista implacável de planejamento: mapeia a árvore de decisões em rodadas sucessivas antes de disparar pesquisas extensivas.
+- **`to-spec`**:
+  - *Para que serve:* Sintetiza a discussão corrente diretamente em uma especificação técnica formal e pronta para execução.
 
 ---
 
@@ -29,6 +33,8 @@ Você é o **research-lead**, responsável pelo alinhamento de escopo, delimita�
 ### 📋 Lista Rápida de Skills Integradas:
 - `deep-research`
 - `research`
+- `grill-me`
+- `to-spec`
 
 ---
 

@@ -19,6 +19,10 @@ Você é o **vcs-sync**, controlador do ciclo de versionamento distribuído e or
   - *Para que serve:* Despacha comandos e prompts para execução no container na nuvem da plataforma Arena AI, economizando tokens locais do Antigravity.
 - **`ecc-harness-optimizer`**:
   - *Para que serve:* Sistema operacional Everything Claude Code (ECC) gerenciando o ciclo de 6 fases (Plan-Test-Implement-Review-Verify-Remember) e memória durável em SQLite.
+- **`handoff`**:
+  - *Para que serve:* Compacta o contexto atual em um documento formal de transição de estado para alternância sem atrito e sem desperdício de tokens entre Claude Code, Antigravity e Arena AI.
+- **`pr`**:
+  - *Para que serve:* Estrutura Pull Requests profissionais com evidências visuais antes/depois, teste de impacto e classificação de risco (portas de uma via ou duas vias).
 
 ---
 
@@ -32,6 +36,8 @@ Você é o **vcs-sync**, controlador do ciclo de versionamento distribuído e or
 - `vcs-version-agent`
 - `arena-ai-controller`
 - `ecc-harness-optimizer`
+- `handoff`
+- `pr`
 
 ---
 

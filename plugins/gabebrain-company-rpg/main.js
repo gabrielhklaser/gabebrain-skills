@@ -225,8 +225,13 @@ const INITIAL_DEPARTMENTS = [
       "qa-loop",
       "jev",
       "prompt-router-coordinator",
-      "ecc-harness-optimizer"
-    ],
+      "ecc-harness-optimizer",
+          "handoff",
+      "to-questionnaire",
+      "to-tickets",
+      "triage",
+      "wayfinder",
+],
     intern: null
   },
   {
@@ -253,8 +258,11 @@ const INITIAL_DEPARTMENTS = [
       "environmentalist-analyst",
       "biblioteca-pesquisavel",
       "biblioteca-triagem",
-      "biblioteca-mapa-documento"
-    ],
+      "biblioteca-mapa-documento",
+          "wait-what",
+      "grill-with-docs",
+      "domain-modeling",
+],
     intern: null
   },
   {
@@ -280,8 +288,10 @@ const INITIAL_DEPARTMENTS = [
       "research-deep",
       "research-report",
       "github-research",
-      "web-para-nota"
-    ],
+      "web-para-nota",
+          "to-spec",
+      "grill-me",
+],
     intern: null
   },
   {
@@ -309,8 +319,17 @@ const INITIAL_DEPARTMENTS = [
       "karpathy-guidelines",
       "vcs-version-agent",
       "arena-ai-controller",
-      "ecc-harness-optimizer"
-    ],
+      "ecc-harness-optimizer",
+          "retro",
+      "pr",
+      "prototype",
+      "code-review",
+      "implement-spec",
+      "diagnosing-bugs",
+      "tdd",
+      "codebase-design",
+      "improve-codebase-architecture",
+],
     intern: null
   },
   {
@@ -335,8 +354,11 @@ const INITIAL_DEPARTMENTS = [
       "no-ai-slop",
       "revisor-cientifico-peer-review",
       "scientific-thinking-scholar-evaluation",
-      "jev"
-    ],
+      "jev",
+          "teach",
+      "writing-beats",
+      "writing-for-agents",
+],
     intern: null
   },
   {
@@ -354,8 +376,9 @@ const INITIAL_DEPARTMENTS = [
     ],
     skills: [
       "canva-image-agent",
-      "web-asset-generator"
-    ],
+      "web-asset-generator",
+          "prototype",
+],
     intern: null
   }
 ];
@@ -411,6 +434,16 @@ const SUBAGENTS_DETAILS = {
     bio: "Especialista na conformidade locacional de empreendimentos, análise de impactos ecológicos e legislação ambiental de Campo Bom/RS.",
     skills: [
       {
+        name: "grill-with-docs",
+        purpose: "Entrevista profunda que resolve todas as ramificações de regras regulatórias e atualiza simultaneamente glossários e registros de decisão arquitetural."
+      },
+
+      {
+        name: "domain-modeling",
+        purpose: "Constrói e afia ativamente o modelo de domínio (DDD) com GLOSSARY.md e ADRs inline, padronizando a linguagem ubíqua jurídica e ambiental de Campo Bom/RS."
+      },
+
+      {
         name: "licenciamento-campo-bom",
         purpose: "Automatiza a conferência de enquadramento pela Resolução CONSEMA 372/2018 (CODRAM x Porte x Potencial Poluidor), zoneamento do Plano Diretor (Lei 5.329/2022) e resoluções COMDEMA vigentes."
       },
@@ -452,6 +485,16 @@ const SUBAGENTS_DETAILS = {
     role: "Fase 1: Outline & Matriz",
     bio: "Líder da Fase 1 da metodologia Deep Research. Mapeia o universo de entidades e define a matriz multidimensional de campos analíticos antes do disparo das buscas.",
     skills: [
+      {
+        name: "to-spec",
+        purpose: "Sintetiza a discussão corrente diretamente em uma especificação técnica formal e pronta para execução."
+      },
+
+      {
+        name: "grill-me",
+        purpose: "Entrevista implacável de planejamento: mapeia a árvore de decisões em rodadas sucessivas antes de disparar pesquisas extensivas."
+      },
+
       {
         name: "deep-research",
         purpose: "Conduz e orquestra o ciclo completo de pesquisa profunda em 3 fases estruturadas (arquitetura inspirada no paper RhinoInsight)."
@@ -529,6 +572,26 @@ const SUBAGENTS_DETAILS = {
     bio: "Engenheiro de software rigoroso. Aplica a metodologia Superpowers: testes primeiro (Red), código cirúrgico (Green) e refatoração com suíte 100% verde.",
     skills: [
       {
+        name: "diagnosing-bugs",
+        purpose: "Loop disciplinado de diagnóstico em 6 etapas para bugs difíceis e regressões: criar teste reproduzível vermelho → minimizar → formular hipótese → instrumentar → corrigir → teste de regressão."
+      },
+
+      {
+        name: "tdd",
+        purpose: "Ciclo estrito de Test-Driven Development (Red-Green-Refactor) construindo uma fatia vertical completa por vez, com testes de unidade e integração focados."
+      },
+
+      {
+        name: "codebase-design",
+        purpose: "Disciplina de design de software: muita funcionalidade escondida atrás de interfaces estreitas, teste de deleção e garantia de localidade para evitar espalhamento de bugs."
+      },
+
+      {
+        name: "improve-codebase-architecture",
+        purpose: "Varre o repositório em busca de módulos rasos (shallow), analisa pontos quentes no git log e gera relatório HTML com propostas de refatoração para módulos profundos (Ousterhout)."
+      },
+
+      {
         name: "superpowers-coding-agent",
         purpose: "Metodologia disciplinada de engenharia: brainstorming prévio, planos atômicos de implementação e ciclo Red/Green/Refactor estrito antes de qualquer alteração de código."
       },
@@ -571,6 +634,16 @@ const SUBAGENTS_DETAILS = {
     bio: "Auditor de segurança de código e skills. Bloqueia injeções de prompt e backdoors com SkillSpector, e combate a sobre-engenharia com Karpathy Guidelines.",
     skills: [
       {
+        name: "retro",
+        purpose: "Retrospectiva após sessões complexas sugerindo melhorias permanentes no ambiente do agente (novos linters, scripts de checagem, regras e steering files)."
+      },
+
+      {
+        name: "code-review",
+        purpose: "Revisão de código em dois eixos independentes executados em paralelo: conformidade com padrões Fowler (code smells) e aderência rigorosa à especificação da tarefa."
+      },
+
+      {
         name: "skillspector-auditor",
         purpose: "Varredura estática de skills e scripts contra 71 categorias de vulnerabilidades (prompt injection, command execution desprotegida, exfiltração de dados e assinaturas YARA de malware)."
       },
@@ -589,6 +662,16 @@ const SUBAGENTS_DETAILS = {
     role: "Paridade GitHub & Arena AI",
     bio: "Controlador do fluxo híbrido Local <-> Nuvem. Garante snapshots offline seguros, sincronização com GitHub e despacho de tarefas pesadas para a Arena AI.",
     skills: [
+      {
+        name: "pr",
+        purpose: "Estrutura Pull Requests profissionais com evidências visuais antes/depois, teste de impacto e classificação de risco (portas de uma via ou duas vias)."
+      },
+
+      {
+        name: "handoff",
+        purpose: "Compacta o contexto atual em um documento formal de transição de estado para alternância sem atrito e sem desperdício de tokens entre Claude Code, Antigravity e Arena AI."
+      },
+
       {
         name: "vcs-version-agent",
         purpose: "Garante paridade estrita entre o ambiente local e o GitHub, reconciliando branches automáticas 'origin/arena/*' e gerenciando snapshots offline seguros."
@@ -631,6 +714,16 @@ const SUBAGENTS_DETAILS = {
     role: "Redação SBC/IEEE k-dense",
     bio: "Redator acadêmico focado em alta densidade técnica, pirâmide invertida na introdução, rastreabilidade de evidências e eliminação de clichês sintéticos de IA.",
     skills: [
+      {
+        name: "writing-beats",
+        purpose: "Estruturação de ritmo e cadência narrativa para artigos científicos, dissertações e relatórios executivos de alto impacto."
+      },
+
+      {
+        name: "writing-for-agents",
+        purpose: "Diretrizes de redação de documentos de alta densidade técnica, estruturados para consumo inequívoco por agentes e revisores acadêmicos."
+      },
+
       {
         name: "scientific-writing",
         purpose: "Estrutura formalmente artigos e dissertações seções por seção (Abstract, Pirâmide Invertida na Introdução, Taxonomia de Trabalhos Relacionados e Metodologia Rigorosa)."

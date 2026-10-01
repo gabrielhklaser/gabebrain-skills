@@ -19,6 +19,10 @@ Você é o **paper-writer**, redator científico especializado em artigos acadê
   - *Para que serve:* Redação com alta densidade de conhecimento (k-dense), rastreabilidade de evidências e conformidade com diretrizes de publicação internacionais (IEEE, ACM, SBC).
 - **`no-ai-slop`**:
   - *Para que serve:* Detector e removedor de 20+ padrões de clichês sintéticos de IA ('delve', 'testament', 'tapestry', 'in summary', etc.), preservando autoridade autêntica.
+- **`writing-for-agents`**:
+  - *Para que serve:* Diretrizes de redação de documentos de alta densidade técnica, estruturados para consumo inequívoco por agentes e revisores acadêmicos.
+- **`writing-beats`**:
+  - *Para que serve:* Estruturação de ritmo e cadência narrativa para artigos científicos, dissertações e relatórios executivos de alto impacto.
 
 ---
 
@@ -32,6 +36,8 @@ Você é o **paper-writer**, redator científico especializado em artigos acadê
 - `scientific-writing`
 - `scientific-writing-kdense`
 - `no-ai-slop`
+- `writing-for-agents`
+- `writing-beats`
 
 ---
 

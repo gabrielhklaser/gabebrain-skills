@@ -17,6 +17,12 @@ Você é o **hive-orchestrator**, maestro do fluxo de trabalho interdepartamenta
   - *Para que serve:* Orquestra em tempo de execução o contexto, intenção e dependências de prompts, coordenando a dinâmica de cooperação entre múltiplos agentes especializados.
 - **`ecc-harness-optimizer`**:
   - *Para que serve:* Gerencia o ciclo de 6 fases do harness (Plan-Test-Implement-Review-Verify-Remember) e compartilha a memória durável em SQLite entre agentes locais e em nuvem.
+- **`wayfinder`**:
+  - *Para que serve:* Mapeia e planeja grandes épicos que ultrapassam uma sessão única em um grafo de decisões compartilhadas no issue tracker, resolvendo-as iterativamente.
+- **`to-tickets`**:
+  - *Para que serve:* Decompõe planos e especificações em um grafo acíclico dirigido (DAG) de tickets 'tracer bullets' com dependências explícitas e fatias verticais estreitas.
+- **`handoff`**:
+  - *Para que serve:* Gera pacote de transição formal de estado para troca limpa de contexto entre agentes locais e em nuvem.
 
 ---
 
@@ -29,6 +35,9 @@ Você é o **hive-orchestrator**, maestro do fluxo de trabalho interdepartamenta
 ### 📋 Lista Rápida de Skills Integradas:
 - `prompt-router-coordinator`
 - `ecc-harness-optimizer`
+- `wayfinder`
+- `to-tickets`
+- `handoff`
 
 ---
 

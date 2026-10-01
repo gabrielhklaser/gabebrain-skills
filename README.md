@@ -79,6 +79,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 15. **`sprout-cli`**: Interface CLI multi-agente para mensageria Nostr (canais/DMs), workflows, feed de eventos, proteções de branch e memória persistente chave-valor (`mem`).
 16. **`github-research`**: Pesquisa especializada de histórico de issues, PRs mesclados e código via GitHub CLI (`gh`).
 17. **`anydoc`**, **`no-ai-slop`**, **`prompt-router-coordinator`**, **`scientific-writing`**, **`scientific-thinking-scholar-evaluation`**: conversão de documentos, filtro anti-slop, roteamento de prompts entre agentes e escrita/avaliação científica.
+18. **`web-asset-generator`**: Geração profissional de web assets (favicons, ícones PWA Android/iOS, imagens Open Graph/Twitter Cards e metatags HTML) a partir de logos, textos ou emojis, com validação de dimensões e contraste WCAG.
 
 ### 🔁 Sincronização (este repo é a fonte da verdade)
 

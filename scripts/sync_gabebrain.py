@@ -68,6 +68,7 @@ DOMAINS = {
     "environmentalist-analyst": "dominio/geociencias",
     "run-tests": "dominio/engenharia-software",
     "canva-image-agent": "dominio/design",
+    "web-asset-generator": "dominio/design",
 }
 
 

@@ -81,17 +81,17 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 ### 🔍 2. DeepResearchAgent (`agents/deep-research-agent.md`)
 *Cluster Líder de Pesquisa Profunda na Internet & Extração Estruturada em 3 Fases*
 - `sub: research-lead` (`agents/research-lead.md`): Fase 1 - Estruturação de `outline.yaml` e matriz de campos `fields.yaml` (`deep-research`, `research`).
-- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`).
+- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`, `caveman`).
 - `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de campos via JSON, notas limpas e relatório consolidado (`research-report`, `web-para-nota`).
-- `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`).
+- `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`, `caveman`).
 
 ### 💻 3. DevAgent (`agents/dev-agent.md`)
 *Cluster Líder de Engenharia de Software, AppSec, Context7, Ponytail & Harness*
-- `sub: coder-tdd` (`agents/coder-tdd.md`): Desenvolvimento disciplinado com TDD Red/Green/Refactor, minimalismo e planos atômicos (`superpowers-coding-agent`, `run-tests`, `ponytail`).
+- `sub: coder-tdd` (`agents/coder-tdd.md`): Desenvolvimento disciplinado com TDD Red/Green/Refactor, minimalismo e planos atômicos (`superpowers-coding-agent`, `run-tests`, `ponytail`, `caveman`).
 - `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial (`context7-mcp`, `context7-cli`, `find-docs`).
 - `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy (`skillspector-auditor`, `karpathy-guidelines`).
-- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer (`vcs-version-agent`, `arena-ai-controller`, `ecc-harness-optimizer`).
-- *Suíte Ponytail*: Anti-overengineering, ladder YAGNI, código mínimo e auditoria (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`).
+- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer (`vcs-version-agent`, `arena-ai-controller`, `ecc-harness-optimizer`, `caveman`, `caveman-commit`).
+- *Suíte Ponytail & Caveman*: Código mínimo e anti-overengineering (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`) e comunicação ultracompacta para economia extrema de tokens (`caveman`, `caveman-commit`, `caveman-compress`).
 
 ### 🎓 4. ScienceAgent (`agents/science-agent.md`)
 *Cluster Líder de Produção Científica, Mestrado PPGCA & Peer Review*

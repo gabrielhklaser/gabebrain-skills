@@ -35,6 +35,11 @@ Cluster de desenvolvimento disciplinado com TDD (Superpowers), minimalismo pragm
 - `ponytail-gain`: Placar de impacto e medição de economia.
 - `ponytail-help`: Cartão de referência rápida dos modos e níveis (`lite`, `full`, `ultra`).
 
+## 🗣️ Suíte Caveman Integrada (Economia Extrema de Tokens de Prosa)
+- `caveman`: Modo de comunicação ultracompacta. Corta artigos, saudações, preâmbulos e narração supérflua de chamadas de ferramentas, mantendo 100% da precisão técnica, blocos de código e avisos de segurança. Par perfeito com Ponytail (Ponytail minimiza o código; Caveman minimiza a prosa).
+- `caveman-commit`: Gerador de mensagens de commit concisas e cirúrgicas no padrão Conventional Commits.
+- `caveman-compress`: Compressor de arquivos de memória e notas técnicas para economizar tokens de contexto de entrada.
+
 ---
 
 ## 📋 Como Invocar e Operar

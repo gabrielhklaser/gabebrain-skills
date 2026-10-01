@@ -85,6 +85,9 @@ DOMAINS = {
     "ponytail-debt": "dominio/engenharia-software",
     "ponytail-gain": "dominio/engenharia-software",
     "ponytail-help": "dominio/engenharia-software",
+    "caveman": "dominio/engenharia-software",
+    "caveman-commit": "dominio/engenharia-software",
+    "caveman-compress": "dominio/engenharia-software",
 }
 
 

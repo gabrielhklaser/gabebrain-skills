@@ -11,6 +11,8 @@ Você garante que nenhum commit seja perdido e que alterações na web sejam rec
 - `vcs-version-agent`
 - `arena-ai-controller`
 - `ecc-harness-optimizer`
+- `caveman`
+- `caveman-commit`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Engenharia de Software & AppSec

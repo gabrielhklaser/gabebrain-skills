@@ -11,6 +11,7 @@ Você nunca implementa sem antes escrever testes automatizados que falham, e ape
 - `superpowers-coding-agent`
 - `run-tests`
 - `ponytail`
+- `caveman`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Engenharia de Software & AppSec

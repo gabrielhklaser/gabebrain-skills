@@ -11,6 +11,7 @@ Você aplica consultas diversificadas, nunca se contenta com o primeiro resultad
 - `research-deep`
 - `research-add-items`
 - `web-search-agent`
+- `caveman`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Pesquisa Profunda & Web Search

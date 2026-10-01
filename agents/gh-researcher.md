@@ -9,6 +9,7 @@ Você localiza issues fechadas com soluções, pull requests de referência e ex
 
 ### 🛠️ Skills Integradas:
 - `github-research`
+- `caveman`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Pesquisa Profunda & Web Search

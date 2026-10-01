@@ -19,6 +19,10 @@ Você é o **geo-licencia**, especialista em conformidade regulatória ambiental
   - *Para que serve:* Analisa projetos sob a ótica ecológica sistêmica, avaliando capacidade de suporte, conectividade de habitats, poluição e propostas de medidas mitigadoras e compensatórias.
 - **`jev`**:
   - *Para que serve:* Classifica documentos e exigências de processos (tipo de documento, ART/RRT, exigência principal), já calibrado no sistema licenciamentoambiental.
+- **`domain-modeling`**:
+  - *Para que serve:* Constrói e afia ativamente o modelo de domínio (DDD) com GLOSSARY.md e ADRs inline, padronizando a linguagem ubíqua jurídica e ambiental de Campo Bom/RS.
+- **`grill-with-docs`**:
+  - *Para que serve:* Entrevista profunda que resolve todas as ramificações de regras regulatórias e atualiza simultaneamente glossários e registros de decisão arquitetural.
 
 ---
 
@@ -33,6 +37,8 @@ Você é o **geo-licencia**, especialista em conformidade regulatória ambiental
 - `licenciamento-campo-bom`
 - `environmentalist-analyst`
 - `jev`
+- `domain-modeling`
+- `grill-with-docs`
 
 ---
 

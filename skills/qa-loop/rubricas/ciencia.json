@@ -1,0 +1,13 @@
+{
+  "nome": "ciencia",
+  "descricao": "Texto academico e pesquisa (science-agent, deep-research-agent). Complementa o peer-reviewer, que faz o parecer longo.",
+  "pilares": [
+    {"id": "rigor_metodologico", "peso": 30, "pergunta": "O metodo e as conclusoes se sustentam nas evidencias apresentadas?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "ancoragem_fontes", "peso": 30, "pergunta": "As afirmacoes estao ancoradas em fontes citadas e checaveis, sem referencias inventadas?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "clareza_densidade", "peso": 20, "pergunta": "O texto e claro, denso e sem cliches sinteticos nem enchimento?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "aderencia", "peso": 20, "pergunta": "Respeita o formato, o escopo e as regras da ESPECIFICACAO?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]}
+  ],
+  "vetos": [
+    {"id": "referencia_inventada", "pergunta": "Ha referencia ou citacao que parece inventada ou nao verificavel?"}
+  ]
+}

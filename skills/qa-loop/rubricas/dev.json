@@ -1,0 +1,14 @@
+{
+  "nome": "dev",
+  "descricao": "Codigo e software (cluster dev-agent). Robustez e funcionalidade tambem sao medidas pelos gates.",
+  "pilares": [
+    {"id": "funcionalidade", "peso": 30, "pergunta": "O artefato cumpre o que a ESPECIFICACAO pede, com logica coerente e casos de borda tratados?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "robustez", "peso": 30, "pergunta": "Considerando as EVIDENCIAS MEDIDAS (testes, compilacao), o codigo e robusto e trata erros explicitamente?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "praticas", "peso": 20, "pergunta": "O codigo e limpo, modular, tipado e eficiente, sem codigo morto nem duplicacao?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "aderencia", "peso": 20, "pergunta": "Respeita todas as restricoes e regras da ESPECIFICACAO (padrao do projeto, escopo cirurgico, sem extras)?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]}
+  ],
+  "vetos": [
+    {"id": "segredo", "pergunta": "O artefato expoe segredo, token ou senha em texto?"},
+    {"id": "destrutivo", "pergunta": "O artefato executa acao destrutiva ou irreversivel nao pedida na especificacao?"}
+  ]
+}

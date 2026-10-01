@@ -178,6 +178,7 @@
   position: relative;
 }
 
+.rug-loop { background: #312e81; border-color: #facc15; box-shadow: 0 0 14px rgba(250, 204, 21, 0.4), inset 0 0 8px rgba(0,0,0,0.8); }
 .rug-geo { background: #14532d; border-color: #22c55e; }
 .rug-research { background: #0c4a6e; border-color: #0284c7; }
 .rug-dev { background: #78350f; border-color: #d97706; }

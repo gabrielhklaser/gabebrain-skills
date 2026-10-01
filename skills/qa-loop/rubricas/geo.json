@@ -1,0 +1,14 @@
+{
+  "nome": "geo",
+  "descricao": "Laudos, hidrologia, GIS, licenciamento (cluster geo-agent). Pensado para saidas tecnicas e numericas.",
+  "pilares": [
+    {"id": "fidelidade_tecnica", "peso": 30, "pergunta": "Metodo, unidades e formulas estao corretos e coerentes com a ESPECIFICACAO e a pratica da area?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "rastreabilidade", "peso": 20, "pergunta": "Cada afirmacao tecnica cita fonte verificavel (documento e pagina, norma, dado de origem)?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "consistencia", "peso": 20, "pergunta": "Numeros, tabelas e conclusoes sao consistentes entre si e com as EVIDENCIAS MEDIDAS?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]},
+    {"id": "aderencia", "peso": 30, "pergunta": "Respeita as regras da ESPECIFICACAO (normas aplicaveis, formato, escopo)?", "criterios": ["Inaceitavel","Fraco","Aceitavel","Bom","Excelente"]}
+  ],
+  "vetos": [
+    {"id": "sem_fonte", "pergunta": "Ha conclusao tecnica decisiva apresentada como fato sem nenhuma fonte ou declaracao de que vem do conhecimento geral?"},
+    {"id": "numero_incoerente", "pergunta": "Ha valor numerico que contradiz outro valor do mesmo artefato?"}
+  ]
+}

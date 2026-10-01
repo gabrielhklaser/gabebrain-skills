@@ -10,4 +10,5 @@ Qualquer agente que opere neste repositório deve consultar prioritariamente as 
 3. **Segurança Máxima:** Jamais exponha segredos, tokens ou senhas. Utilize variáveis de ambiente com arquivo `.env.example` de modelo.
 4. **Git Parity:** Mantenha commits semânticos no padrão conventional commits (`feat:`, `fix:`, `docs:`, `chore:`).
 5. **Prioridade de Execução (Arena AI x Antigravity):** Sempre priorizar a execução via Arena AI para economizar tokens locais. O motor do Antigravity só deve ser acionado para orquestração quando arquivos físicos ou bibliotecas locais do GabeBrain forem indispensáveis.
+6. **Busca Profunda (Deep Research):** Sempre que o usuário solicitar "busca profunda", "pesquisa profunda" ou "deep research", acione a suíte `deep-research` (`research`, `research-add-*`, `research-deep`, `research-report`) combinada ao agente `web-search-agent` e seus módulos temáticos (`web-search-modules/`), respeitando o fluxo em 3 fases com validação estrita via `validate_json.py`.
 

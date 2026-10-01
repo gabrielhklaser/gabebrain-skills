@@ -700,12 +700,116 @@ const SUBAGENTS_DETAILS = {
   }
 };
 
+
+// Tabela Base de Experiência e Nível de Uso dos Agentes (Zero-Token RPG Score)
+const DEFAULT_BASE_XP = {
+  "LoopAgent": 620,
+  "qa-loop": 620,
+  "loop-gatekeeper": 310,
+  "loop-scorer": 280,
+  "hive-orchestrator": 340,
+  "prompt-router": 320,
+  "GeoAgent": 540,
+  "geo-gis": 430,
+  "geo-licencia": 390,
+  "geo-hidro": 300,
+  "geo-acervo": 330,
+  "DeepResearchAgent": 510,
+  "research-lead": 330,
+  "web-scout": 380,
+  "report-synth": 310,
+  "gh-researcher": 270,
+  "DevAgent": 650,
+  "coder-tdd": 560,
+  "context7-verifier": 420,
+  "appsec-auditor": 360,
+  "vcs-sync": 490,
+  "ScienceAgent": 480,
+  "ppgca-corpus": 370,
+  "paper-writer": 350,
+  "peer-reviewer": 340,
+  "DesignAgent": 390,
+  "canva-designer": 270,
+  "web-asset-maker": 250
+};
+
+class AgentUsageTracker {
+  static calculateLevel(xp) {
+    if (xp >= 1200) return { lvl: 7, rank: "⚡ Lenda do GabeBrain", nextXp: 2000, currentBase: 1200 };
+    if (xp >= 800)  return { lvl: 6, rank: "🌟 Grão-Mestre", nextXp: 1200, currentBase: 800 };
+    if (xp >= 550)  return { lvl: 5, rank: "👑 Mestre de Divisão", nextXp: 800, currentBase: 550 };
+    if (xp >= 350)  return { lvl: 4, rank: "💎 Especialista Sênior", nextXp: 550, currentBase: 350 };
+    if (xp >= 200)  return { lvl: 3, rank: "🛡️ Operador Experiente", nextXp: 350, currentBase: 200 };
+    if (xp >= 100)  return { lvl: 2, rank: "⚔️ Aventureiro Ativo", nextXp: 200, currentBase: 100 };
+    return { lvl: 1, rank: "🥉 Recruta da Guilda", nextXp: 100, currentBase: 0 };
+  }
+
+  static getProgressPercent(xp) {
+    const info = this.calculateLevel(xp);
+    const span = info.nextXp - info.currentBase;
+    const progress = xp - info.currentBase;
+    const pct = Math.min(100, Math.max(6, Math.round((progress / span) * 100)));
+    return pct;
+  }
+
+  // Verificação Determinística de Uso ao Carregar o Plugin (Custo = ZERO TOKENS)
+  static scanLocalUsageEvidence(vault, existingScores = {}) {
+    const scores = Object.assign({}, DEFAULT_BASE_XP, existingScores);
+    const now = Date.now();
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const SEVEN_DAYS = 7 * ONE_DAY;
+
+    try {
+      // 1. Varrer arquivos markdown do cofre em memória (super rápido, ~2ms)
+      const allFiles = vault.getMarkdownFiles();
+      for (const file of allFiles) {
+        const pLower = file.path.toLowerCase();
+        const mtime = file.stat ? file.stat.mtime : 0;
+        const isRecent = (now - mtime) < SEVEN_DAYS;
+        const isToday = (now - mtime) < ONE_DAY;
+
+        for (const key of Object.keys(scores)) {
+          const keyLower = key.toLowerCase();
+          if (pLower.includes(keyLower)) {
+            scores[key] = (scores[key] || 100) + 5;
+            if (isRecent) scores[key] += 10;
+            if (isToday) scores[key] += 20;
+          }
+        }
+      }
+
+      // 2. Varrer histórico git recente (zero tokens via child_process local)
+      try {
+        const cp = require("child_process");
+        const vaultPath = vault.adapter.basePath;
+        if (vaultPath && fs.existsSync(path.join(vaultPath, ".git"))) {
+          const gitLog = cp.execSync("git log -n 35 --oneline", { cwd: vaultPath, encoding: "utf-8", timeout: 1500 });
+          for (const key of Object.keys(scores)) {
+            const keyLower = key.toLowerCase();
+            const matches = (gitLog.toLowerCase().match(new RegExp(keyLower, "g")) || []).length;
+            if (matches > 0) {
+              scores[key] = (scores[key] || 100) + (matches * 15);
+            }
+          }
+        }
+      } catch (ge) {}
+    } catch (e) {
+      console.log("Erro na varredura determinística de uso:", e);
+    }
+
+    return scores;
+  }
+}
+
 class GabeBrainCompanyPlugin extends Plugin {
   async onload() {
     console.log("Loading GabeBrain Corp - RPG 16-Bit Office Plugin");
 
     // Sincronizar skills e salas automaticamente ao abrir o Obsidian
     await this.syncAllSkills(false);
+    // Sincronizar pontuação determinística de uso de cada agente (Zero Tokens)
+    await this.syncUsageScores();
+
 
     this.registerView(
       VIEW_TYPE_GABEBRAIN_RPG,
@@ -737,6 +841,18 @@ class GabeBrainCompanyPlugin extends Plugin {
     window.addEventListener("beforeunload", this.beforeUnloadHandler);
   }
 
+  
+  async syncUsageScores() {
+    try {
+      const data = await this.loadData() || {};
+      const updatedScores = AgentUsageTracker.scanLocalUsageEvidence(this.app.vault, data.usageScores);
+      data.usageScores = updatedScores;
+      await this.saveData(data);
+    } catch (e) {
+      console.log("Erro ao sincronizar scores de uso:", e);
+    }
+  }
+
   async onunload() {
     console.log("Unloading GabeBrain Corp - RPG 16-Bit Office Plugin");
     if (this.beforeUnloadHandler) {
@@ -744,6 +860,9 @@ class GabeBrainCompanyPlugin extends Plugin {
     }
     // Sincronizar e salvar ao descarregar/fechar o Obsidian
     await this.syncAllSkills(false);
+    // Sincronizar pontuação determinística de uso de cada agente (Zero Tokens)
+    await this.syncUsageScores();
+
   }
 
   // Sincronização síncrona executada no fechamento da janela
@@ -979,13 +1098,50 @@ class GabeBrainCompanyView extends ItemView {
   async loadPluginData() {
     const data = await this.plugin.loadData();
     if (data && data.departments) {
+      for (const initDept of INITIAL_DEPARTMENTS) {
+        const existing = data.departments.find(d => d.id === initDept.id);
+        if (!existing) {
+          data.departments.unshift(JSON.parse(JSON.stringify(initDept)));
+        } else {
+          for (const initSa of initDept.subagents) {
+            if (!existing.subagents.some(s => s.name === initSa.name)) {
+              existing.subagents.push(initSa);
+            }
+          }
+        }
+      }
       this.departments = data.departments;
+    } else {
+      this.departments = JSON.parse(JSON.stringify(INITIAL_DEPARTMENTS));
     }
+
+    this.usageScores = (data && data.usageScores) ? data.usageScores : Object.assign({}, DEFAULT_BASE_XP);
   }
 
   async savePluginData() {
-    await this.plugin.saveData({ departments: this.departments });
+    await this.plugin.saveData({
+      departments: this.departments,
+      usageScores: this.usageScores
+    });
   }
+
+  awardXp(agentName, amount, reason = "Atividade") {
+    if (!this.usageScores) this.usageScores = Object.assign({}, DEFAULT_BASE_XP);
+    const oldXp = this.usageScores[agentName] || 100;
+    const newXp = oldXp + amount;
+    this.usageScores[agentName] = newXp;
+
+    const oldLvl = AgentUsageTracker.calculateLevel(oldXp).lvl;
+    const newLvl = AgentUsageTracker.calculateLevel(newXp).lvl;
+
+    this.savePluginData();
+
+    if (newLvl > oldLvl) {
+      RetroAudio.playFanfare();
+      new Notice(`🎉 LEVEL UP! ${agentName} subiu para o NÍVEL ${newLvl}!`);
+    }
+  }
+
 
   renderView() {
     const container = this.containerEl.children[1];
@@ -1004,7 +1160,7 @@ class GabeBrainCompanyView extends ItemView {
     titleText.createEl("p", { text: "Ambiente 16-Bit SNES Zelda • 5 Salas Departamentais • Mesas de Trabalho & Quadros Negros" });
 
     const stats = header.createDiv({ cls: "gb-rpg-header-stats" });
-    stats.createDiv({ cls: "stat-pill" }).innerHTML = `SALAS: <strong>5</strong>`;
+    stats.createDiv({ cls: "stat-pill" }).innerHTML = `SALAS: <strong>${this.departments.length}</strong>`;
     
     let totalSkills = 0;
     let totalInterns = 0;
@@ -1013,8 +1169,19 @@ class GabeBrainCompanyView extends ItemView {
       if (d.intern && d.intern.active) totalInterns++;
     });
 
+    let totalGuildXp = 0;
+    let topAgent = { name: "LoopAgent", xp: 0, lvl: 1 };
+    const scores = this.usageScores || DEFAULT_BASE_XP;
+    for (const [k, v] of Object.entries(scores)) {
+      totalGuildXp += v;
+      if (v > topAgent.xp) {
+        topAgent = { name: k, xp: v, lvl: AgentUsageTracker.calculateLevel(v).lvl };
+      }
+    }
+
     stats.createDiv({ cls: "stat-pill" }).innerHTML = `SKILLS NO QUADRO: <strong>${totalSkills}</strong>`;
-    stats.createDiv({ cls: "stat-pill" }).innerHTML = `ESTAGIÁRIOS NA MESA: <strong>${totalInterns}</strong>`;
+    stats.createDiv({ cls: "stat-pill" }).innerHTML = `XP TOTAL DA GUILDA: <strong>${totalGuildXp.toLocaleString()} pts</strong>`;
+    stats.createDiv({ cls: "stat-pill highlight-pill" }).innerHTML = `👑 TOP AGENTE: <strong>${topAgent.name} (LVL ${topAgent.lvl})</strong>`;
 
     // Departments Grid (Office Chambers with Wooden Divisórias)
     const grid = root.createDiv({ cls: "gb-departments-grid" });
@@ -1093,6 +1260,11 @@ class GabeBrainCompanyView extends ItemView {
     actorBox.innerHTML = SPRITES[dept.sprite] || SPRITES.geo;
     rug.createDiv({ cls: "actor-label", text: dept.lead });
 
+    const leadXp = (this.usageScores && this.usageScores[dept.lead]) ? this.usageScores[dept.lead] : (DEFAULT_BASE_XP[dept.lead] || 350);
+    const leadLvlInfo = AgentUsageTracker.calculateLevel(leadXp);
+    const leadXpBadge = rug.createDiv({ cls: "actor-xp-pill" });
+    leadXpBadge.innerHTML = `⭐ LVL ${leadLvlInfo.lvl} • ${leadXp} XP`;
+
     // The Interactive Work Desk (Mesa de Trabalho) - Serves as action button and drop target!
     const desk = floorArea.createDiv({ cls: "rpg-work-desk" });
     desk.title = `Mesa de trabalho de ${dept.lead}. Clique para adicionar uma nova skill ou arraste o .md para cá!`;
@@ -1140,10 +1312,27 @@ class GabeBrainCompanyView extends ItemView {
     const subRoster = subSection.createDiv({ cls: "subagents-roster" });
     dept.subagents.forEach((sa) => {
       const badge = subRoster.createDiv({ cls: "subagent-badge" });
-      badge.innerHTML = `<strong>sub: ${sa.name}</strong> <span>${sa.role}</span>`;
-      badge.title = `Clique para abrir o perfil e ver as skills de "${sa.name}"`;
+      
+      const saXp = (this.usageScores && this.usageScores[sa.name]) ? this.usageScores[sa.name] : (DEFAULT_BASE_XP[sa.name] || 250);
+      const saLvl = AgentUsageTracker.calculateLevel(saXp);
+      const saPct = AgentUsageTracker.getProgressPercent(saXp);
+
+      badge.innerHTML = `
+        <div class="subagent-info">
+          <strong>sub: ${sa.name}</strong> <span>${sa.role}</span>
+        </div>
+        <div class="subagent-xp-wrap" title="Pontuação de uso: ${saXp} XP (${saLvl.rank})">
+          <span class="subagent-lvl-pill">LV.${saLvl.lvl}</span>
+          <div class="subagent-xp-track">
+            <div class="subagent-xp-fill" style="width: ${saPct}%"></div>
+          </div>
+          <span class="subagent-xp-val">${saXp} XP</span>
+        </div>
+      `;
+      badge.title = `Clique para abrir o perfil, ver skills e conferir pontuação de uso de "${sa.name}"`;
       badge.addEventListener("click", (e) => {
         e.stopPropagation();
+        this.awardXp(sa.name, 10, "Consulta de perfil");
         this.openSubagentProfileModal(dept, sa.name);
       });
     });
@@ -1316,7 +1505,28 @@ class GabeBrainCompanyView extends ItemView {
       document.removeEventListener("keydown", onKeydown);
     });
 
-    // 2. Character Bio & Mission Box
+    // 2. RPG XP & Activity Status Box (Zero-Token Deterministic Metric)
+    const agentXp = (this.usageScores && this.usageScores[profile.name]) ? this.usageScores[profile.name] : (DEFAULT_BASE_XP[profile.name] || 280);
+    const lvlInfo = AgentUsageTracker.calculateLevel(agentXp);
+    const pct = AgentUsageTracker.getProgressPercent(agentXp);
+
+    const statusBox = modalBox.createDiv({ cls: "gb-profile-status-box" });
+    
+    const statusTop = statusBox.createDiv({ cls: "status-box-top" });
+    const lvlPill = statusTop.createDiv({ cls: "status-lvl-badge" });
+    lvlPill.innerHTML = `⭐ NÍVEL ${lvlInfo.lvl}`;
+    statusTop.createDiv({ cls: "status-rank-text", text: lvlInfo.rank });
+    statusTop.createDiv({ cls: "status-xp-total", text: `⚡ ${agentXp} XP de Uso` });
+
+    const statusTrack = statusBox.createDiv({ cls: "status-xp-track-wrap" });
+    const trackBar = statusTrack.createDiv({ cls: "status-xp-track" });
+    trackBar.createDiv({ cls: "status-xp-fill", style: `width: ${pct}%` });
+
+    const statusSub = statusBox.createDiv({ cls: "status-xp-subtext" });
+    statusSub.createSpan({ text: `Progresso: ${pct}% (${agentXp} / ${lvlInfo.nextXp} XP)` });
+    statusSub.createSpan({ cls: "xp-to-next", text: `${lvlInfo.nextXp - agentXp} XP para Nível ${lvlInfo.lvl + 1}` });
+
+    // 3. Character Bio & Mission Box
     const bioBox = modalBox.createDiv({ cls: "gb-profile-bio-box" });
     bioBox.createDiv({ cls: "gb-profile-box-label", text: "📜 PERFIL & MISSÃO DO SUBAGENTE:" });
     bioBox.createDiv({ cls: "gb-profile-bio-text", text: profile.bio });

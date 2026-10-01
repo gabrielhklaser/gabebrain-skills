@@ -68,7 +68,7 @@ Esta arquitetura fraciona o ecossistema GabeBrain em 5 clusters especializados c
 | **🔍 DeepResearchAgent** | `research-lead`, `web-scout`, `report-synth`, `gh-researcher` | Pesquisa Profunda Web & Extração em 3 Fases | [[Master_DeepResearchAgent_Investigacao_Web]] |
 | **💻 DevAgent** | `coder-tdd`, `context7-verifier`, `appsec-auditor`, `vcs-sync` | TDD, Anti-Alucinação Context7, AppSec & Git | [[Master_DevAgent_Engenharia_AppSec_e_Context7]] |
 | **🎓 ScienceAgent** | `ppgca-corpus`, `paper-writer`, `peer-reviewer` | Mestrado PPGCA, Redação Sem AI Slop & Peer Review | [[Master_ScienceAgent_PPGCA_e_Producao_Cientifica]] |
-| **🎨 DesignAgent** | `canva-designer`, `web-asset-maker` | Canva Pro Automatizado, Favicons & Social Assets | [[Master_DesignAgent_Identidade_e_Assets]] |
+| **🎨 DesignAgent** | `canva-designer`, `web-asset-maker`, `ui-ux-designer` | Canva Pro, Favicons, Social Assets & UI/UX Pro Max | [[Master_DesignAgent_Identidade_e_Assets]] |
 
 ![[00-Dashboard/gabebrain_ecossistema.png|800]]
 

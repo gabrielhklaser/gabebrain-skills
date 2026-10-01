@@ -100,9 +100,10 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 - `sub: peer-reviewer` (`agents/peer-reviewer.md`): Simulação de parecerista sênior (IEEE/ACM/SBC), auditoria epistêmica e triagem rápida Jev (`revisor-cientifico-peer-review`, `scientific-thinking-scholar-evaluation`, `jev`).
 
 ### 🎨 5. DesignAgent (`agents/design-agent.md`)
-*Cluster Líder de Identidade Visual, Branding & Assets Digitais*
+*Cluster Líder de Identidade Visual, Branding, UI/UX & Assets Digitais*
 - `sub: canva-designer` (`agents/canva-designer.md`): Automação de designs e infográficos com Canva Pro autenticado via Playwright (`canva-image-agent`).
 - `sub: web-asset-maker` (`agents/web-asset-maker.md`): Geração completa de favicons, ícones PWA e imagens Open Graph (`web-asset-generator`).
+- `sub: ui-ux-designer` (`agents/ui-ux-designer.md`): Inteligência de design UI/UX, 79 estilos, 192 paletas de produtos, 74 pares de fontes, 119 regras UX/WCAG e 22 stacks (`ui-ux-pro-max`).
 
 ---
 

@@ -2,8 +2,9 @@
 """Cliente da API Jev (TypeSafe System One) - decide, nao escreve.
 
 Sem dependencias externas. Chave lida de (nesta ordem):
-  1. variavel de ambiente TYPESAFE_API_KEY
-  2. <pasta da skill>/.env  (fora do Git e do vault; ver sync_gabebrain.py)
+  1. variavel de ambiente TYPESAFE_API_KEY (processo)
+  2. variavel de USUARIO do Windows (registro), compartilhada por Claude, Antigravity e Codex
+  3. <pasta da skill>/.env  (fora do Git e do vault; ver sync_gabebrain.py)
 
 Comandos:
   setup                      pede a chave (oculta) e grava no .env da skill
@@ -86,8 +87,19 @@ def clean_key(raw: str) -> str:
     return key
 
 
+def user_env_key() -> str | None:
+    """Variavel de USUARIO do Windows (registro): vale tambem para processos abertos antes de ela existir."""
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as reg:
+            value, _ = winreg.QueryValueEx(reg, KEY_VAR)
+        return str(value) or None
+    except (ImportError, OSError):
+        return None
+
+
 def load_key() -> str | None:
-    key = os.environ.get(KEY_VAR)
+    key = os.environ.get(KEY_VAR) or user_env_key()
     if key:
         return clean_key(key)
     if ENV_PATH.is_file():

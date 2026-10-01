@@ -56,6 +56,32 @@ class RetroAudio {
 
 // 16-Bit SVG Pixel Art Sprites (SNES Zelda Inspiration)
 const SPRITES = {
+  // Grandmaster / King of the Guild (Crown, royal indigo robe, gold trim, glowing loop scepter)
+  loop: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+    <!-- Crown -->
+    <rect x="5" y="1" width="6" height="1" fill="#facc15"/>
+    <rect x="5" y="2" width="1" height="1" fill="#facc15"/>
+    <rect x="7" y="2" width="2" height="1" fill="#dc2626"/>
+    <rect x="10" y="2" width="1" height="1" fill="#facc15"/>
+    <!-- Face / Hair / White Beard -->
+    <rect x="5" y="3" width="6" height="3" fill="#ffd199"/>
+    <rect x="6" y="4" width="1" height="1" fill="#0b0f17"/>
+    <rect x="9" y="4" width="1" height="1" fill="#0b0f17"/>
+    <rect x="4" y="6" width="8" height="2" fill="#e2e8f0"/>
+    <rect x="5" y="8" width="6" height="1" fill="#e2e8f0"/>
+    <!-- Royal Mantle / Robe -->
+    <rect x="4" y="8" width="8" height="5" fill="#312e81"/>
+    <rect x="7" y="8" width="2" height="5" fill="#facc15"/>
+    <rect x="3" y="9" width="1" height="4" fill="#991b1b"/>
+    <rect x="12" y="9" width="1" height="4" fill="#991b1b"/>
+    <!-- Glowing Loop Scepter -->
+    <rect x="13" y="5" width="2" height="2" fill="#38bdf8"/>
+    <rect x="13" y="7" width="1" height="6" fill="#facc15"/>
+    <!-- Boots -->
+    <rect x="5" y="13" width="2" height="2" fill="#1e1b4b"/>
+    <rect x="9" y="13" width="2" height="2" fill="#1e1b4b"/>
+  </svg>`,
+
   // Link-style Ranger (Green tunic, cap, sword)
   geo: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Cap -->
@@ -180,6 +206,29 @@ const SPRITES = {
 
 // Initial Departments Definition (Matching the GabeBrain 5-Cluster System)
 const INITIAL_DEPARTMENTS = [
+  {
+    id: "loop",
+    name: "🏛️ Torre de Governança, Orquestração & QA-Loop",
+    lead: "LoopAgent",
+    leadRole: "Diretor Executivo de Qualidade, Hive Mind & Handoff",
+    desc: "Governança executiva do ecossistema, gates determinísticos, pontuação de rubricas com Jev, críticas de simplicidade (Bana) e roteamento Arena AI x Local.",
+    sprite: "loop",
+    rugClass: "rug-loop",
+    hearts: 5,
+    subagents: [
+      { name: "loop-gatekeeper", role: "Portões Determinísticos & Gates" },
+      { name: "loop-scorer", role: "Rubricas & Pontuação Jev" },
+      { name: "hive-orchestrator", role: "Hive Mind, Skip & Bana" },
+      { name: "prompt-router", role: "Roteador Híbrido (Arena x Local)" }
+    ],
+    skills: [
+      "qa-loop",
+      "jev",
+      "prompt-router-coordinator",
+      "ecc-harness-optimizer"
+    ],
+    intern: null
+  },
   {
     id: "geo",
     name: "🌍 Divisão de Geociências & Licenciamento",
@@ -1396,6 +1445,7 @@ class GabeBrainCompanyView extends ItemView {
   async openMasterNote(deptId) {
     const { vault, workspace } = this.app;
     const MASTER_MAP = {
+      loop: "📚 Biblioteca de Agentes/Master_LoopAgent_Governanca_e_QALoop.md",
       geo: "📚 Biblioteca de Agentes/Master_GeoAgent_Geociencias_e_Licenciamento.md",
       research: "📚 Biblioteca de Agentes/Master_DeepResearchAgent_Investigacao_Web.md",
       dev: "📚 Biblioteca de Agentes/Master_DevAgent_Engenharia_AppSec_e_Context7.md",
@@ -1420,6 +1470,23 @@ class GabeBrainCompanyView extends ItemView {
     const contentLower = content.toLowerCase();
 
     const CONFLICT_RULES = {
+      loop: [
+        {
+          terms: ["qa", "loop", "gate", "qualidade", "rubrica", "inspecao"],
+          conflictsWith: "qa-loop",
+          reason: "ambas implementam loops ou medições de qualidade para entregas"
+        },
+        {
+          terms: ["jev", "classifica", "score", "pontuacao", "typesafe"],
+          conflictsWith: "jev",
+          reason: "ambas realizam classificação e pontuação semântica ultrarrápida"
+        },
+        {
+          terms: ["router", "orquestra", "despacho", "hive", "skip"],
+          conflictsWith: "prompt-router-coordinator",
+          reason: "ambas coordenam handoff e roteamento de contexto entre ambientes"
+        }
+      ],
       geo: [
         {
           terms: ["gis", "map", "folium", "qgis", "cartografia", "camadas", "leaflet"],

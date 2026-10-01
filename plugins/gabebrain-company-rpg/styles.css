@@ -590,3 +590,260 @@
 .gb-btn-gold:hover {
   background: #a16207;
 }
+
+
+/* ==========================================================================
+   Subagent Profile Modal (16-Bit Zelda SNES Aesthetic)
+   ========================================================================== */
+
+.gb-profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 5, 3, 0.85);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.gb-profile-box {
+  width: 760px;
+  max-width: 95%;
+  max-height: 90vh;
+  background: #170d09;
+  border: 5px solid #ca8a04;
+  box-shadow: 
+    inset -4px -4px 0 #5f3006,
+    inset 4px 4px 0 #fde047,
+    0 16px 36px rgba(0, 0, 0, 0.95);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  animation: zoom-in 0.15s ease-out;
+  box-sizing: border-box;
+  color: #f1f5f9;
+  font-family: 'Courier New', Courier, monospace, monospace;
+}
+
+.gb-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid #5a3015;
+  padding-bottom: 14px;
+}
+
+.gb-profile-header-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.gb-profile-avatar {
+  width: 64px;
+  height: 64px;
+  background: #000;
+  border: 3px solid #ca8a04;
+  box-shadow: 0 4px 0 #000, 0 0 10px rgba(202, 138, 4, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gb-profile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gb-profile-dept-pill {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #ca8a04;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gb-profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gb-profile-name-row h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fef08a;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 0.5px;
+}
+
+.gb-profile-role-tag {
+  background: #25150f;
+  border: 1px solid #78350f;
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 8px;
+  box-shadow: 0 2px 0 #000;
+}
+
+.gb-profile-title-text {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.gb-profile-close-btn {
+  background: #25150f;
+  border: 2px solid #78350f;
+  color: #fca5a5;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #000;
+  transition: all 0.1s ease;
+}
+
+.gb-profile-close-btn:hover {
+  background: #991b1b;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.gb-profile-bio-box {
+  background: #0d0705;
+  border: 2px solid #5a3015;
+  box-shadow: inset 0 0 10px #000;
+  padding: 12px 14px;
+}
+
+.gb-profile-box-label {
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gb-profile-bio-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.gb-profile-skills-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gb-profile-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gb-profile-skill-card {
+  background: #0f1c14;
+  border: 2px solid #234230;
+  box-shadow: 
+    inset 0 0 8px rgba(0, 0, 0, 0.7),
+    0 3px 6px rgba(0, 0, 0, 0.5);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.gb-profile-skill-card:hover {
+  border-color: #86efac;
+}
+
+.gb-profile-skill-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gb-profile-skill-tag {
+  background: #08110b;
+  border: 1px solid #2d5a3f;
+  color: #86efac;
+  font-size: 12px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #000;
+  transition: all 0.15s ease;
+}
+
+.gb-profile-skill-tag:hover {
+  background: #193826;
+  border-color: #4ade80;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.gb-btn-skill-open {
+  font-size: 10.5px !important;
+  padding: 4px 10px !important;
+  border-color: #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+.gb-btn-skill-open:hover {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+}
+
+.gb-profile-skill-purpose {
+  background: #080f0a;
+  border-left: 3px solid #10b981;
+  padding: 8px 12px;
+}
+
+.gb-profile-skill-purpose .purpose-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fde047;
+  margin-bottom: 3px;
+}
+
+.gb-profile-skill-purpose .purpose-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #f1f5f9;
+}
+
+.gb-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 3px solid #5a3015;
+  padding-top: 14px;
+  margin-top: 6px;
+}

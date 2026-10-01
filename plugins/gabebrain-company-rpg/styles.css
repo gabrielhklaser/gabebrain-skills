@@ -848,3 +848,165 @@
   padding-top: 14px;
   margin-top: 6px;
 }
+
+
+/* ==========================================================================
+   RPG Agent Usage Score & Level System (16-Bit Zelda SNES Aesthetic)
+   ========================================================================== */
+
+.actor-xp-pill {
+  font-size: 8px;
+  font-weight: 800;
+  color: #fde047;
+  background: #190e0a;
+  border: 1px solid #ca8a04;
+  padding: 1px 4px;
+  box-shadow: 0 1px 0 #000;
+  margin-top: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.subagent-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.subagent-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.subagent-xp-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.subagent-lvl-pill {
+  background: #25150f;
+  border: 1px solid #d97706;
+  color: #fde047;
+  font-size: 9.5px;
+  font-weight: 900;
+  padding: 1px 5px;
+  box-shadow: 0 1px 0 #000;
+}
+
+.subagent-xp-track {
+  width: 54px;
+  height: 6px;
+  background: #08110b;
+  border: 1px solid #234230;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px #000;
+}
+
+.subagent-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #38bdf8);
+  box-shadow: 0 0 6px #10b981;
+  transition: width 0.3s ease;
+}
+
+.subagent-xp-val {
+  font-size: 9.5px;
+  font-weight: bold;
+  color: #a7f3d0;
+  font-family: monospace;
+  min-width: 48px;
+  text-align: right;
+}
+
+.highlight-pill {
+  border-color: #facc15 !important;
+  color: #fef08a !important;
+  animation: chalk-glow 2s infinite alternate;
+}
+
+/* Modal Status & XP Card */
+.gb-profile-status-box {
+  background: #110906;
+  border: 3px solid #854d0e;
+  box-shadow: 
+    inset -2px -2px 0 #090403,
+    inset 2px 2px 0 #ca8a04,
+    0 4px 10px rgba(0,0,0,0.7);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-box-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.status-lvl-badge {
+  background: #3b1d11;
+  border: 2px solid #facc15;
+  color: #fef08a;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 3px 8px;
+  box-shadow: 0 2px 0 #000;
+  letter-spacing: 0.5px;
+}
+
+.status-rank-text {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #38bdf8;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.status-xp-total {
+  font-size: 11.5px;
+  font-weight: bold;
+  color: #4ade80;
+  font-family: monospace;
+}
+
+.status-xp-track-wrap {
+  width: 100%;
+}
+
+.status-xp-track {
+  width: 100%;
+  height: 10px;
+  background: #050b07;
+  border: 2px solid #2d5a3f;
+  box-shadow: inset 0 0 6px #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.status-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #38bdf8 70%, #facc15 100%);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+  transition: width 0.4s ease;
+}
+
+.status-xp-subtext {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #cbd5e1;
+  font-family: monospace;
+}
+
+.status-xp-subtext .xp-to-next {
+  color: #fde047;
+  font-weight: bold;
+}

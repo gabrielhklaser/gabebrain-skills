@@ -1,0 +1,9 @@
+{
+  "id": "gabebrain-company-rpg",
+  "name": "GabeBrain Corp - RPG 16-Bit",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Visualização lúdica da Empresa GabeBrain e seus 5 departamentos no estilo Zelda SNES 16-bit, com bonequinhos pixel art, drag-and-drop de skills, detecção de conflitos e contratação de subagente estagiário revisor.",
+  "author": "Gabriel H. Klaser",
+  "isDesktopOnly": true
+}

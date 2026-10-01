@@ -141,30 +141,18 @@ class Modern:
                 continue
             rots.append(R)
             assign.update({j: len(rots) - 1 for j in fits})
-        return inview, rots, self.reassign(inview, rots, good, good_short)
+        return inview, rots, assign
 
-    def reassign(self, inview, rots, good=0.0025, good_short=0.0012):
-        """Cada trecho fica com a rotação de MELHOR encaixe (margens conjugadas, como Brasil x África,
-        têm forma quase igual e casam com rotações erradas se valer a primeira que servir)."""
-        length = lambda x: float(np.hypot(*np.diff(x, axis=0).T).sum())
-        assign = {}
-        for j, c in enumerate(inview):
-            X = ll2xyz(sample_line(c, min(160, max(30, int(length(c) * 3)))))
-            sc = [self.score(X, R) for R in rots]
-            k = int(np.argmin(sc))
-            if sc[k] < (good if length(c) >= 6 else good_short):
-                assign[j] = k
-        return assign
-
-    def complete(self, inview, rots, assign, all_lines, view, cover_tol=0.0040, max_run_deg=25.0,
-                 min_anchor_deg=0.4, min_run_deg=0.3, sample_min_deg=6.0, min_size_deg=0.0):
+    def complete(self, inview, rots, assign, all_lines, view, cover_tol=0.0030, max_run_deg=16.0,
+                 min_anchor_deg=1.0, min_run_deg=0.3, sample_min_deg=6.0, min_size_deg=0.4):
         """Costa final = costa atual girada (trechos que encaixam + falhas entre eles) + sobras do paleo.
 
-        Devolve (linhas, trechos): cada trecho longo (>= sample_min_deg, confiável) vem com o índice da
-        placa (seg, k); serve para separar terra de mar (ver landmask.py).
+        Devolve (linhas, trechos_com_lado): cada trecho longo (>= sample_min_deg, confiável) vem com
+        o lado do mar (+1 esquerda / -1 direita / 0 incerto), usado nas ondulações de água (ver ripples.py).
         """
         lo_lon, hi_lon, lo_lat, hi_lat = view
-        new_lines, runs = [], []
+        land = self.land()
+        new_lines, sided = [], []
         for k, R in enumerate(rots):
             mine = [inview[i] for i, a in assign.items() if a == k]
             if not mine:
@@ -201,10 +189,10 @@ class Modern:
                     if len(seg) > 2 and arc[b - 1] - arc[a] >= min_run_deg and np.ptp(seg, axis=0).max() >= min_size_deg:
                         new_lines.append(seg)
                         if arc[b - 1] - arc[a] >= sample_min_deg:  # trechos curtos podem ter casado errado
-                            runs.append((seg, k))
-        return self._add_leftovers(new_lines, all_lines), runs
+                            sided.append((seg, self._sea_side(ll0[a:b], land)))
+        return self._add_leftovers(new_lines, all_lines), sided
 
-    def _add_leftovers(self, new_lines, all_lines, tol=0.0045, min_pts=12, min_size_deg=0.0):
+    def _add_leftovers(self, new_lines, all_lines, tol=0.0060, min_pts=25, min_size_deg=0.4):
         """Mantém partes do paleo que a costa atual não explica (lagos, feições que só existem no paleo)."""
         if not new_lines:
             return list(all_lines)
@@ -218,6 +206,31 @@ class Modern:
                 if b - a >= min_pts and np.ptp(dl[a:b], axis=0).max() >= min_size_deg:
                     out.append(dl[a:b])
         return out
+
+    @staticmethod
+    def _sea_side(ll0, land, every=8, off=0.12):
+        """Lado do mar de um trecho (+1 = esquerda no sentido do traçado, -1 = direita, 0 = incerto).
+
+        Testa, em coordenadas ATUAIS, pontos de cada lado da costa nos polígonos de terra; a rotação
+        preserva orientação, então o lado vale também no referencial paleo. Voto do trecho inteiro.
+        """
+        import shapely
+        i = np.arange(1, len(ll0) - 1, every)
+        if len(i) < 3:
+            return 0
+        t = ll0[i + 1] - ll0[i - 1]
+        cosl = np.cos(ll0[i, 1] * DEG).clip(0.2)
+        t[:, 0] *= cosl
+        n = np.column_stack([-t[:, 1], t[:, 0]]) / (np.hypot(*t.T)[:, None] + 1e-12) * off
+        n[:, 0] /= cosl
+        inside = lambda s: np.column_stack(
+            [shapely.contains_xy(land, *(ll0[i] + s * n * f).T) for f in (1.0, 2.5)])
+        left, right = inside(1), inside(-1)
+        sea_left = (~left.any(1) & right.all(1)).sum()
+        sea_right = (~right.any(1) & left.all(1)).sum()
+        if max(sea_left, sea_right) < 3 or abs(int(sea_left) - int(sea_right)) < 0.5 * max(sea_left, sea_right):
+            return 0
+        return 1 if sea_left > sea_right else -1
 
     def land(self):
         if not hasattr(self, "_land"):

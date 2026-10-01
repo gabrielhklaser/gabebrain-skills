@@ -171,21 +171,35 @@ def sync_skills(apply: bool):
 
 
 def sync_masters(apply: bool):
-    """Vault -> repo (o vault e onde se edita); master nova no repo -> vault."""
-    print("== master-skills")
+    """Vault -> repo (o vault e onde se edita); master nova no repo -> vault.
+    Subagentes em 'Subagente_*.md' sincronizam com 'agents/*.md'."""
+    print("== master-skills & subagentes")
     def same(a: Path, b: Path) -> bool:
         # git autocrlf reescreve EOL no checkout: compara so o conteudo
         return a.read_bytes().replace(b"\r\n", b"\n") == b.read_bytes().replace(b"\r\n", b"\n")
 
+    repo_agents = REPO / "agents"
     for v in sorted(VAULT_MASTERS.glob("*.md")):
-        r = REPO_MASTERS / v.name
-        if not r.exists() or not same(v, r):
-            print(f"  vault -> repo  {v.name}")
-            if apply:
-                shutil.copy2(v, r)
+        if v.name.startswith("Subagente_"):
+            agent_file = v.name.replace("Subagente_", "")
+            r = repo_agents / agent_file
+            if not r.exists() or not same(v, r):
+                print(f"  vault -> repo (subagente) {v.name} -> agents/{agent_file}")
+                if apply:
+                    shutil.copy2(v, r)
+        else:
+            r = REPO_MASTERS / v.name
+            if not r.exists() or not same(v, r):
+                print(f"  vault -> repo {v.name}")
+                if apply:
+                    shutil.copy2(v, r)
     for r in sorted(REPO_MASTERS.glob("*.md")):
         if not (VAULT_MASTERS / r.name).exists():
             print(f"  AVISO: so no repo (copie para o vault ou remova): {r.name}")
+    for a in sorted(repo_agents.glob("*.md")):
+        v_sub = VAULT_MASTERS / f"Subagente_{a.name}"
+        if not v_sub.exists() and not a.name.endswith("-agent.md"):
+            print(f"  AVISO subagente so no repo (copie para o vault): {a.name}")
 
 
 def front_desc(text: str) -> str:

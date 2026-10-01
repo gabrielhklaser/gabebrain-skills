@@ -24,17 +24,18 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
+import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 import numpy as np
 import pymupdf
 from shapely.geometry import LineString
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch, Polygon
+from matplotlib.patches import Patch, PathPatch
+from matplotlib.path import Path as MplPath
 
 import coastline
 import paleofit
-import landmask
-import styles
+import ripples
 from scipy import ndimage as ndi
 
 # Classes na ordem usada em todo o script
@@ -282,29 +283,7 @@ def draw_basemap(ax, view):
     ax.imshow(ocean, extent=view, origin="upper", interpolation="bicubic", zorder=0)
 
 
-def draw_extras(ax, extent, view):
-    """Rosa dos ventos e barra de escala (estilo dramático)."""
-    lon0, lon1, lat0, lat1 = view
-    cx, cy, r = lon1 - 4.2, lat1 - 4.6, 2.6
-    for ang, col in ((0, INK), (90, "white"), (180, "white"), (270, "white")):
-        a1, a2 = np.deg2rad(ang + 90 - 14), np.deg2rad(ang + 90 + 14)
-        tip = (cx + r * np.cos(np.deg2rad(ang + 90)), cy + r * np.sin(np.deg2rad(ang + 90)))
-        ax.add_patch(Polygon([tip, (cx + 0.55 * np.cos(a1), cy + 0.55 * np.sin(a1)), (cx, cy),
-                              (cx + 0.55 * np.cos(a2), cy + 0.55 * np.sin(a2))], closed=True,
-                             fc=col, ec=INK, lw=0.5, zorder=8, alpha=0.9))
-    ax.text(cx, cy + r + 0.5, "N", ha="center", va="bottom", fontsize=9, color=INK, weight="bold", zorder=8)
-    lat = lat0 + 2.2
-    deg = 500 / (111.2 * np.cos(np.deg2rad(lat)))  # 500 km em graus de longitude
-    x0 = lon0 + 2.0
-    for i, col in enumerate(("white", INK)):
-        ax.add_patch(Polygon([(x0 + i * deg, lat), (x0 + (i + 1) * deg, lat), (x0 + (i + 1) * deg, lat + 0.45),
-                              (x0 + i * deg, lat + 0.45)], closed=True, fc=col, ec=INK, lw=0.5, zorder=8))
-    for i, txt in enumerate(("0", "500", "1000 km")):
-        ax.text(x0 + i * deg, lat - 0.35, txt, ha="left" if i == 2 else "center", va="top", fontsize=6.5,
-                color=INK, zorder=8)
-
-
-def draw_map(out_base, rgb, Pu, extent, samples, dots, coasts, layers, style, title, subtitle, rep):
+def draw_map(out_base, rgb, Pu, extent, samples, dots, coasts, waves, title, subtitle, rep):
     lon0, lon1, lat0, lat1 = extent
     pad = 1.5
     fig_w = 11
@@ -315,15 +294,9 @@ def draw_map(out_base, rgb, Pu, extent, samples, dots, coasts, layers, style, ti
 
     view = (lon0 - pad, lon1 + pad, lat0 - pad, lat1 + pad)
     draw_basemap(ax, view)
-    layer = lambda key, z: layers[key] is not None and ax.imshow(
-        layers[key], extent=view, origin="upper", interpolation="bilinear", zorder=z)
-    layer("bathy", 0.3)
 
     rgba = np.dstack([rgb, edge_alpha(rgb.shape[:2], extent)])
     ax.imshow(rgba, extent=extent, origin="upper", interpolation="bilinear", zorder=1)
-    layer("water", 1.4)     # textura de água
-    layer("shadow", 1.5)    # sombra da terra sobre o mar
-    layer("rim", 1.6)       # luz de borda na terra
 
     # contornos finos entre zonas (fronteira = classe dominante muda)
     lon = np.linspace(lon0, lon1, Pu.shape[2]); lat = np.linspace(lat1, lat0, Pu.shape[1])
@@ -331,9 +304,11 @@ def draw_map(out_base, rgb, Pu, extent, samples, dots, coasts, layers, style, ti
         others = np.max(np.delete(Pu, k, axis=0), axis=0)
         ax.contour(lon, lat, Pu[k] - others, levels=[0], colors="white", linewidths=0.7, alpha=0.55, zorder=2)
 
-    lw = {"1-pragmatico": 0.55, "2-artistico": 0.6, "3-dramatico": 0.7}[style.name]
+    alpha_of = dict(zip(ripples.LEVELS_DEG, ripples.ALPHAS))
+    for dist, w in waves:  # ondulações de água, só no lado do mar
+        ax.plot(w[:, 0], w[:, 1], color=WAVE, lw=0.55, alpha=alpha_of[dist], solid_capstyle="round", zorder=2.6)
     for c in coasts:
-        ax.plot(c[:, 0], c[:, 1], color=COAST, lw=lw, alpha=0.95, solid_joinstyle="round",
+        ax.plot(c[:, 0], c[:, 1], color=COAST, lw=0.55, alpha=0.95, solid_joinstyle="round",
                 solid_capstyle="round", zorder=3)
 
     for v in range(-180, 181, 10):
@@ -374,9 +349,6 @@ def draw_map(out_base, rgb, Pu, extent, samples, dots, coasts, layers, style, ti
              f"{rep['concordancia_pixels']:.1%}; deslocamento máx. de fronteira ≈ {rep['deslocamento_max_graus']:.2f}°).\n"
              f"Amostras em posição original; costa completada a partir do contorno atual girado (Natural Earth).",
              fontsize=7, color=INK, alpha=0.65)
-    layer("vignette", 7)
-    if style.extras:
-        draw_extras(ax, extent, view)
     fig.savefig(f"{out_base}.pdf", dpi=300, facecolor=BG)
     fig.savefig(f"{out_base}.png", dpi=250, facecolor=BG)
     plt.close(fig)
@@ -404,20 +376,19 @@ def smooth(lines, simplify_deg=0.03):
 def build_coast(page_lines, extent, cache: Path | None):
     """Costa contínua: costa atual (Natural Earth) girada por placa + sobras do paleo.
 
-    O ajuste de placas é a parte lenta (~4 min) e fica em cache. Devolve (linhas, trechos_por_placa, rotações, polígonos_de_terra_atuais).
+    O ajuste de placas é a parte lenta (~4 min) e fica em cache. Devolve (linhas, trechos_com_lado).
     """
     view = (extent[0] - 4, extent[1] + 4, extent[2] - 4, extent[3] + 4)
     stitched = coastline.stitch(coastline.stitch(page_lines), coastline.GAP_DEG)
     modern = paleofit.Modern()
     if cache is not None and cache.exists():
-        inview, rots, _ = pickle.loads(cache.read_bytes())
-        assign = modern.reassign(inview, rots)
+        inview, rots, assign = pickle.loads(cache.read_bytes())
     else:
         inview, rots, assign = modern.fit_lines(stitched, view)
         if cache is not None:
             cache.write_bytes(pickle.dumps((inview, rots, assign)))
-    lines, runs = modern.complete(inview, rots, assign, [l for l in stitched if np.ptp(l, axis=0).max() > 0.2], view)
-    return smooth(lines), [(smooth([s])[0], k) for s, k in runs if len(s) > 3], rots, modern.land()
+    lines, sided = modern.complete(inview, rots, assign, [l for l in stitched if np.ptp(l, axis=0).max() > 0.2], view)
+    return smooth(lines), [(smooth([s])[0], side) for s, side in sided if len(s) > 3]
 
 
 # ---------------------------------------------------------------- main
@@ -430,8 +401,7 @@ def main():
     ap.add_argument("--relief", type=float, default=0.06, help="sombreamento cosmético (0 desliga)")
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--no-cache", action="store_true", help="refaz o ajuste de placas da costa (~4 min)")
-    ap.add_argument("--style", default="todos", choices=["todos", *styles.STYLES],
-                    help="estilo do mapa; 'todos' gera os três")
+    ap.add_argument("--no-waves", action="store_true", help="sem as ondulações de água")
     a = ap.parse_args()
 
     doc = pymupdf.open(a.pdf); page = doc[0]
@@ -457,20 +427,14 @@ def main():
     base = out_dir / (a.pdf.stem.replace("_full", "") + "_refinado")
     title, sub = title_from_name(a.pdf.stem)
     cache = None if a.no_cache else out_dir / f"{base.name}_costa.cache"
-    lines, runs, rots, land_geom = build_coast(coasts, extent, cache)
-    view = (extent[0] - 1.5, extent[1] + 1.5, extent[2] - 1.5, extent[3] + 1.5)
-    land, _ = landmask.build(runs, rots, land_geom, lines, view)
-    rel = landmask.coast_reliability(lines, view, land.shape)
-    chosen = list(styles.STYLES) if a.style == "todos" else [a.style]
-    for name in chosen:
-        style = styles.STYLES[name]
-        draw_map(f"{base}_{name}", rgb, Pu, extent, samples, dots, lines, styles.build(land, view, style, rel),
-                 style, title, sub, rep)
+    lines, sided = build_coast(coasts, extent, cache)
+    waves = ripples.build(sided, lines) if not a.no_waves else []
+    draw_map(base, rgb, Pu, extent, samples, dots, lines, waves, title, sub, rep)
     rep.update({"extent_lon_lat": [round(v, 3) for v in extent], "amostras": len(samples),
-                "pontos_auxiliares": len(dots), "parametros": {k: str(v) for k, v in vars(a).items() if k not in ("pdf", "out")}})
+                "pontos_auxiliares": len(dots), "parametros": {k: v for k, v in vars(a).items() if k not in ("pdf", "out")}})
     Path(f"{base}_relatorio.json").write_text(json.dumps(rep, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(rep, ensure_ascii=False, indent=2))
-    print("Saída:", ", ".join(f"{base}_{n}.pdf" for n in chosen))
+    print(f"Saída: {base}.pdf / .png")
 
 
 if __name__ == "__main__":

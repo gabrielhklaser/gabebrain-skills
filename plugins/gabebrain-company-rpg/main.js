@@ -315,6 +315,9 @@ class GabeBrainCompanyPlugin extends Plugin {
   async onload() {
     console.log("Loading GabeBrain Corp - RPG 16-Bit Office Plugin");
 
+    // Sincronizar skills e salas automaticamente ao abrir o Obsidian
+    await this.syncAllSkills(false);
+
     this.registerView(
       VIEW_TYPE_GABEBRAIN_RPG,
       (leaf) => new GabeBrainCompanyView(leaf, this)
@@ -329,6 +332,219 @@ class GabeBrainCompanyPlugin extends Plugin {
       name: "Abrir GabeBrain Corp (Visão RPG 16-Bit)",
       callback: () => this.activateView(),
     });
+
+    this.addCommand({
+      id: "sync-gabebrain-company-rpg",
+      name: "Sincronizar Skills e Salas Departamentais",
+      callback: async () => {
+        await this.syncAllSkills(true);
+      },
+    });
+
+    // Hook no evento beforeunload para sincronizar e salvar ao fechar o Obsidian
+    this.beforeUnloadHandler = () => {
+      this.syncAllSkillsSync();
+    };
+    window.addEventListener("beforeunload", this.beforeUnloadHandler);
+  }
+
+  async onunload() {
+    console.log("Unloading GabeBrain Corp - RPG 16-Bit Office Plugin");
+    if (this.beforeUnloadHandler) {
+      window.removeEventListener("beforeunload", this.beforeUnloadHandler);
+    }
+    // Sincronizar e salvar ao descarregar/fechar o Obsidian
+    await this.syncAllSkills(false);
+  }
+
+  // Sincronização síncrona executada no fechamento da janela
+  syncAllSkillsSync() {
+    try {
+      const basePath = this.app.vault.adapter.basePath;
+      if (!basePath) return;
+      const dataFile = path.join(basePath, ".obsidian", "plugins", "gabebrain-company-rpg", "data.json");
+      let departments = JSON.parse(JSON.stringify(INITIAL_DEPARTMENTS));
+
+      if (fs.existsSync(dataFile)) {
+        try {
+          const raw = fs.readFileSync(dataFile, "utf-8");
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.departments) departments = parsed.departments;
+        } catch (e) {}
+      }
+
+      departments = this.scanAndMergeSkills(departments);
+      fs.writeFileSync(dataFile, JSON.stringify({ departments: departments }, null, 2), "utf-8");
+      console.log("GabeBrain Corp: Salvo com sucesso ao fechar o Obsidian.");
+    } catch (e) {
+      console.log("Error during beforeunload sync", e);
+    }
+  }
+
+  // Sincronização assíncrona executada na inicialização ou via comando
+  async syncAllSkills(notify = false) {
+    try {
+      let data = await this.loadData();
+      let depts = (data && data.departments) ? data.departments : JSON.parse(JSON.stringify(INITIAL_DEPARTMENTS));
+      depts = this.scanAndMergeSkills(depts);
+      await this.saveData({ departments: depts });
+
+      // Atualizar a view se estiver aberta
+      const { workspace } = this.app;
+      const leaf = workspace.getLeavesOfType(VIEW_TYPE_GABEBRAIN_RPG)[0];
+      if (leaf && leaf.view) {
+        leaf.view.departments = depts;
+        leaf.view.renderView();
+      }
+
+      if (notify) {
+        new Notice("⚔️ GabeBrain Corp: Skills e salas atualizadas com o acervo!");
+      }
+    } catch (err) {
+      console.log("Error syncing skills", err);
+    }
+  }
+
+  // Algoritmo de varredura e agrupamento de skills do sistema e cofre
+  scanAndMergeSkills(departments) {
+    const homeDir = process.env.USERPROFILE || process.env.HOME || "C:\\Users\\Gabriel";
+    const geminiSkillsDir = path.join(homeDir, ".gemini", "config", "skills");
+    const basePath = this.app.vault.adapter.basePath || "";
+    const vaultSkillsDir = path.join(basePath, "20-Skills");
+    const vaultAgentsDir = path.join(basePath, ".claude", "agents");
+
+    const foundSkills = new Set();
+
+    // 1. Ler ~/.gemini/config/skills
+    if (fs.existsSync(geminiSkillsDir)) {
+      try {
+        const entries = fs.readdirSync(geminiSkillsDir, { withFileTypes: true });
+        for (const entry of entries) {
+          if (entry.isDirectory() && !entry.name.startsWith(".")) {
+            foundSkills.add(entry.name);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 2. Ler 20-Skills no cofre
+    if (fs.existsSync(vaultSkillsDir)) {
+      try {
+        const files = fs.readdirSync(vaultSkillsDir);
+        for (const file of files) {
+          if (file.endsWith(".md") && !file.startsWith("00")) {
+            foundSkills.add(file.replace(/\.md$/, ""));
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. Mapeamento Canônico de Domínios
+    const DOMAIN_MAP = {
+      // Geo
+      "gis-multicamadas": "geo",
+      "paleomap-refiner": "geo",
+      "flow-report": "geo",
+      "hydro-context": "geo",
+      "licenciamento-campo-bom": "geo",
+      "environmentalist-analyst": "geo",
+      "biblioteca-pesquisavel": "geo",
+      "biblioteca-triagem": "geo",
+      "biblioteca-mapa-documento": "geo",
+      // Research
+      "deep-research": "research",
+      "research": "research",
+      "research-add-items": "research",
+      "research-add-fields": "research",
+      "research-deep": "research",
+      "research-report": "research",
+      "github-research": "research",
+      "web-para-nota": "research",
+      "web-search-agent": "research",
+      // Dev
+      "superpowers-coding-agent": "dev",
+      "run-tests": "dev",
+      "context7-mcp": "dev",
+      "context7-cli": "dev",
+      "find-docs": "dev",
+      "skillspector-auditor": "dev",
+      "karpathy-guidelines": "dev",
+      "vcs-version-agent": "dev",
+      "arena-ai-controller": "dev",
+      "ecc-harness-optimizer": "dev",
+      "desktop-screenshot": "dev",
+      "sprout-cli": "dev",
+      // Science
+      "computacao-aplicada": "science",
+      "anydoc": "science",
+      "scientific-writing": "science",
+      "scientific-writing-kdense": "science",
+      "no-ai-slop": "science",
+      "revisor-cientifico-peer-review": "science",
+      "scientific-thinking-scholar-evaluation": "science",
+      "jev": "science",
+      // Design
+      "canva-image-agent": "design",
+      "web-asset-generator": "design"
+    };
+
+    // Alocar skills
+    for (const skill of foundSkills) {
+      let targetDeptId = DOMAIN_MAP[skill];
+
+      if (!targetDeptId) {
+        const sLower = skill.toLowerCase();
+        if (sLower.includes("geo") || sLower.includes("gis") || sLower.includes("hidro") || sLower.includes("map")) {
+          targetDeptId = "geo";
+        } else if (sLower.includes("search") || sLower.includes("crawl") || sLower.includes("research")) {
+          targetDeptId = "research";
+        } else if (sLower.includes("dev") || sLower.includes("code") || sLower.includes("test") || sLower.includes("git")) {
+          targetDeptId = "dev";
+        } else if (sLower.includes("science") || sLower.includes("paper") || sLower.includes("docling") || sLower.includes("review")) {
+          targetDeptId = "science";
+        } else if (sLower.includes("design") || sLower.includes("canva") || sLower.includes("asset") || sLower.includes("icon")) {
+          targetDeptId = "design";
+        }
+      }
+
+      if (targetDeptId) {
+        const dept = departments.find(d => d.id === targetDeptId);
+        if (dept && !dept.skills.includes(skill)) {
+          dept.skills.push(skill);
+        }
+      }
+    }
+
+    // 4. Reconhecer estagiários existentes em .claude/agents/
+    if (fs.existsSync(vaultAgentsDir)) {
+      try {
+        const agentFiles = fs.readdirSync(vaultAgentsDir);
+        for (const file of agentFiles) {
+          if (file.endsWith("-estagiario-revisor.md")) {
+            const deptId = file.split("-estagiario-revisor.md")[0];
+            const dept = departments.find(d => d.id === deptId);
+            if (dept) {
+              if (!dept.intern || !dept.intern.active) {
+                dept.intern = {
+                  name: `${deptId}-estagiario-revisor`,
+                  title: `Estagiário Revisor (${dept.lead})`,
+                  active: true,
+                  reason: `Mesa ativa e preservada para mediação contínua.`
+                };
+              }
+              if (!dept.subagents.some(s => s.name === `${deptId}-estagiario-revisor`)) {
+                dept.subagents.push({
+                  name: `${deptId}-estagiario-revisor`,
+                  role: "Colega Revisor & Mediação"
+                });
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    return departments;
   }
 
   async activateView() {

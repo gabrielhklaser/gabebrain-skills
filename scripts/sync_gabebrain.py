@@ -69,6 +69,12 @@ DOMAINS = {
     "run-tests": "dominio/engenharia-software",
     "canva-image-agent": "dominio/design",
     "web-asset-generator": "dominio/design",
+    "deep-research": "dominio/pesquisa-web",
+    "research": "dominio/pesquisa-web",
+    "research-add-fields": "dominio/pesquisa-web",
+    "research-add-items": "dominio/pesquisa-web",
+    "research-deep": "dominio/pesquisa-web",
+    "research-report": "dominio/pesquisa-web",
 }
 
 

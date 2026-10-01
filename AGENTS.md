@@ -61,6 +61,7 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 - **`skills/sprout-cli`**: Interface CLI para mensageria descentralizada Nostr (canais/DMs), workflows, feeds de eventos e memória persistente (`mem`).
 - **`skills/github-research`**: Busca cirúrgica de PRs mesclados, issues fechadas e decisões de maintainers via GitHub CLI (`gh`).
 - **`agents/meadow-core/`**: Personas especializadas de cooperação multi-agente (`@Skip`, `@Bana`, `@Lev`).
+- **`agents/web-search-agent.md`**: Agente especialista em busca web profunda e exaustiva com roteamento modular (`web-search-modules/`).
 
 ---
 

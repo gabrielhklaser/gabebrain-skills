@@ -1,58 +1,42 @@
 /* ==========================================================================
-   GabeBrain Corp - RPG 16-Bit (Zelda SNES Aesthetic)
+   GabeBrain Corp - RPG 16-Bit (Zelda SNES Office Chamber Aesthetic)
    ========================================================================== */
 
-/* Main Container */
+/* Main Chamber Floor (Zelda A Link to the Past Wood/Stone Floorboards) */
 .gb-rpg-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: #0d111a;
+  background-color: #3b2219;
+  /* Pixel art wood plank flooring */
   background-image: 
-    radial-gradient(#1e293b 1px, transparent 1px),
-    radial-gradient(#1e293b 1px, #0d111a 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-  color: #e2e8f0;
+    linear-gradient(90deg, #2b170e 2px, transparent 2px),
+    repeating-linear-gradient(180deg, #44281d, #44281d 18px, #2b170e 19px, #523023 20px, #44281d 38px);
+  background-size: 80px 100%, 100% 40px;
+  color: #f1f5f9;
   font-family: 'Courier New', Courier, monospace, monospace;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
   box-sizing: border-box;
   image-rendering: pixelated;
   user-select: none;
 }
 
-/* Retro Pixel Borders */
-.pixel-box {
-  background: #151d2c;
-  border: 4px solid #3b4252;
-  box-shadow: 
-    inset -4px -4px 0px 0px #0b0f17,
-    inset 4px 4px 0px 0px #4c566a,
-    0 6px 12px rgba(0,0,0,0.6);
-  position: relative;
-}
-
-.pixel-box-gold {
-  background: #181d2a;
-  border: 4px solid #d08770;
-  box-shadow: 
-    inset -4px -4px 0px 0px #8f3d23,
-    inset 4px 4px 0px 0px #ebcb8b,
-    0 6px 16px rgba(0,0,0,0.7);
-}
-
-/* Header Banner */
+/* Master Header Signboard (Carved Wood & Gold Trim) */
 .gb-rpg-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 14px 22px;
   margin-bottom: 24px;
-  background: linear-gradient(180deg, #1f2738 0%, #111622 100%);
-  border: 4px solid #ebcb8b;
-  box-shadow: 0 8px 0 #000000;
+  background: #25150f;
+  border: 4px solid #854d0e;
+  box-shadow: 
+    inset -4px -4px 0 #120906,
+    inset 4px 4px 0 #ca8a04,
+    0 8px 16px rgba(0,0,0,0.8);
+  position: relative;
 }
 
 .gb-rpg-title-wrap {
@@ -62,28 +46,29 @@
 }
 
 .gb-rpg-crest {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2e3440;
-  border: 3px solid #ebcb8b;
+  background: #170d09;
+  border: 3px solid #ca8a04;
   box-shadow: 0 4px 0 #000;
+  font-size: 26px;
 }
 
 .gb-rpg-title-wrap h1 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #ebcb8b;
+  font-size: 21px;
+  font-weight: 900;
+  color: #fef08a;
   letter-spacing: 1px;
-  text-shadow: 2px 2px 0 #000, -1px -1px 0 #8f3d23;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #713f12;
   margin: 0;
 }
 
 .gb-rpg-title-wrap p {
   font-size: 11px;
-  color: #88c0d0;
+  color: #93c5fd;
   margin: 4px 0 0 0;
   text-shadow: 1px 1px 0 #000;
 }
@@ -94,304 +79,379 @@
 }
 
 .stat-pill {
-  background: #242b3b;
-  border: 2px solid #434c5e;
+  background: #190e0a;
+  border: 2px solid #78350f;
   padding: 6px 12px;
   font-size: 11px;
-  color: #eceff4;
-  box-shadow: 0 2px 0 #000;
+  color: #fef3c7;
+  box-shadow: 0 3px 0 #000;
 }
 .stat-pill strong {
-  color: #a3be8c;
+  color: #4ade80;
 }
 
-/* Grid of Departments */
+/* Grid of Office Cubicles / Chambers */
 .gb-departments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: 24px;
   margin-bottom: 24px;
 }
 
-/* Individual Department Card */
-.gb-dept-card {
+/* Office Cubicle with Wooden Partition Walls */
+.gb-office-cubicle {
+  background: #231610;
+  /* Wooden partition wall frame */
+  border: 6px solid #5a3015;
+  box-shadow: 
+    inset -4px -4px 0 #130a06,
+    inset 4px 4px 0 #8c4c23,
+    0 10px 20px rgba(0,0,0,0.85);
   display: flex;
   flex-direction: column;
   padding: 16px;
-  transition: transform 0.1s ease, border-color 0.2s ease;
-  min-height: 480px;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.gb-dept-card:hover {
+.gb-office-cubicle:hover {
   transform: translateY(-2px);
 }
 
-.gb-dept-card.drag-over {
-  border-color: #a3be8c !important;
-  background: #1e2837 !important;
-  box-shadow: 0 0 20px rgba(163, 190, 140, 0.4);
+.gb-office-cubicle.drag-over {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 25px rgba(74, 222, 128, 0.6), inset 0 0 15px rgba(74, 222, 128, 0.3) !important;
 }
 
-/* Card Header & Avatar */
-.gb-dept-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-bottom: 12px;
-  border-bottom: 3px dashed #3b4252;
+/* Room Header: Signboard Hanging on Wall */
+.cubicle-signboard {
+  background: #170d09;
+  border: 3px solid #b45309;
+  box-shadow: 0 3px 0 #000;
+  padding: 8px 12px;
   margin-bottom: 14px;
-}
-
-.gb-sprite-box {
-  width: 56px;
-  height: 56px;
-  background: #0f141f;
-  border: 3px solid #4c566a;
-  box-shadow: inset 0 0 8px #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.sprite-anim {
-  animation: pixel-bob 1.8s infinite ease-in-out;
-}
-
-@keyframes pixel-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-.gb-dept-info {
-  flex: 1;
-}
-
-.gb-dept-info h3 {
-  font-size: 15px;
-  font-weight: 800;
-  color: #eceff4;
-  margin: 0 0 4px 0;
-  text-shadow: 1px 1px 0 #000;
-}
-
-.gb-lead-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 2px;
-  margin-bottom: 4px;
-  box-shadow: 0 1px 0 #000;
-}
-
-.hearts-container {
-  display: flex;
-  gap: 2px;
-  font-size: 12px;
-  color: #bf616a;
-}
-
-/* Specific Department Colors */
-.dept-geo { border-color: #2e7d32; }
-.dept-geo .gb-lead-badge { background: #1b5e20; color: #a5d6a7; border: 1px solid #4caf50; }
-
-.dept-research { border-color: #0277bd; }
-.dept-research .gb-lead-badge { background: #01579b; color: #81d4fa; border: 1px solid #29b6f6; }
-
-.dept-dev { border-color: #f57f17; }
-.dept-dev .gb-lead-badge { background: #e65100; color: #ffe082; border: 1px solid #ffb300; }
-
-.dept-science { border-color: #7b1fa2; }
-.dept-science .gb-lead-badge { background: #4a148c; color: #e1bee7; border: 1px solid #ba68c8; }
-
-.dept-design { border-color: #c2185b; }
-.dept-design .gb-lead-badge { background: #880e4f; color: #f48fb1; border: 1px solid #ec407a; }
-
-/* Subagents & Team Section */
-.gb-team-section {
-  margin-bottom: 12px;
-}
-
-.gb-section-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: #ebcb8b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.gb-subagents-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.gb-subagent-row {
-  background: #101622;
-  border: 1px solid #2e3440;
-  padding: 6px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10.5px;
 }
 
-.gb-subagent-name {
-  color: #88c0d0;
-  font-weight: bold;
-}
-
-.gb-subagent-role {
-  color: #d8dee9;
-  font-size: 9px;
-  background: #2e3440;
-  padding: 1px 5px;
-  border-radius: 2px;
-}
-
-/* Skills Badges Grid */
-.gb-skills-section {
-  margin-bottom: 16px;
-  flex: 1;
-}
-
-.gb-skills-wrap {
+.cubicle-signboard h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fde047;
+  margin: 0;
+  text-shadow: 1px 1px 0 #000;
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  align-items: center;
+  gap: 8px;
 }
 
-.gb-skill-tag {
-  background: #0b0f17;
-  border: 1px solid #3b4252;
-  color: #d8dee9;
+.cubicle-signboard .hearts-container {
+  display: flex;
+  gap: 3px;
+  font-size: 13px;
+}
+
+/* Office Floor Section (Carpet, Desk, Characters) */
+.cubicle-floor-area {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px dashed #44281d;
+  padding: 12px;
+  align-items: stretch;
+}
+
+/* Character on Decorative Rug / Carpet */
+.cubicle-rug {
+  width: 90px;
+  background: #5b21b6;
+  border: 3px solid #7c3aed;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.6), 0 3px 0 #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.rug-geo { background: #14532d; border-color: #22c55e; }
+.rug-research { background: #0c4a6e; border-color: #0284c7; }
+.rug-dev { background: #78350f; border-color: #d97706; }
+.rug-science { background: #581c87; border-color: #a855f7; }
+.rug-design { background: #831843; border-color: #db2777; }
+
+.sprite-actor {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pixel-idle 1.6s infinite ease-in-out;
+}
+
+@keyframes pixel-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.actor-label {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #fde047;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* The Work Desk Action Button ("Mesa de Trabalho") */
+.rpg-work-desk {
+  flex: 1;
+  background: #3b1d11;
+  border: 4px solid #854d0e;
+  box-shadow: 
+    inset -3px -3px 0 #180b06,
+    inset 3px 3px 0 #b45309,
+    0 4px 8px rgba(0,0,0,0.6);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  position: relative;
+}
+
+.rpg-work-desk:hover {
+  background: #4a2617;
+  border-color: #facc15;
+  box-shadow: 
+    inset -3px -3px 0 #180b06,
+    inset 3px 3px 0 #fde047,
+    0 0 14px rgba(250, 204, 21, 0.4);
+  transform: translateY(-2px);
+}
+
+.rpg-work-desk:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #000;
+}
+
+.desk-surface {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.desk-icon {
+  font-size: 26px;
+  filter: drop-shadow(0 2px 0 #000);
+}
+
+.desk-text-title {
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #fef08a;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.desk-text-subtitle {
   font-size: 9.5px;
-  padding: 3px 6px;
-  display: inline-flex;
+  color: #cbd5e1;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.desk-action-pill {
+  align-self: flex-start;
+  margin-top: 8px;
+  background: #190e0a;
+  border: 1px solid #ca8a04;
+  color: #4ade80;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 3px 8px;
+  box-shadow: 0 2px 0 #000;
+  display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.gb-skill-tag.new-skill {
-  border-color: #a3be8c;
-  color: #a3be8c;
-  animation: pulse-border 1.5s infinite;
+/* Blackboard for Skills ("Quadro Negro de Giz") */
+.rpg-blackboard {
+  background: #14231a;
+  border: 5px solid #78350f;
+  box-shadow: 
+    inset -3px -3px 0 #0a130e,
+    inset 3px 3px 0 #a16207,
+    0 6px 12px rgba(0,0,0,0.7);
+  padding: 12px;
+  margin-bottom: 14px;
+  position: relative;
 }
 
-@keyframes pulse-border {
-  0%, 100% { border-color: #a3be8c; }
-  50% { border-color: #ebcb8b; }
+.blackboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px dashed #234230;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-/* Intern / Estagiário Special Row */
-.gb-intern-box {
-  background: #201a2e;
-  border: 2px dashed #b48ead;
-  padding: 8px 10px;
-  margin-bottom: 12px;
+.blackboard-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #86efac;
+  letter-spacing: 1px;
+  text-shadow: 0 0 3px rgba(134, 239, 172, 0.4);
   display: flex;
   align-items: center;
-  gap: 10px;
-  animation: intern-glow 2s infinite alternate;
+  gap: 6px;
 }
 
-@keyframes intern-glow {
-  0% { box-shadow: 0 0 4px #b48ead; }
-  100% { box-shadow: 0 0 12px #d08770; }
+.chalk-count {
+  font-size: 9px;
+  color: #a7f3d0;
+  background: #0f1c14;
+  padding: 1px 6px;
+  border: 1px solid #1f3b2b;
 }
 
-.gb-intern-avatar {
-  width: 32px;
-  height: 32px;
-  background: #111;
-  border: 1px solid #b48ead;
+.blackboard-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+/* Individual Chalk Writing Tag */
+.chalk-tag {
+  background: #0d1711;
+  border: 1px solid #2d5a3f;
+  color: #f1f5f9;
+  font-size: 9.5px;
+  padding: 3px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
+  letter-spacing: 0.5px;
+  transition: all 0.1s ease;
+}
+
+.chalk-tag:hover {
+  background: #16281e;
+  border-color: #86efac;
+  color: #86efac;
+}
+
+.chalk-tag.new-chalk {
+  border-color: #fde047;
+  color: #fde047;
+  animation: chalk-glow 1.5s infinite alternate;
+}
+
+@keyframes chalk-glow {
+  0% { box-shadow: 0 0 3px #fde047; }
+  100% { box-shadow: 0 0 8px #f59e0b; }
+}
+
+/* Subagents Desk / Partition Bar */
+.cubicle-subagents-section {
+  background: #1a0f0a;
+  border: 2px solid #5a3015;
+  padding: 8px 10px;
+}
+
+.subagents-header {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #f59e0b;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.subagents-roster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.subagent-badge {
+  background: #0e0705;
+  border: 1px solid #3b2219;
+  padding: 4px 6px;
+  font-size: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subagent-badge strong {
+  color: #38bdf8;
+}
+
+.subagent-badge span {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+/* Intern's Mini Office Chamber (Appears when Intern is summoned!) */
+.intern-workstation {
+  margin-top: 10px;
+  background: #2e1065;
+  border: 3px dashed #c084fc;
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: workstation-pulse 2s infinite alternate;
+}
+
+@keyframes workstation-pulse {
+  0% { border-color: #c084fc; box-shadow: 0 0 6px #c084fc; }
+  100% { border-color: #fde047; box-shadow: 0 0 16px #f59e0b; }
+}
+
+.intern-desk-sprite {
+  width: 42px;
+  height: 42px;
+  background: #17092b;
+  border: 2px solid #a855f7;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.gb-intern-text {
+.intern-desk-details {
   flex: 1;
 }
 
-.gb-intern-title {
-  font-size: 11px;
-  font-weight: 800;
-  color: #ebcb8b;
+.intern-desk-title {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: #fde047;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.gb-intern-desc {
-  font-size: 9.5px;
-  color: #e5e9f0;
+.intern-desk-desc {
+  font-size: 9px;
+  color: #e9d5ff;
   margin-top: 2px;
-  line-height: 1.25;
+  line-height: 1.3;
 }
-
-/* Drop Zone Area */
-.gb-drop-zone {
-  border: 2px dashed #4c566a;
-  background: #0c1017;
-  padding: 10px;
-  text-align: center;
-  font-size: 10px;
-  color: #7b88a1;
-  margin-bottom: 10px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.gb-drop-zone:hover {
-  border-color: #ebcb8b;
-  color: #ebcb8b;
-  background: #141a24;
-}
-
-/* Retro Buttons */
-.gb-btn-retro {
-  background: #434c5e;
-  border: 2px solid #d8dee9;
-  box-shadow: 0 4px 0 #000, inset 0 1px 0 #eceff4;
-  color: #eceff4;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 8px 12px;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.05s ease;
-}
-
-.gb-btn-retro:hover {
-  background: #4c566a;
-  color: #ebcb8b;
-}
-
-.gb-btn-retro:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #000;
-}
-
-.gb-btn-green {
-  background: #2e7d32;
-  border-color: #a5d6a7;
-}
-.gb-btn-green:hover { background: #388e3c; }
-
-.gb-btn-gold {
-  background: #d08770;
-  border-color: #ebcb8b;
-}
-.gb-btn-gold:hover { background: #bf616a; }
 
 /* Zelda SNES Dialogue Box Modal */
 .gb-dialogue-overlay {
@@ -400,7 +460,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -408,23 +468,23 @@
 }
 
 .gb-dialogue-box {
-  width: 620px;
+  width: 640px;
   max-width: 90%;
-  background: #181d2a;
-  border: 4px solid #ebcb8b;
+  background: #170d09;
+  border: 5px solid #ca8a04;
   box-shadow: 
-    inset -4px -4px 0px 0px #8f3d23,
-    inset 4px 4px 0px 0px #ffe082,
-    0 10px 25px rgba(0,0,0,0.85);
+    inset -4px -4px 0 #5f3006,
+    inset 4px 4px 0 #fde047,
+    0 12px 30px rgba(0,0,0,0.9);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  animation: zoom-in 0.2s ease-out;
+  animation: zoom-in 0.15s ease-out;
 }
 
 @keyframes zoom-in {
-  from { transform: scale(0.9); opacity: 0; }
+  from { transform: scale(0.92); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
@@ -437,8 +497,9 @@
 .gb-dialogue-portrait {
   width: 80px;
   height: 80px;
-  background: #0b0f17;
-  border: 3px solid #ebcb8b;
+  background: #000;
+  border: 3px solid #ca8a04;
+  box-shadow: 0 4px 0 #000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,20 +512,20 @@
 
 .gb-dialogue-speaker {
   font-size: 13px;
-  font-weight: 800;
-  color: #ebcb8b;
+  font-weight: 900;
+  color: #fde047;
   margin-bottom: 6px;
   text-shadow: 1px 1px 0 #000;
 }
 
 .gb-dialogue-text {
   font-size: 11.5px;
-  color: #eceff4;
+  color: #f8fafc;
   line-height: 1.5;
-  background: #0f141f;
-  border: 2px solid #3b4252;
+  background: #0c0604;
+  border: 2px solid #5a3015;
   padding: 12px;
-  box-shadow: inset 0 0 8px #000;
+  box-shadow: inset 0 0 10px #000;
 }
 
 .gb-dialogue-actions {
@@ -472,4 +533,37 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 8px;
+}
+
+.gb-btn-retro {
+  background: #3b1d11;
+  border: 2px solid #ca8a04;
+  box-shadow: 0 4px 0 #000, inset 0 1px 0 #fde047;
+  color: #fef08a;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 8px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.05s ease;
+}
+
+.gb-btn-retro:hover {
+  background: #4a2617;
+  color: #ffffff;
+}
+
+.gb-btn-retro:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #000;
+}
+
+.gb-btn-gold {
+  background: #854d0e;
+  border-color: #fde047;
+  color: #fef08a;
+}
+.gb-btn-gold:hover {
+  background: #a16207;
 }

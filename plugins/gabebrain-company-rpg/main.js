@@ -1,8 +1,5 @@
 /* ==========================================================================
-   GabeBrain Corp - RPG 16-Bit (Zelda SNES Aesthetic)
-   Plugin para Obsidian que transforma os agentes e subagentes do GabeBrain
-   em departamentos de uma guilda/empresa com detecção de conflitos
-   e convocação do Agente Estagiário / Revisor.
+   GabeBrain Corp - RPG 16-Bit (Zelda SNES Office Chamber & Work Desks)
    ========================================================================== */
 
 const obsidian = require("obsidian");
@@ -60,7 +57,7 @@ class RetroAudio {
 // 16-Bit SVG Pixel Art Sprites (SNES Zelda Inspiration)
 const SPRITES = {
   // Link-style Ranger (Green tunic, cap, sword)
-  geo: `<svg width="40" height="40" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  geo: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Cap -->
     <rect x="5" y="1" width="6" height="2" fill="#2d8a4e"/>
     <rect x="4" y="3" width="8" height="2" fill="#2d8a4e"/>
@@ -86,7 +83,7 @@ const SPRITES = {
   </svg>`,
 
   // Detective / Scout (Blue tunic, spyglass, scroll)
-  research: `<svg width="40" height="40" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  research: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Hat -->
     <rect x="4" y="2" width="8" height="2" fill="#0277bd"/>
     <rect x="3" y="4" width="10" height="1" fill="#01579b"/>
@@ -105,7 +102,7 @@ const SPRITES = {
   </svg>`,
 
   // Cyber / Iron Knight (Armor, visor, hammer)
-  dev: `<svg width="40" height="40" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  dev: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Helmet -->
     <rect x="5" y="1" width="6" height="4" fill="#64748b"/>
     <rect x="4" y="3" width="8" height="2" fill="#475569"/>
@@ -124,7 +121,7 @@ const SPRITES = {
   </svg>`,
 
   // Mage / Scholar (Purple robe, wizard hat, spellbook)
-  science: `<svg width="40" height="40" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  science: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Pointed Hat -->
     <rect x="7" y="1" width="2" height="2" fill="#7b1fa2"/>
     <rect x="6" y="3" width="4" height="2" fill="#7b1fa2"/>
@@ -142,7 +139,7 @@ const SPRITES = {
   </svg>`,
 
   // Bard / Designer (Rose doublet, beret, paintbrush)
-  design: `<svg width="40" height="40" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  design: `<svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Beret with Feather -->
     <rect x="5" y="2" width="6" height="3" fill="#c2185b"/>
     <rect x="10" y="1" width="2" height="2" fill="#ebcb8b"/>
@@ -161,8 +158,8 @@ const SPRITES = {
     <rect x="9" y="12" width="2" height="3" fill="#4a148c"/>
   </svg>`,
 
-  // Estagiário / Colega Revisor (Yellow apprentice cap, huge glasses, scroll & quill)
-  intern: `<svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  // Estagiário / Colega Revisor (Yellow apprentice cap, big glasses, parchment)
+  intern: `<svg width="36" height="36" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
     <!-- Apprentice Cap -->
     <rect x="5" y="2" width="6" height="2" fill="#f59e0b"/>
     <!-- Big Glasses -->
@@ -181,22 +178,22 @@ const SPRITES = {
   </svg>`
 };
 
-// Initial Department Blueprint (Matches GabeBrain 5-Cluster Architecture)
+// Initial Departments Definition (Matching the GabeBrain 5-Cluster System)
 const INITIAL_DEPARTMENTS = [
   {
     id: "geo",
-    name: "🌍 Geociências & Licenciamento",
+    name: "🌍 Divisão de Geociências & Licenciamento",
     lead: "GeoAgent",
-    leadRole: "Chefe de Geoprocessamento e Regulação",
+    leadRole: "Chefe de Cartografia, Hidrogeologia & Regulação",
     desc: "Cartografia digital, bacias hidrográficas, enquadramento ambiental municipal e acervo técnico do Drive.",
     sprite: "geo",
-    cssClass: "dept-geo",
+    rugClass: "rug-geo",
     hearts: 5,
     subagents: [
       { name: "geo-gis", role: "Cartografia & Folium" },
-      { name: "geo-hidro", role: "Vazões & Recursos Hídricos" },
+      { name: "geo-hidro", role: "Vazões & Outorgas" },
       { name: "geo-licencia", role: "Regulatório & Campo Bom" },
-      { name: "geo-acervo", role: "Busca no Acervo do Drive" }
+      { name: "geo-acervo", role: "Busca Acervo Drive" }
     ],
     skills: [
       "gis-multicamadas",
@@ -213,12 +210,12 @@ const INITIAL_DEPARTMENTS = [
   },
   {
     id: "research",
-    name: "🔍 Investigação & Inteligência Web",
+    name: "🔍 Central de Inteligência & Deep Research",
     lead: "DeepResearchAgent",
-    leadRole: "Comandante de Busca Profunda e Varredura",
+    leadRole: "Comandante de Varredura Web & Mineração",
     desc: "Pesquisa sistemática em 3 fases, extração estruturada de dados na web, issues do GitHub e síntese sem ruído.",
     sprite: "research",
-    cssClass: "dept-research",
+    rugClass: "rug-research",
     hearts: 5,
     subagents: [
       { name: "research-lead", role: "Fase 1: Outline & Matriz" },
@@ -240,12 +237,12 @@ const INITIAL_DEPARTMENTS = [
   },
   {
     id: "dev",
-    name: "💻 Engenharia de Software & AppSec",
+    name: "💻 Laboratório de Engenharia & AppSec",
     lead: "DevAgent",
-    leadRole: "Líder Técnico, Guardião TDD e Anti-Alucinação",
+    leadRole: "Arquiteto Chefe, Guardião TDD e Anti-Alucinação",
     desc: "Desenvolvimento disciplinado com TDD Red/Green/Refactor, blindagem oficial Context7 e paridade Git Local/Nuvem.",
     sprite: "dev",
-    cssClass: "dept-dev",
+    rugClass: "rug-dev",
     hearts: 5,
     subagents: [
       { name: "coder-tdd", role: "TDD & Testes Automatizados" },
@@ -269,12 +266,12 @@ const INITIAL_DEPARTMENTS = [
   },
   {
     id: "science",
-    name: "🎓 Produção Científica & PPGCA",
+    name: "🎓 Academia Científica & Mestrado PPGCA",
     lead: "ScienceAgent",
-    leadRole: "Orientador de Pesquisa e Parecerista Acadêmico",
+    leadRole: "Orientador de Pesquisa & Parecerista Sênior",
     desc: "Gestão do acervo Docling do mestrado, redação científica sem clichês (anti-AI slop) e peer review rigoroso.",
     sprite: "science",
-    cssClass: "dept-science",
+    rugClass: "rug-science",
     hearts: 5,
     subagents: [
       { name: "ppgca-corpus", role: "Docling & Acervo PPGCA" },
@@ -295,12 +292,12 @@ const INITIAL_DEPARTMENTS = [
   },
   {
     id: "design",
-    name: "🎨 Criação, Design & Mídia",
+    name: "🎨 Estúdio de Criação, Design & Mídia",
     lead: "DesignAgent",
-    leadRole: "Diretor de Arte e Ativos Digitais",
+    leadRole: "Diretor de Arte, Identidade Visual & Assets",
     desc: "Automação com Canva Pro via Playwright, banners, capas de artigos e suíte completa de favicons e Open Graph.",
     sprite: "design",
-    cssClass: "dept-design",
+    rugClass: "rug-design",
     hearts: 5,
     subagents: [
       { name: "canva-designer", role: "Playwright & Canva Pro" },
@@ -314,22 +311,19 @@ const INITIAL_DEPARTMENTS = [
   }
 ];
 
-// Main Obsidian Plugin Class
 class GabeBrainCompanyPlugin extends Plugin {
   async onload() {
-    console.log("Loading GabeBrain Corp - RPG 16-Bit Plugin");
+    console.log("Loading GabeBrain Corp - RPG 16-Bit Office Plugin");
 
     this.registerView(
       VIEW_TYPE_GABEBRAIN_RPG,
       (leaf) => new GabeBrainCompanyView(leaf, this)
     );
 
-    // Ribbon icon: Shield / Castle
     this.addRibbonIcon("shield", "GabeBrain Corp (RPG 16-Bit)", () => {
       this.activateView();
     });
 
-    // Command in palette
     this.addCommand({
       id: "open-gabebrain-company-rpg",
       name: "Abrir GabeBrain Corp (Visão RPG 16-Bit)",
@@ -353,7 +347,6 @@ class GabeBrainCompanyPlugin extends Plugin {
   }
 }
 
-// Custom ItemView for GabeBrain Company RPG
 class GabeBrainCompanyView extends ItemView {
   constructor(leaf, plugin) {
     super(leaf);
@@ -395,18 +388,18 @@ class GabeBrainCompanyView extends ItemView {
 
     const root = container.createDiv({ cls: "gb-rpg-container" });
 
-    // Header Banner
-    const header = root.createDiv({ cls: "gb-rpg-header pixel-box-gold" });
+    // Top Office Master Signboard
+    const header = root.createDiv({ cls: "gb-rpg-header" });
     const titleWrap = header.createDiv({ cls: "gb-rpg-title-wrap" });
     const crest = titleWrap.createDiv({ cls: "gb-rpg-crest" });
-    crest.innerHTML = `<span style="font-size:24px;">👑</span>`;
+    crest.innerHTML = `<span>👑</span>`;
 
     const titleText = titleWrap.createDiv();
-    titleText.createEl("h1", { text: "GABEBRAIN CORP • GUILDA DOS AGENTES" });
-    titleText.createEl("p", { text: "Visão Departamental 16-Bit • SNES Zelda Style • 5 Clusters & Subagentes" });
+    titleText.createEl("h1", { text: "GABEBRAIN CORP • ESCRITÓRIO DOS AGENTES" });
+    titleText.createEl("p", { text: "Ambiente 16-Bit SNES Zelda • 5 Salas Departamentais • Mesas de Trabalho & Quadros Negros" });
 
     const stats = header.createDiv({ cls: "gb-rpg-header-stats" });
-    stats.createDiv({ cls: "stat-pill" }).innerHTML = `DEPARTAMENTOS: <strong>5</strong>`;
+    stats.createDiv({ cls: "stat-pill" }).innerHTML = `SALAS: <strong>5</strong>`;
     
     let totalSkills = 0;
     let totalInterns = 0;
@@ -415,42 +408,42 @@ class GabeBrainCompanyView extends ItemView {
       if (d.intern && d.intern.active) totalInterns++;
     });
 
-    stats.createDiv({ cls: "stat-pill" }).innerHTML = `SKILLS ATIVAS: <strong>${totalSkills}</strong>`;
-    stats.createDiv({ cls: "stat-pill" }).innerHTML = `ESTAGIÁRIOS REVISORES: <strong>${totalInterns}</strong>`;
+    stats.createDiv({ cls: "stat-pill" }).innerHTML = `SKILLS NO QUADRO: <strong>${totalSkills}</strong>`;
+    stats.createDiv({ cls: "stat-pill" }).innerHTML = `ESTAGIÁRIOS NA MESA: <strong>${totalInterns}</strong>`;
 
-    // Departments Grid
+    // Departments Grid (Office Chambers with Wooden Divisórias)
     const grid = root.createDiv({ cls: "gb-departments-grid" });
 
     this.departments.forEach((dept) => {
-      this.renderDepartmentCard(grid, dept);
+      this.renderOfficeChamber(grid, dept);
     });
   }
 
-  renderDepartmentCard(parent, dept) {
-    const card = parent.createDiv({ cls: `gb-dept-card pixel-box ${dept.cssClass}` });
+  // Renders each Department as a 16-bit Office Chamber with partition walls, desk, rug and blackboard
+  renderOfficeChamber(parent, dept) {
+    const chamber = parent.createDiv({ cls: "gb-office-cubicle" });
 
-    // Drag and drop event listeners
-    card.addEventListener("dragover", (e) => {
+    // Drag-over event listeners on the entire cubicle
+    chamber.addEventListener("dragover", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      card.addClass("drag-over");
+      chamber.addClass("drag-over");
     });
 
-    card.addEventListener("dragleave", (e) => {
+    chamber.addEventListener("dragleave", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      card.removeClass("drag-over");
+      chamber.removeClass("drag-over");
     });
 
-    card.addEventListener("drop", async (e) => {
+    chamber.addEventListener("drop", async (e) => {
       e.preventDefault();
       e.stopPropagation();
-      card.removeClass("drag-over");
+      chamber.removeClass("drag-over");
 
       let droppedSkillName = "";
       let droppedSkillContent = "";
 
-      // Check if file was dropped from desktop or obsidian file tree
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         const file = e.dataTransfer.files[0];
         droppedSkillName = file.name.replace(/\.md$/, "");
@@ -463,83 +456,95 @@ class GabeBrainCompanyView extends ItemView {
       }
 
       if (!droppedSkillName) {
-        new Notice("Arraste um arquivo .md válido!");
+        new Notice("Por favor, arraste um arquivo .md válido!");
         return;
       }
 
       this.processNewSkill(dept, droppedSkillName, droppedSkillContent);
     });
 
-    // Card Header (Sprite, Name, Hearts)
-    const header = card.createDiv({ cls: "gb-dept-header" });
-    const spriteBox = header.createDiv({ cls: "gb-sprite-box sprite-anim" });
-    spriteBox.innerHTML = SPRITES[dept.sprite] || SPRITES.geo;
+    // 1. Hanging Wall Signboard (Room Name & Readiness Hearts)
+    const sign = chamber.createDiv({ cls: "cubicle-signboard" });
+    const titleEl = sign.createEl("h3");
+    titleEl.innerHTML = `<span>🚪</span> ${dept.name}`;
 
-    const info = header.createDiv({ cls: "gb-dept-info" });
-    info.createEl("h3", { text: dept.name });
-    info.createDiv({ cls: "gb-lead-badge", text: `👑 Líder: ${dept.lead}` });
-
-    const heartsWrap = info.createDiv({ cls: "hearts-container" });
+    const heartsWrap = sign.createDiv({ cls: "hearts-container" });
     for (let i = 0; i < dept.hearts; i++) {
       heartsWrap.createSpan({ text: "❤️" });
     }
 
-    // Subagents List
-    const teamSection = card.createDiv({ cls: "gb-team-section" });
-    teamSection.createDiv({ cls: "gb-section-label" }).innerHTML = `<span>👥</span> Equipe de Subagentes:`;
-    
-    const subList = teamSection.createDiv({ cls: "gb-subagents-list" });
-    dept.subagents.forEach((sa) => {
-      const row = subList.createDiv({ cls: "gb-subagent-row" });
-      row.createSpan({ cls: "gb-subagent-name", text: `sub: ${sa.name}` });
-      row.createSpan({ cls: "gb-subagent-role", text: sa.role });
+    // 2. Office Floor Area: Decorative Rug with Character Sprite + Interactive Work Desk Button
+    const floorArea = chamber.createDiv({ cls: "cubicle-floor-area" });
+
+    // Carpet / Rug where the Lead Agent Sprite stands
+    const rug = floorArea.createDiv({ cls: `cubicle-rug ${dept.rugClass}` });
+    const actorBox = rug.createDiv({ cls: "sprite-actor" });
+    actorBox.innerHTML = SPRITES[dept.sprite] || SPRITES.geo;
+    rug.createDiv({ cls: "actor-label", text: dept.lead });
+
+    // The Interactive Work Desk (Mesa de Trabalho) - Serves as action button and drop target!
+    const desk = floorArea.createDiv({ cls: "rpg-work-desk" });
+    desk.title = `Mesa de trabalho de ${dept.lead}. Clique para adicionar uma nova skill ou arraste o .md para cá!`;
+
+    const deskSurface = desk.createDiv({ cls: "desk-surface" });
+    deskSurface.createSpan({ cls: "desk-icon", text: "🪑" });
+
+    const deskTexts = deskSurface.createDiv();
+    deskTexts.createDiv({ cls: "desk-text-title", text: `Mesa de ${dept.lead}` });
+    deskTexts.createDiv({ cls: "desk-text-subtitle", text: "Clique para examinar ou solte uma nova skill aqui." });
+
+    const actionPill = desk.createDiv({ cls: "desk-action-pill" });
+    actionPill.innerHTML = `<span>📜</span> ALOCAR NOVA SKILL`;
+
+    // Clicking the work desk opens the modal
+    desk.addEventListener("click", () => {
+      this.openAddSkillModal(dept);
     });
 
-    // Intern / Estagiário Box (if summoned!)
-    if (dept.intern && dept.intern.active) {
-      const internBox = card.createDiv({ cls: "gb-intern-box" });
-      const internAvatar = internBox.createDiv({ cls: "gb-intern-avatar" });
-      internAvatar.innerHTML = SPRITES.intern;
-
-      const internText = internBox.createDiv({ cls: "gb-intern-text" });
-      internText.createDiv({ cls: "gb-intern-title" }).innerHTML = `🎓 <span>${dept.intern.title} Ativo!</span>`;
-      internText.createDiv({ cls: "gb-intern-desc", text: dept.intern.reason });
-    }
-
-    // Skills Badges Section
-    const skillsSection = card.createDiv({ cls: "gb-skills-section" });
-    skillsSection.createDiv({ cls: "gb-section-label" }).innerHTML = `<span>🛠️</span> Skills Alocadas (${dept.skills.length}):`;
+    // 3. The Blackboard for Skills (Quadro Negro de Giz)
+    const blackboard = chamber.createDiv({ cls: "rpg-blackboard" });
+    const bbHeader = blackboard.createDiv({ cls: "blackboard-header" });
     
-    const skillsWrap = skillsSection.createDiv({ cls: "gb-skills-wrap" });
+    const bbTitle = bbHeader.createDiv({ cls: "blackboard-title" });
+    bbTitle.innerHTML = `<span>📋</span> QUADRO DE SKILLS ATIVAS`;
+
+    bbHeader.createDiv({ cls: "chalk-count", text: `${dept.skills.length} skills inscritas` });
+
+    const chalkGrid = blackboard.createDiv({ cls: "blackboard-skills-grid" });
     dept.skills.forEach((skill) => {
       const isNew = dept.intern && dept.intern.reviewedSkills && dept.intern.reviewedSkills.includes(skill);
-      const tag = skillsWrap.createSpan({ cls: `gb-skill-tag ${isNew ? "new-skill" : ""}` });
-      tag.innerHTML = `⚙️ ${skill}`;
+      const tag = chalkGrid.createSpan({ cls: `chalk-tag ${isNew ? "new-chalk" : ""}` });
+      tag.innerHTML = `<span>✏️</span> ${skill}`;
     });
 
-    // Drop Zone Banner
-    const dropZone = card.createDiv({ cls: "gb-drop-zone" });
-    dropZone.innerHTML = `📥 <b>ARRASTE UM ARQUIVO .MD AQUI</b><br><span style="font-size:8.5px; opacity:0.8;">O departamento verificará conflitos antes de aceitar</span>`;
-    dropZone.addEventListener("click", () => {
-      this.openAddSkillModal(dept);
+    // 4. Subagents Team Roster
+    const subSection = chamber.createDiv({ cls: "cubicle-subagents-section" });
+    subSection.createDiv({ cls: "subagents-header", text: "👥 SUBAGENTES NA SALA:" });
+    
+    const subRoster = subSection.createDiv({ cls: "subagents-roster" });
+    dept.subagents.forEach((sa) => {
+      const badge = subRoster.createDiv({ cls: "subagent-badge" });
+      badge.innerHTML = `<strong>sub: ${sa.name}</strong> <span>${sa.role}</span>`;
     });
 
-    // Action Button
-    const btn = card.createEl("button", {
-      cls: "gb-btn-retro gb-btn-green",
-      text: "➕ ADICIONAR NOVA SKILL"
-    });
-    btn.addEventListener("click", () => {
-      this.openAddSkillModal(dept);
-    });
+    // 5. Intern's Workstation (Appears when the Estagiário is summoned!)
+    if (dept.intern && dept.intern.active) {
+      const internStation = chamber.createDiv({ cls: "intern-workstation" });
+      
+      const internDeskSprite = internStation.createDiv({ cls: "intern-desk-sprite" });
+      internDeskSprite.innerHTML = SPRITES.intern;
+
+      const internDetails = internStation.createDiv({ cls: "intern-desk-details" });
+      internDetails.createDiv({ cls: "intern-desk-title" }).innerHTML = `🎓 <span>${dept.intern.title} Ativo!</span>`;
+      internDetails.createDiv({ cls: "intern-desk-desc", text: dept.intern.reason });
+    }
   }
 
-  // Conflict Detection Logic
+  // Conflict Detection Algorithm
   checkSkillConflict(dept, newSkillName, content = "") {
     const nameLower = newSkillName.toLowerCase();
     const contentLower = content.toLowerCase();
 
-    // Map of conflicting categories
     const CONFLICT_RULES = {
       geo: [
         {
@@ -636,7 +641,6 @@ class GabeBrainCompanyView extends ItemView {
     const rules = CONFLICT_RULES[dept.id] || [];
 
     for (const rule of rules) {
-      // Check if incoming skill matches keywords AND conflicting skill exists in dept
       const matchesKeyword = rule.terms.some(t => nameLower.includes(t) || contentLower.includes(t));
       if (matchesKeyword && dept.skills.includes(rule.conflictsWith)) {
         return {
@@ -650,50 +654,44 @@ class GabeBrainCompanyView extends ItemView {
     return { hasConflict: false };
   }
 
-  // Handle addition of a skill (with Zelda dialogue if conflict occurs)
   processNewSkill(dept, newSkillName, content = "") {
-    // If skill is already present
     if (dept.skills.includes(newSkillName)) {
-      new Notice(`A skill "${newSkillName}" já está alocada neste departamento.`);
+      new Notice(`A skill "${newSkillName}" já está no quadro negro desta sala.`);
       return;
     }
 
     const check = this.checkSkillConflict(dept, newSkillName, content);
 
     if (check.hasConflict) {
-      // PLAY 16-BIT ALERT SOUND
       RetroAudio.playAlert();
-
-      // OPEN ZELDA DIALOGUE BOX
-      this.showConflictModal(dept, newSkillName, check.conflictingSkill, check.reason, content);
+      this.showConflictDialogue(dept, newSkillName, check.conflictingSkill, check.reason, content);
     } else {
-      // NO CONFLICT -> ACCEPT DIRECTLY
       RetroAudio.playFanfare();
       dept.skills.push(newSkillName);
       this.savePluginData();
       this.renderView();
-      new Notice(`✨ Skill "${newSkillName}" aceita e integrada com sucesso ao ${dept.name}!`);
+      new Notice(`✨ Skill "${newSkillName}" escrita com giz no quadro negro do ${dept.name}!`);
     }
   }
 
-  // Zelda SNES Dialogue Box Modal for Conflict & Intern Summoning
-  showConflictModal(dept, newSkillName, conflictingSkill, reason, content) {
+  // Zelda SNES Dialogue Box Modal
+  showConflictDialogue(dept, newSkillName, conflictingSkill, reason, content) {
     const overlay = document.body.createDiv({ cls: "gb-dialogue-overlay" });
-    const box = overlay.createDiv({ cls: "gb-dialogue-box pixel-box-gold" });
+    const box = overlay.createDiv({ cls: "gb-dialogue-box" });
 
     const top = box.createDiv({ cls: "gb-dialogue-top" });
     const portrait = top.createDiv({ cls: "gb-dialogue-portrait" });
     portrait.innerHTML = SPRITES.intern;
 
     const contentDiv = top.createDiv({ cls: "gb-dialogue-content" });
-    contentDiv.createDiv({ cls: "gb-dialogue-speaker", text: "📜 Mestre da Guilda GabeBrain:" });
+    contentDiv.createDiv({ cls: "gb-dialogue-speaker", text: "📜 O MESTRE DA GUILDA DIZ:" });
     
     const dialogText = contentDiv.createDiv({ cls: "gb-dialogue-text" });
     dialogText.innerHTML = `
-      ⚔️ <b>ALERTA DE CONFLITO FUNCIONAL!</b><br><br>
-      A nova skill <b>"${newSkillName}"</b> interfere diretamente na função da skill existente <b>"${conflictingSkill}"</b> (${reason}).<br><br>
-      Nas diretrizes da GabeBrain Corp, nunca descartamos ferramentas úteis nem deixamos que uma sobrescreva a outra de forma destrutiva.<br><br>
-      <b>Solução Proposta:</b> Convocaremos um <b>Subagente Estagiário / Revisor</b> (${dept.id}-estagiario-revisor) para atuar como colega de trabalho, auditar os resultados de ambas as ferramentas e propor a melhor integração!
+      ⚔️ <b>CONFLITO DETECTADO NA SALA!</b><br><br>
+      A nova skill <b>"${newSkillName}"</b> interfere diretamente com a ferramenta <b>"${conflictingSkill}"</b> (${reason}).<br><br>
+      Na GabeBrain Corp, nenhuma ferramenta é descartada. Em vez disso, montamos uma <b>Mesa de Trabalho para o Estagiário Revisor</b> (${dept.id}-estagiario-revisor)!<br><br>
+      Ele atuará como colega de equipe, testará o que o agente titular fez, auditará os resultados e proporá melhorias ou abordagens alternativas!
     `;
 
     const actions = box.createDiv({ cls: "gb-dialogue-actions" });
@@ -708,7 +706,7 @@ class GabeBrainCompanyView extends ItemView {
 
     const summonBtn = actions.createEl("button", {
       cls: "gb-btn-retro gb-btn-gold",
-      text: "🎓 CONVOCAR ESTAGIÁRIO REVISOR"
+      text: "🎓 MONTAR MESA DO ESTAGIÁRIO REVISOR"
     });
 
     summonBtn.addEventListener("click", async () => {
@@ -717,24 +715,20 @@ class GabeBrainCompanyView extends ItemView {
     });
   }
 
-  // Summon the Estagiário / Revisor Subagent!
   async summonInternAgent(dept, newSkillName, conflictingSkill, reason) {
     const internName = `${dept.id}-estagiario-revisor`;
     const internTitle = `Estagiário Revisor (${dept.lead})`;
 
-    // 1. Update State
     dept.intern = {
       name: internName,
       title: internTitle,
       active: true,
-      reason: `Mediação e revisão entre "${conflictingSkill}" e "${newSkillName}".`,
+      reason: `Mesa montada para auditar e mediar entre "${conflictingSkill}" e "${newSkillName}".`,
       reviewedSkills: [conflictingSkill, newSkillName]
     };
 
-    // Add skill to department alongside existing
     dept.skills.push(newSkillName);
 
-    // Add subagent entry if not already present
     if (!dept.subagents.some(s => s.name === internName)) {
       dept.subagents.push({
         name: internName,
@@ -742,7 +736,6 @@ class GabeBrainCompanyView extends ItemView {
       });
     }
 
-    // 2. Generate actual Subagent Markdown file in vault and system
     const internMdContent = `---
 name: ${internName}
 description: Subagente Estagiário e Revisor do departamento ${dept.name}. Atua como colega de trabalho que inspeciona a execução de ${conflictingSkill} e ${newSkillName}, audita resultados e propõe melhorias arquiteturais.
@@ -751,10 +744,10 @@ model: inherit
 
 # ${internTitle} 🎓
 
-Você é o **${internName}**, o colega estagiário/revisor alocado no **${dept.name}**.
+Você é o **${internName}**, o colega estagiário/revisor na sala de **${dept.name}**.
 
 ### 🎯 Missão de Mediação:
-Você foi convocado devido a uma sobreposição de escopo entre:
+Você foi alocado em sua mesa de trabalho devido à sobreposição de escopo entre:
 - \`${conflictingSkill}\` (Skill Titular Prévia)
 - \`${newSkillName}\` (Nova Skill Integrada)
 
@@ -763,12 +756,11 @@ Você foi convocado devido a uma sobreposição de escopo entre:
 2. **Propor Alternativas Construtivas:** Se a skill titular falhar ou tiver custos altos de processamento, recomende a execução da nova skill como fallback cirúrgico.
 3. **Harmonização de Contexto:** Garantir que o departamento nunca perca consistência funcional, emitindo pareceres de melhoria contínua.
 
-### 🌐 Departamento:
-- **Cluster Líder:** \`${dept.lead}\`
+### 🌐 Sala Departamental:
+- **Líder Titular:** \`${dept.lead}\`
 - **Guilda:** GabeBrain Corp
 `;
 
-    // Write file in vault's .claude/agents/
     try {
       const vaultPath = this.app.vault.adapter.basePath;
       if (vaultPath) {
@@ -778,7 +770,6 @@ Você foi convocado devido a uma sobreposição de escopo entre:
         }
         fs.writeFileSync(path.join(agentDestDir, `${internName}.md`), internMdContent, "utf-8");
 
-        // Also write a Master Note in 📚 Biblioteca de Agentes
         const mastersDir = path.join(vaultPath, "📚 Biblioteca de Agentes");
         if (fs.existsSync(mastersDir)) {
           const masterNote = `# Master ${internName} 🎓\n\nSubagente estagiário revisor de ${dept.name}.\n\n[[00 - Índice da Biblioteca de Agentes|Voltar]]`;
@@ -789,22 +780,20 @@ Você foi convocado devido a uma sobreposição de escopo entre:
       console.log("Could not write local agent file directly", err);
     }
 
-    // 3. Play fanfare and update UI
     RetroAudio.playFanfare();
     await this.savePluginData();
     this.renderView();
 
-    new Notice(`🎓 O Estagiário Revisor "${internName}" foi contratado e alocado com sucesso!`);
+    new Notice(`🎓 A mesa de trabalho do Estagiário Revisor "${internName}" foi montada na sala!`);
   }
 
-  // Modal to Add Skill Manually or from Vault
   openAddSkillModal(dept) {
     const modal = new Modal(this.app);
-    modal.titleEl.setText(`➕ Adicionar Skill ao ${dept.name}`);
+    modal.titleEl.setText(`🪑 Alocar Skill na Mesa de ${dept.lead}`);
 
     const content = modal.contentEl;
     content.createEl("p", {
-      text: "Digite o nome da skill ou selecione um arquivo Markdown do seu cofre para o departamento analisar:"
+      text: "Digite o nome da skill ou função a ser inscrita no quadro negro da sala:"
     });
 
     const inputWrap = content.createDiv({ cls: "setting-item" });
@@ -815,9 +804,9 @@ Você foi convocado devido a uma sobreposição de escopo entre:
     input.style.width = "100%";
     input.style.padding = "8px";
     input.style.marginBottom = "14px";
-    input.style.background = "#111622";
-    input.style.border = "2px solid #3b4252";
-    input.style.color = "#eceff4";
+    input.style.background = "#1a0f0a";
+    input.style.border = "2px solid #854d0e";
+    input.style.color = "#fde047";
 
     const btnWrap = content.createDiv({ style: "display: flex; justify-content: flex-end; gap: 8px;" });
 
@@ -825,7 +814,7 @@ Você foi convocado devido a uma sobreposição de escopo entre:
     cancelBtn.addEventListener("click", () => modal.close());
 
     const submitBtn = btnWrap.createEl("button", {
-      text: "🔍 Analisar e Incorporar",
+      text: "🔍 Analisar e Escrever no Quadro",
       cls: "mod-cta"
     });
 

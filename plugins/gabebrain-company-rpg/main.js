@@ -692,8 +692,14 @@ class GabeBrainCompanyView extends ItemView {
     // 2. Office Floor Area: Decorative Rug with Character Sprite + Interactive Work Desk Button
     const floorArea = chamber.createDiv({ cls: "cubicle-floor-area" });
 
-    // Carpet / Rug where the Lead Agent Sprite stands
+    // Carpet / Rug where the Lead Agent Sprite stands (Clickable to open Master Note)
     const rug = floorArea.createDiv({ cls: `cubicle-rug ${dept.rugClass}` });
+    rug.style.cursor = "pointer";
+    rug.title = `Clique para abrir a Master Note de ${dept.lead}`;
+    rug.addEventListener("click", () => {
+      this.openMasterNote(dept.id);
+    });
+
     const actorBox = rug.createDiv({ cls: "sprite-actor" });
     actorBox.innerHTML = SPRITES[dept.sprite] || SPRITES.geo;
     rug.createDiv({ cls: "actor-label", text: dept.lead });
@@ -731,9 +737,14 @@ class GabeBrainCompanyView extends ItemView {
       const isNew = dept.intern && dept.intern.reviewedSkills && dept.intern.reviewedSkills.includes(skill);
       const tag = chalkGrid.createSpan({ cls: `chalk-tag ${isNew ? "new-chalk" : ""}` });
       tag.innerHTML = `<span>✏️</span> ${skill}`;
+      tag.title = `Clique para abrir o arquivo .md da skill "${skill}"`;
+      tag.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.openSkillFile(skill);
+      });
     });
 
-    // 4. Subagents Team Roster
+    // 4. Subagents Team Roster (Clickable to open subagent profile)
     const subSection = chamber.createDiv({ cls: "cubicle-subagents-section" });
     subSection.createDiv({ cls: "subagents-header", text: "👥 SUBAGENTES NA SALA:" });
     
@@ -741,11 +752,21 @@ class GabeBrainCompanyView extends ItemView {
     dept.subagents.forEach((sa) => {
       const badge = subRoster.createDiv({ cls: "subagent-badge" });
       badge.innerHTML = `<strong>sub: ${sa.name}</strong> <span>${sa.role}</span>`;
+      badge.title = `Clique para abrir o arquivo .md do subagente "${sa.name}"`;
+      badge.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.openAgentFile(sa.name);
+      });
     });
 
     // 5. Intern's Workstation (Appears when the Estagiário is summoned!)
     if (dept.intern && dept.intern.active) {
       const internStation = chamber.createDiv({ cls: "intern-workstation" });
+      internStation.style.cursor = "pointer";
+      internStation.title = `Clique para abrir o parecer e perfil do ${dept.intern.name}`;
+      internStation.addEventListener("click", () => {
+        this.openAgentFile(dept.intern.name);
+      });
       
       const internDeskSprite = internStation.createDiv({ cls: "intern-desk-sprite" });
       internDeskSprite.innerHTML = SPRITES.intern;
@@ -753,6 +774,108 @@ class GabeBrainCompanyView extends ItemView {
       const internDetails = internStation.createDiv({ cls: "intern-desk-details" });
       internDetails.createDiv({ cls: "intern-desk-title" }).innerHTML = `🎓 <span>${dept.intern.title} Ativo!</span>`;
       internDetails.createDiv({ cls: "intern-desk-desc", text: dept.intern.reason });
+    }
+  }
+
+  // Opens the Markdown file corresponding to a skill
+  async openSkillFile(skillName) {
+    const { vault, workspace } = this.app;
+    
+    const candidates = [
+      `20-Skills/Skill_${skillName}.md`,
+      `20-Skills/${skillName}.md`,
+      `.claude/skills/${skillName}/SKILL.md`,
+      `.agents/skills/${skillName}/SKILL.md`
+    ];
+
+    let targetFile = null;
+    for (const cand of candidates) {
+      const file = vault.getAbstractFileByPath(cand);
+      if (file instanceof TFile) {
+        targetFile = file;
+        break;
+      }
+    }
+
+    if (!targetFile) {
+      const allFiles = vault.getMarkdownFiles();
+      targetFile = allFiles.find(f => 
+        f.basename.toLowerCase() === `skill_${skillName.toLowerCase()}` ||
+        f.basename.toLowerCase() === skillName.toLowerCase() ||
+        (f.path.includes(skillName) && (f.basename === "SKILL" || f.basename.endsWith(".md")))
+      );
+    }
+
+    if (targetFile) {
+      RetroAudio.playFanfare();
+      const leaf = workspace.getLeaf("tab");
+      await leaf.openFile(targetFile);
+      new Notice(`📖 Abrindo nota da skill "${skillName}"...`);
+    } else {
+      // Check filesystem in ~/.gemini/config/skills/<skillName>/SKILL.md
+      const homeDir = process.env.USERPROFILE || process.env.HOME || "C:\\Users\\Gabriel";
+      const localSkillPath = path.join(homeDir, ".gemini", "config", "skills", skillName, "SKILL.md");
+
+      if (fs.existsSync(localSkillPath)) {
+        try {
+          const content = fs.readFileSync(localSkillPath, "utf-8");
+          const newVaultPath = `20-Skills/Skill_${skillName}.md`;
+          const created = await vault.create(newVaultPath, content);
+          RetroAudio.playFanfare();
+          const leaf = workspace.getLeaf("tab");
+          await leaf.openFile(created);
+          new Notice(`📖 Importada e aberta nota da skill "${skillName}"!`);
+          return;
+        } catch (e) {
+          console.log("Could not import skill file", e);
+        }
+      }
+
+      new Notice(`Arquivo da skill "${skillName}" não foi localizado no cofre.`);
+    }
+  }
+
+  // Opens the Markdown file of a subagent
+  async openAgentFile(agentName) {
+    const { vault, workspace } = this.app;
+    const candidates = [
+      `.claude/agents/${agentName}.md`,
+      `agents/${agentName}.md`,
+      `📚 Biblioteca de Agentes/Master_${agentName}.md`
+    ];
+
+    for (const cand of candidates) {
+      const file = vault.getAbstractFileByPath(cand);
+      if (file instanceof TFile) {
+        const leaf = workspace.getLeaf("tab");
+        await leaf.openFile(file);
+        new Notice(`👤 Abrindo perfil do subagente "${agentName}"...`);
+        return;
+      }
+    }
+
+    new Notice(`Perfil do subagente "${agentName}" não encontrado.`);
+  }
+
+  // Opens the Master Note of a department
+  async openMasterNote(deptId) {
+    const { vault, workspace } = this.app;
+    const MASTER_MAP = {
+      geo: "📚 Biblioteca de Agentes/Master_GeoAgent_Geociencias_e_Licenciamento.md",
+      research: "📚 Biblioteca de Agentes/Master_DeepResearchAgent_Investigacao_Web.md",
+      dev: "📚 Biblioteca de Agentes/Master_DevAgent_Engenharia_AppSec_e_Context7.md",
+      science: "📚 Biblioteca de Agentes/Master_ScienceAgent_PPGCA_e_Producao_Cientifica.md",
+      design: "📚 Biblioteca de Agentes/Master_DesignAgent_Identidade_e_Assets.md"
+    };
+
+    const target = MASTER_MAP[deptId];
+    if (target) {
+      const file = vault.getAbstractFileByPath(target);
+      if (file instanceof TFile) {
+        const leaf = workspace.getLeaf("tab");
+        await leaf.openFile(file);
+        new Notice(`👑 Abrindo Master Note do Departamento...`);
+      }
     }
   }
 

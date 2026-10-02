@@ -107,9 +107,9 @@ python scripts/sync_gabebrain.py --apply    # aplica
 
 ---
 
-## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 16 Subagentes)
+## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 26 Subagentes)
 
-O GabeBrain adota uma divisão em 5 clusters especializados com 16 subagentes atômicos para execução paralela, baixo consumo de tokens e contexto limpo:
+O GabeBrain adota uma divisão em 5 clusters especializados com 26 subagentes atômicos para execução paralela, baixo consumo de tokens e contexto limpo:
 
 ![Ecossistema GabeBrain](gabebrain_ecossistema.png)
 

@@ -67,7 +67,7 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 
 ---
 
-## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 16 Subagentes)
+## 👑 Arquitetura Hierárquica Multi-Agentes (5 Clusters & 26 Subagentes)
 
 O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters especializados com subagentes atômicos, garantindo economia de tokens e contexto hiper-especializado:
 

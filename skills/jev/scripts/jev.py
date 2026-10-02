@@ -22,6 +22,7 @@ Formato de Q.json (chaves livres):
 from __future__ import annotations
 
 import argparse
+import contextlib
 import getpass
 import json
 import os
@@ -150,14 +151,47 @@ def new_ledger(initial_usd: float) -> dict:
 def load_ledger() -> dict:
     if not LEDGER_PATH.is_file():
         return new_ledger(DEFAULT_INITIAL_USD)
-    return {**new_ledger(DEFAULT_INITIAL_USD), **json.loads(LEDGER_PATH.read_text(encoding="utf-8"))}
+    text = LEDGER_PATH.read_text(encoding="utf-8")
+    # raw_decode tolera lixo apos o JSON valido (ex.: resto de escrita concorrente antiga)
+    data, _ = json.JSONDecoder().raw_decode(text.lstrip())
+    return {**new_ledger(DEFAULT_INITIAL_USD), **data}
 
 
 def save_ledger(ledger: dict) -> None:
     LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
-    tmp = LEDGER_PATH.with_suffix(".tmp")
+    tmp = LEDGER_PATH.with_name(f"{LEDGER_PATH.stem}.{os.getpid()}.tmp")  # unico por processo
     tmp.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
     tmp.replace(LEDGER_PATH)  # troca atomica: o Hub nunca le arquivo pela metade
+
+
+LOCK_TIMEOUT_S = 5.0
+LOCK_STALE_S = 15.0
+
+
+@contextlib.contextmanager
+def ledger_lock():
+    """Exclusao mutua entre chamadas paralelas do Jev (ler-somar-gravar nao pode intercalar)."""
+    lock = LEDGER_PATH.with_suffix(".lock")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    deadline = time.monotonic() + LOCK_TIMEOUT_S
+    while True:
+        try:
+            os.close(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+            break
+        except FileExistsError:
+            try:
+                if time.time() - lock.stat().st_mtime > LOCK_STALE_S:
+                    lock.unlink(missing_ok=True)  # lock orfao de processo morto
+                    continue
+            except OSError:
+                pass
+            if time.monotonic() > deadline:
+                raise OSError("livro-caixa ocupado (lock)")
+            time.sleep(0.05)
+    try:
+        yield
+    finally:
+        lock.unlink(missing_ok=True)
 
 
 def call_cost(usage: dict, ledger: dict) -> float:
@@ -183,17 +217,18 @@ def log_call(usage: dict, cost: float) -> None:
 def record_usage(usage: dict) -> tuple[float, dict | None]:
     """Soma a chamada ao livro-caixa. Falha de contabilidade nao derruba a classificacao."""
     try:
-        ledger = load_ledger()
-        cost = call_cost(usage, ledger)
-        updated = {
-            **ledger,
-            "spent_usd": ledger["spent_usd"] + cost,
-            "calls": ledger["calls"] + 1,
-            "input_tokens": ledger["input_tokens"] + usage.get("input_tokens", 0),
-            "output_tokens": ledger["output_tokens"] + usage.get("output_tokens", 0),
-            "updated": time.strftime("%Y-%m-%dT%H:%M:%S"),
-        }
-        save_ledger(updated)
+        with ledger_lock():
+            ledger = load_ledger()
+            cost = call_cost(usage, ledger)
+            updated = {
+                **ledger,
+                "spent_usd": ledger["spent_usd"] + cost,
+                "calls": ledger["calls"] + 1,
+                "input_tokens": ledger["input_tokens"] + usage.get("input_tokens", 0),
+                "output_tokens": ledger["output_tokens"] + usage.get("output_tokens", 0),
+                "updated": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            }
+            save_ledger(updated)
         log_call(usage, cost)
         return cost, updated
     except (OSError, ValueError, KeyError) as err:

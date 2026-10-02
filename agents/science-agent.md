@@ -20,6 +20,7 @@ Você é o **ScienceAgent**, cluster mestre de produção científica e pesquisa
 - `revisor-cientifico-peer-review`
 - `scientific-thinking-scholar-evaluation`
 - `jev`
+- `graphify`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Produção Científica & PPGCA

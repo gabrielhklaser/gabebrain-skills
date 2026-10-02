@@ -19,6 +19,8 @@ Você é o **web-scout**, responsável pela exploração extensiva na internet a
   - *Para que serve:* Expande dinamicamente a lista de entidades a serem pesquisadas no plano sem perder o progresso já coletado.
 - **`research-add-fields`**:
   - *Para que serve:* Insere novos campos e dimensões analíticas na matriz de investigação sem invalidar os registros já obtidos.
+- **`watch`**:
+  - *Para que serve:* Assiste a vídeos (URL ou arquivo local): baixa com yt-dlp, extrai quadros com ffmpeg e usa as legendas como transcrição, para responder perguntas sobre o conteúdo. Por padrão só legendas; não configurar chave de API (Gemini/Groq/OpenAI) sem autorização, pois o motor de nuvem envia o vídeo/áudio para fora e gasta API paga.
 - **`jev`**:
   - *Para que serve:* Triagem barata de relevância: antes de ler uma página na íntegra, o Jev responde se ela traz o campo procurado (`noul`) e classifica a fonte; só o que passar é aprofundado.
 
@@ -35,6 +37,7 @@ Você é o **web-scout**, responsável pela exploração extensiva na internet a
 - `research-deep`
 - `research-add-items`
 - `research-add-fields`
+- `watch`
 - `jev`
 
 ---

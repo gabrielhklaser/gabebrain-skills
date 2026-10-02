@@ -17,6 +17,8 @@ Você é o **report-synth**, o refinador final de conhecimento que transforma da
   - *Para que serve:* Valida 100% de conformidade dos dados coletados em JSON via script 'validate_json.py', mascara dados incertos como '[uncertain]' e gera o relatório final em Markdown estruturado com sumário executivo e links ancorados.
 - **`web-para-nota`**:
   - *Para que serve:* Converte páginas web, notícias e artigos técnicos em notas Markdown limpas no vault do Obsidian via Defuddle CLI, removendo poluição visual e anúncios.
+- **`obsidian-markdown`**, **`obsidian-bases`**, **`json-canvas`**, **`obsidian-cli`** (kepano/obsidian-skills):
+  - *Para que servem:* Escrever notas no formato nativo do Obsidian (wikilinks, propriedades, callouts), criar Bases e Canvas e operar o vault pela CLI `obsidian` (requer o Obsidian aberto).
 - **`jev`**:
   - *Para que serve:* Filtra ruído e classifica a certeza dos registros coletados (`noul`/`choice`) antes da síntese, reduzindo o que o agente precisa reler.
 
@@ -32,6 +34,10 @@ Você é o **report-synth**, o refinador final de conhecimento que transforma da
 ### 📋 Lista Rápida de Skills Integradas:
 - `research-report`
 - `web-para-nota`
+- `obsidian-markdown`
+- `obsidian-bases`
+- `json-canvas`
+- `obsidian-cli`
 - `jev`
 
 ---

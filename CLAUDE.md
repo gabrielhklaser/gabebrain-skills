@@ -1,7 +1,7 @@
 # Diretrizes de Raciocínio e Desenvolvimento - GabeBrain Skills
 
 ## Identidade e Propósito
-Este repositório contém a base de conhecimento consolidada, Master Skills (01 a 21) e ferramentas operacionais do ecossistema GabeBrain.
+Este repositório contém a base de conhecimento consolidada, Master Skills (01 a 28) e ferramentas operacionais do ecossistema GabeBrain.
 Qualquer agente que opere neste repositório deve consultar prioritariamente as instruções das Master Skills correspondentes antes de implementar ou refatorar código.
 
 ## Regras de Execução

@@ -88,6 +88,9 @@ DOMAINS = {
     "caveman": "dominio/engenharia-software",
     "caveman-commit": "dominio/engenharia-software",
     "caveman-compress": "dominio/engenharia-software",
+    "watch": "dominio/pesquisa-web",
+    "impeccable": "dominio/design",
+    "graphify": "dominio/engenharia-software",
 }
 
 

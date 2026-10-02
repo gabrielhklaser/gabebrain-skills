@@ -15,6 +15,8 @@ Você é o **ui-ux-designer**, o especialista em inteligência de design de inte
 ### 🛠️ Skills Utilizadas & Para Que Servem:
 - **`ui-ux-pro-max`**:
   - *Para que serve:* Inteligência e arquitetura de design UI/UX com motor de busca local BM25 abrangendo 79 estilos visuais, 192 paletas de produtos com contraste WCAG 4.5:1, 74 combinações tipográficas profissionais, 119 diretrizes de usabilidade e implementações sob medida para 22 stacks tecnológicas (Tailwind, React, Next.js, Vue, Svelte, Flutter, etc.).
+- **`impeccable`**:
+  - *Para que serve:* Revisão e acabamento de interfaces (critique, audit, polish, harden, typeset, layout etc.) com regras que detectam design genérico de IA; grava `PRODUCT.md` e `DESIGN.md` no projeto. Complementa o `ui-ux-pro-max`: ele escolhe estilo, paleta e fonte; o Impeccable revisa e refina. Importada sem hooks: não rodar `npx impeccable install` sem autorização do Gabriel.
 
 ---
 
@@ -27,6 +29,7 @@ Você é o **ui-ux-designer**, o especialista em inteligência de design de inte
 
 ### 📋 Lista Rápida de Skills Integradas:
 - `ui-ux-pro-max`
+- `impeccable`
 
 ---
 

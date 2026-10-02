@@ -15,6 +15,7 @@ Você é o **DesignAgent**, cluster mestre de identidade visual, engenharia de d
 - `canva-image-agent`
 - `web-asset-generator`
 - `ui-ux-pro-max`
+- `impeccable`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Identidade Visual & Design

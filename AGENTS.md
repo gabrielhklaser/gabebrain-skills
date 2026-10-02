@@ -81,8 +81,8 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 ### 🔍 2. DeepResearchAgent (`agents/deep-research-agent.md`)
 *Cluster Líder de Pesquisa Profunda na Internet & Extração Estruturada em 3 Fases*
 - `sub: research-lead` (`agents/research-lead.md`): Fase 1 - Estruturação de `outline.yaml` e matriz de campos `fields.yaml` (`deep-research`, `research`).
-- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`, `caveman`).
-- `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de campos via JSON, notas limpas e relatório consolidado (`research-report`, `web-para-nota`).
+- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`, `watch`, `caveman`).
+- `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de campos via JSON, notas limpas e relatório consolidado (`research-report`, `web-para-nota`, `obsidian-markdown`, `obsidian-bases`, `json-canvas`, `obsidian-cli`).
 - `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`, `caveman`).
 
 ### 💻 3. DevAgent (`agents/dev-agent.md`)
@@ -91,6 +91,7 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 - `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial (`context7-mcp`, `context7-cli`, `find-docs`).
 - `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy (`skillspector-auditor`, `karpathy-guidelines`).
 - `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer (`vcs-version-agent`, `arena-ai-controller`, `ecc-harness-optimizer`, `caveman`, `caveman-commit`).
+- `sub: project-reader` (`agents/project-reader.md`): Leitura e mapeamento de projetos em grafo de conhecimento, antes de refatorar ou responder sobre arquitetura (`graphify`, `improve-codebase-architecture`, `github-research`).
 - *Suíte Ponytail & Caveman*: Código mínimo e anti-overengineering (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`) e comunicação ultracompacta para economia extrema de tokens (`caveman`, `caveman-commit`, `caveman-compress`).
 
 ### 🎓 4. ScienceAgent (`agents/science-agent.md`)
@@ -103,7 +104,7 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 *Cluster Líder de Identidade Visual, Branding, UI/UX & Assets Digitais*
 - `sub: canva-designer` (`agents/canva-designer.md`): Automação de designs e infográficos com Canva Pro autenticado via Playwright (`canva-image-agent`).
 - `sub: web-asset-maker` (`agents/web-asset-maker.md`): Geração completa de favicons, ícones PWA e imagens Open Graph (`web-asset-generator`).
-- `sub: ui-ux-designer` (`agents/ui-ux-designer.md`): Inteligência de design UI/UX, 79 estilos, 192 paletas de produtos, 74 pares de fontes, 119 regras UX/WCAG e 22 stacks (`ui-ux-pro-max`).
+- `sub: ui-ux-designer` (`agents/ui-ux-designer.md`): Inteligência de design UI/UX, 79 estilos, 192 paletas de produtos, 74 pares de fontes, 119 regras UX/WCAG e 22 stacks (`ui-ux-pro-max`, `impeccable`).
 
 ---
 

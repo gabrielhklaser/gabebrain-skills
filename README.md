@@ -85,6 +85,10 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 21. **`ponytail`** (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`): Filosofia e ferramental de desenvolvedor sênior pragmático (DietrichGebert/ponytail). Aplica a escada YAGNI (recurso nativo/stdlib antes de dependências e código customizado), gerando código mínimo funcional sem abrir mão de validação, segurança e tratamento de erros. Inclui auditoria e revisão anti-overengineering.
 22. **`ui-ux-pro-max`**: Inteligência avançada de design de interfaces UI/UX (nextlevelbuilder/ui-ux-pro-max-skill). Motor BM25 local para recomendação de 79 estilos de interface, 192 paletas de produtos, 74 combinações de tipografia, 119 diretrizes de usabilidade/acessibilidade WCAG e suporte a 22 stacks tecnológicas (React, Next.js, Tailwind, Vue, Svelte, Flutter, SwiftUI, etc.).
 23. **`caveman`** (`caveman`, `caveman-commit`, `caveman-compress`): Modo de comunicação ultracompacta e economia extrema de tokens (JuliusBrussee/caveman). Elimina artigos, saudações, preâmbulos e narração supérflua de ferramentas, mantendo 100% do rigor técnico, comandos e blocos de código. Inclui gerador de Conventional Commits sem fluff e compressor de arquivos de memória.
+24. **`watch`** (bradautomates/claude-video): Assiste a vídeos (yt-dlp + ffmpeg + legendas) para responder perguntas sobre o conteúdo. Por padrão só legendas, sem chave de API. Requer ffmpeg, ffprobe e yt-dlp.
+25. **`impeccable`** (pbakaus/impeccable): Revisão e acabamento de interfaces (critique, audit, polish, harden…) com detecção de design genérico de IA. Complementa o `ui-ux-pro-max`. Importada sem hooks.
+26. **`graphify`** (safishamsi/graphify): Grafo de conhecimento consultável de um projeto ou pasta (código via AST, documentos via extração semântica). Usada pelo subagente `project-reader`. Importada sem hooks.
+27. **`obsidian-skills`** (kepano): `obsidian-markdown`, `obsidian-bases`, `json-canvas` e `obsidian-cli` para escrever e operar o vault no formato nativo do Obsidian.
 
 ### 🔁 Sincronização (este repo é a fonte da verdade)
 

@@ -22,7 +22,7 @@ Bem-vindo ao **GabeBrain Skills & Agents Hub**, o repositório central de inteli
 
 ## 🧭 Catálogo de Master Skills (GabeBrain)
 
-Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosamente as 26 Master Skills documentadas em master-skills/:
+Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosamente as 28 Master Skills documentadas em master-skills/:
 
 | # | Master Skill | Especialidade |
 |---|---|---|
@@ -52,6 +52,8 @@ Todos os agentes que operam neste ecossistema devem consultar e seguir rigorosam
 | **24** | Master_SkillSpector_Seguranca_e_Auditoria_Skills | Varredura e auditoria AppSec de skills de IA (NVIDIA SkillSpector, YARA, AST) |
 | **25** | Master_ECC_Harness_e_Otimizacao_Agentes | Harness OS, economia de tokens, 6-phase loop (Plan-Test-Implement-Review-Verify-Remember), TDD, SQLite state |
 | **26** | Master_Superpowers_Engenharia_Codigo_e_Prompts | Metodologia Superpowers: brainstorming prévio, planos atômicos, subagentes e TDD rigoroso |
+| **27** | Master_LoopAgent_Governanca_e_QALoop | Orquestrador geral: governança multi-agente, qa-loop limitado, pontuação objetiva com Jev e handoff nuvem/local |
+| **28** | Master_QALoop_Governanca_e_Orquestracao | Master do qa-loop: governança, hive mind e orquestração (qa-loop, jev, prompt-router-coordinator) |
 
 ---
 

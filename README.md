@@ -23,7 +23,7 @@ Consulte o detalhamento completo em [`protocols/arena_antigravity_bridge.md`](pr
 
 ---
 
-## 📚 Catálogo das 26 Master Skills
+## 📚 Catálogo das 28 Master Skills
 
 As Master Skills residem no diretório [`master-skills/`](master-skills/) e formam a base teórica e normativa de raciocínio de todos os agentes:
 
@@ -55,6 +55,8 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **24** | [`Master_SkillSpector_Seguranca_e_Auditoria_Skills`](master-skills/Master_SkillSpector_Seguranca_e_Auditoria_Skills.md) | NVIDIA SkillSpector: auditoria AppSec de skills de IA, 71 padrões, YARA, AST e Least Privilege |
 | **25** | [`Master_ECC_Harness_e_Otimizacao_Agentes`](master-skills/Master_ECC_Harness_e_Otimizacao_Agentes.md) | Everything Claude Code: harness OS, economia de tokens, ciclo 6-fases, TDD e memória durável SQLite |
 | **26** | [`Master_Superpowers_Engenharia_Codigo_e_Prompts`](master-skills/Master_Superpowers_Engenharia_Codigo_e_Prompts.md) | Superpowers: metodologia disciplinada de código a partir de prompts, brainstorming e planos atômicos |
+| **27** | [`Master_LoopAgent_Governanca_e_QALoop`](master-skills/Master_LoopAgent_Governanca_e_QALoop.md) | Orquestrador geral: governança multi-agente, qa-loop limitado, pontuação objetiva com Jev e handoff nuvem/local |
+| **28** | [`Master_QALoop_Governanca_e_Orquestracao`](master-skills/Master_QALoop_Governanca_e_Orquestracao.md) | Master do qa-loop: governança, hive mind e orquestração (qa-loop, jev, prompt-router-coordinator) |
 
 ---
 

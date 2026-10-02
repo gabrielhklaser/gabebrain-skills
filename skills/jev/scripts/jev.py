@@ -44,6 +44,9 @@ ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 # Fica fora do vault/Drive; o painel do GabeBrain Hub le o mesmo arquivo.
 LEDGER_PATH = Path(os.environ.get("JEV_LEDGER") or (
     Path(os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local") / "gabebrain" / "jev" / "ledger.json"))
+# Registro por chamada (uma linha JSON por chamada), ao lado do livro-caixa: o plugin
+# Guarda de Tokens do Obsidian usa os horarios para as janelas de 5 h e de 7 dias.
+CALLS_PATH = LEDGER_PATH.with_name("calls.jsonl")
 DEFAULT_INITIAL_USD = 10.0
 DEFAULT_PRICE_IN = 0.042   # US$ por 1M de tokens de entrada (cookbook da doc, jev-1.12, 2026-09)
 DEFAULT_PRICE_OUT = 0.0    # saida gratuita
@@ -162,6 +165,21 @@ def call_cost(usage: dict, ledger: dict) -> float:
             + usage.get("output_tokens", 0) * ledger["price_out_per_mtok"]) / 1_000_000
 
 
+def log_call(usage: dict, cost: float) -> None:
+    """Acrescenta a chamada ao registro por chamada. Falha aqui nao derruba a classificacao."""
+    entry = {
+        "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),  # UTC, ISO 8601
+        "input_tokens": usage.get("input_tokens", 0),
+        "output_tokens": usage.get("output_tokens", 0),
+        "cost_usd": cost,
+    }
+    try:
+        with CALLS_PATH.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(entry) + "\n")
+    except OSError as err:
+        print(f"aviso: nao consegui registrar a chamada ({err})", file=sys.stderr)
+
+
 def record_usage(usage: dict) -> tuple[float, dict | None]:
     """Soma a chamada ao livro-caixa. Falha de contabilidade nao derruba a classificacao."""
     try:
@@ -176,6 +194,7 @@ def record_usage(usage: dict) -> tuple[float, dict | None]:
             "updated": time.strftime("%Y-%m-%dT%H:%M:%S"),
         }
         save_ledger(updated)
+        log_call(usage, cost)
         return cost, updated
     except (OSError, ValueError, KeyError) as err:
         print(f"aviso: nao consegui atualizar o saldo local ({err})", file=sys.stderr)

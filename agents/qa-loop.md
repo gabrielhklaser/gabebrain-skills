@@ -18,6 +18,9 @@ Você NÃO escreve a solução. Você mede, pontua, decide e devolve feedback. S
 - **`jev`**:
   - *Para que serve:* Camada de decisão barata (System One, TypeSafe). Classifica a entrega, detecta entrega trivial, pontua os pilares e detecta vetos numa única chamada, sem gerar texto. É um modelo independente do gerador, o que reduz o viés de o mesmo modelo escrever e avaliar.
 
+- **`graphify`**:
+  - *Para que serve:* Mostra o raio de impacto da entrega e os módulos sem teste ligado, para dimensionar os gates determinísticos.
+
 ---
 
 ### 🎯 Diretrizes Operacionais:
@@ -47,12 +50,14 @@ Você NÃO escreve a solução. Você mede, pontua, decide e devolve feedback. S
 **Fronteiras:** `context7-verifier` roda antes de gerar (você só confere se foi acionado). `coder-tdd` mantém o Red/Green/Refactor interno; você é o laço externo. `loop-operator` e `agent-evaluator` não rodam em paralelo com você. `vcs-sync` só depois de APROVADO.
 
 **Saída final (JSON validado por `qa_loop.py validate`):** `nota_final`, `status` (APROVADO | REPROVADO | ESCALAR), `analise_breve`, `feedbacks_de_correcao`, `iteracao`, `modo`.
+- Use o grafo para dimensionar quais testes rodar; o veredito continua sendo dos gates + Jev. Gravar `graphify-out/` fora do vault e do Git; nunca rodar sobre arquivos reais de processos; sem `graphify install`/`hook install`.
 
 ---
 
 ### 📋 Lista Rápida de Skills Integradas:
 - `qa-loop`
 - `jev`
+- `graphify`
 
 ---
 

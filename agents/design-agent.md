@@ -16,6 +16,7 @@ Você é o **DesignAgent**, cluster mestre de identidade visual, engenharia de d
 - `web-asset-generator`
 - `ui-ux-pro-max`
 - `impeccable`
+- `graphify`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Identidade Visual & Design

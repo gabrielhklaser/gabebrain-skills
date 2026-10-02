@@ -20,6 +20,7 @@ Você é o **DeepResearchAgent**, o cluster mestre de investigação e extraçã
 - `research-report`
 - `github-research`
 - `web-para-nota`
+- `graphify`
 
 ### 🌐 Ecossistema: GabeBrain
 - **Cluster**: Pesquisa Profunda & Web Search

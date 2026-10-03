@@ -32,7 +32,7 @@
     "default_reason": "Demanda de execução local detectada (ex: servidor local, teste na máquina física ou acervo GabeBrain)."
   },
   "claude": {
-    "model": "claude-sonnet-4-6",
+    "model": "claude-sonnet-5-5",
     "patterns": [
       "\\b(claude code|no claude|usar claude|chamar o claude)\\b",
       "\\b(racioc[ií]nio anal[ií]tico|an[aá]lise cr[ií]tica|refactor(ing)? anal[ií]tico)\\b",

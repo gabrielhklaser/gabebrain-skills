@@ -13,7 +13,7 @@ Este agente é responsável pela **governança e roteamento dinâmico de prompts
 
 | Prioridade | Agente | Escopo Principal | Quando Ativar |
 | :--- | :--- | :--- | :--- |
-| **P1 (Padrão)** | **Arena AI** *(Nuvem)* | Tarefas em repositórios GitHub, refatoração de código, criação de testes, inspeções de segurança em container isolado. | **Sempre priorizar** para economizar tokens locais do usuário. Qualquer tarefa de código que possa rodar no GitHub e em nuvem deve ir para o Arena AI. |
+| **P1 (Somente nuvem)** | **Arena AI** *(Nuvem)* | Projetos estritamente na nuvem, no nosso repositório GitHub: refatoração de código, criação de testes, inspeções de segurança em container isolado. | **Somente quando o projeto está inteiramente na nuvem.** Se o prompt mexe em arquivos locais do GabeBrain (vault, skills, agentes, plugin, pastas do computador), vai para Antigravity ou Claude Code, porque a Arena não edita o disco local. Sem indício de nuvem/repositório, a Arena também não é o padrão. |
 | **P2 (Local)** | **Antigravity** *(Local)* | Acesso a recursos físicos da máquina local: servidor local (`localhost`, portas 3000, 5173, etc.), automação desktop, Google Drive físico, Biblioteca Geológica, acervo do Mestrado (Docling), QGIS Desktop, manipulação de processos do SO. | **Acionado quando o prompt exigir execução local** ou acesso ao sistema de arquivos físico da máquina. |
 | **P3 (Terminal)** | **Claude Code** *(Terminal)* | Raciocínio analítico cirúrgico, depuração passo a passo interativa no terminal, TDD rigoroso (Red/Green/Refactor) em sessões dedicadas. | Quando o usuário solicitar explicitamente análise profunda de código, benchmark analítico ou refatoração crítica no terminal. |
 
@@ -48,8 +48,9 @@ flowchart TD
 2. **Gatilhos para Claude Code (Terminal / P3):**
    - `claude`, `terminal`, `depuração sistemática`, `raciocínio analítico`, `tdd interativo`, `peer review formal`.
 
-3. **Gatilhos para Arena AI (Nuvem / P1):**
-   - Criação de features, refatoração de código de repositório, tarefas GitHub, documentação de repositório, auditorias de segurança na nuvem, automações que não dependem do hardware local.
+3. **Gatilhos para Arena AI (somente projetos na nuvem):**
+   - Ordem de decisão: (1) padrões locais estritos → Antigravity; (2) padrões do Claude → Claude Code; (3) nuvem explícita (`github`, `pull request`, `na nuvem`, `repositório remoto`) → Arena; (4) arquivos locais do GabeBrain (`vault`, `obsidian`, `skills`/`agentes`/`plugin` + `gabebrain`, caminhos `C:\...`, `.claude`, `.agents`) → Antigravity ou Claude Code; (5) tarefa de repositório/código sem nada local → Arena; (6) sem indício de nuvem → Antigravity ou Claude Code (continua no Claude se a sessão já está nele).
+   - A menção explícita à nuvem vence a menção a arquivos do GabeBrain; os padrões locais estritos (localhost, QGIS, Drive) vencem tudo.
 
 ---
 

@@ -4,6 +4,11 @@ GabeBrain Prompt Router Coordinator
 Motor de decisão e coordenação de prompts para orquestração tripartite:
 Arena AI (Nuvem P1) vs Antigravity (Local P2) vs Claude Code (Terminal P3).
 
+Regra da Arena AI: só para projetos estritamente na nuvem (repositório GitHub). Qualquer prompt
+que mexa em arquivos locais do GabeBrain (vault, skills, agentes, plugin, pastas do computador)
+vai para Antigravity ou Claude Code, porque a Arena não edita o disco local. Sem indício de
+nuvem/repositório, o padrão também deixa de ser a Arena.
+
 As regras vivem em ../routing_rules.json (fonte única, também lida pelo GabeBrain Hub).
 """
 
@@ -76,13 +81,28 @@ def evaluate_prompt(prompt: str, current_agent: str = "arena", history: str = ""
         return _result("claude", clean_curr, claude["reason"], claude["model"], 0.94,
                        "ANALYTICAL_TERMINAL", ["deep_reasoning", "interactive_terminal", "tdd"])
 
-    # 3. Padrão GabeBrain: Arena AI (P1), salvo continuidade local sem menção explícita à nuvem
-    if clean_curr == "antigravity" and not _matches(arena["patterns"], clean_p):
-        return _result("antigravity", clean_curr, arena["keep_local_reason"], local["model"], 0.90,
-                       "LOCAL_CONTINUATION", ["github", "cloud_container"], handoff=False)
+    explicit_cloud = bool(_matches(arena["patterns"], clean_p))
+    local_harness = "claude" if clean_curr == "claude" else "antigravity"
+    local_model = claude["model"] if local_harness == "claude" else local["model"]
 
-    return _result("arena", clean_curr, arena["reason"], arena["model"], 0.90,
-                   "CLOUD_GITHUB", ["github", "cloud_container"])
+    # 3. Nuvem explícita (GitHub, PR, "na nuvem"): Arena AI
+    if explicit_cloud:
+        return _result("arena", clean_curr, arena["reason"], arena["model"], 0.92,
+                       "CLOUD_GITHUB", ["github", "cloud_container"])
+
+    # 4. Arquivos locais do GabeBrain (vault, skills, agentes, plugin, pastas): a Arena não edita o disco local
+    if _matches(local.get("soft_patterns", []), clean_p):
+        return _result(local_harness, clean_curr, local["soft_reason"], local_model, 0.93,
+                       "LOCAL_GABEBRAIN_FILES", ["local_files", "write_access"])
+
+    # 5. Tarefa de repositório/código sem nada local: projeto na nuvem, Arena AI (P1)
+    if _matches(arena.get("repo_patterns", []), clean_p):
+        return _result("arena", clean_curr, arena["reason"], arena["model"], 0.85,
+                       "CLOUD_GITHUB", ["github", "cloud_container"])
+
+    # 6. Sem indício de projeto na nuvem: Claude Code ou Antigravity (nunca Arena por padrão)
+    return _result(local_harness, clean_curr, arena["no_cloud_reason"], local_model, 0.80,
+                   "NO_CLOUD_EVIDENCE", ["local_files"], handoff=(local_harness != clean_curr))
 
 
 def run_tests():
@@ -95,6 +115,13 @@ def run_tests():
         ("faça um refactoring analítico rigoroso usando TDD no terminal", "arena", "claude", True),
         ("continue ajustando o texto", "antigravity", "antigravity", False),
         ("agora faça o push para github", "antigravity", "arena", True),
+        ("edite a skill groq do gabebrain e atualize o script", "arena", "antigravity", True),
+        ("ajuste o plugin gabebrain-hub no vault do obsidian", "arena", "antigravity", True),
+        ("salve o relatório em C:\\GabeBrain\\GabeBrain\\notas", "arena", "antigravity", True),
+        ("atualize o README do repositório gabebrain-skills no github", "antigravity", "arena", True),
+        ("refatore o código da API no repositório licenciamentoambiental", "antigravity", "arena", True),
+        ("explique o que é krigagem", "arena", "antigravity", True),
+        ("mantenha a sessão e continue com o texto", "claude", "claude", False),
     ]
 
     print("\n--- INICIANDO BATERIA DE TESTES DO PROMPT ROUTER COORDINATOR ---")

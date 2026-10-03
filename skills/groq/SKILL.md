@@ -15,7 +15,8 @@ allowed-tools:
 
 **Papel:** gerar texto mecânico barato. Decisões continuam com o Jev (regra 9); qualidade final passa pelo `qa-loop`.
 **Privacidade:** tudo enviado sai do computador (`api.groq.com`) e o plano gratuito tem política de dados menos favorável. **Nunca envie material privado** (processos, clientes, laudos, e-mails reais) sem perguntar ao Gabriel (regra 9c).
-**Chave:** variável de usuário `GROQ_API_KEY` (nunca imprimir nem gravar no vault). Modelo em `.env.example`.
+**Chave:** segredo `GROQ_API_KEY` no PowerShell SecretStore (criptografado por usuário do Windows). Ordem de leitura: variável de ambiente → variável de usuário → SecretStore → `.env` (nunca dentro do vault, que sincroniza com o Drive). Nunca imprimir a chave.
+Cadastro/troca da chave (no seu terminal; o valor é pedido de forma oculta): `Set-Secret -Name GROQ_API_KEY`.
 
 ## Uso
 
@@ -23,7 +24,11 @@ allowed-tools:
 python scripts/groq_worker.py status
 python scripts/groq_worker.py extract --file trecho.txt --fields poco,vazao,data
 python scripts/groq_worker.py summarize --file trecho.txt --max-words 100
+python scripts/groq_worker.py compose --file pedido.txt     # reescreve o pedido como prompt claro (gpt-oss-20b); nao responde
+python scripts/groq_worker.py answer --file pergunta.txt --model qwen/qwen3.8-27b   # resposta direta, sem ferramentas
 ```
+
+`compose` e `answer` alimentam o roteador automático do GabeBrain Hub (o Groq reformata e o Jev classifica). O Hub só os chama depois da varredura local de privacidade.
 
 ## Limites do plano gratuito (verificados em 2026-10-02, mudam com frequência)
 

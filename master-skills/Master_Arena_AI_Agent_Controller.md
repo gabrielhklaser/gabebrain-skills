@@ -31,7 +31,7 @@ Habilidade mestre especializada no controle automatizado e resiliente da platafo
 ```markdown
 ### 0. REGRA DE OURO DE ORQUESTRAÇÃO E PRIORIDADE DE EXECUÇÃO
 - **Prioridade 1 (Padrão - Arena AI Executor):**
-  - O agente deve SEMPRE priorizar a execução de tarefas, escrita de código, suítes de testes, refatorações e análises dentro da plataforma Arena AI.
+  - Use a Arena AI somente em projetos estritamente na nuvem (repositório GitHub): código, testes e refatorações que não toquem arquivos locais do GabeBrain. Tarefa que leia ou altere arquivos locais vai, por preferência, para Claude Code ou Antigravity, porque a Arena tem limitações para alterar arquivos do computador.
   - O Arena AI carrega as skills e diretrizes diretamente do repositório `gabrielhklaser/gabebrain-skills` via integração com o GitHub.
   - Objetivo: Preservar tokens locais do Antigravity, delegando a carga de trabalho pesada para os contêineres em nuvem da Arena.
 - **Prioridade 2 (Exceção - Antigravity como Orquestrador Local):**

@@ -17,15 +17,15 @@ allowed-tools:
 
 This skill enables Antigravity to automate and control the **Arena AI** platform (`https://arena.ai/`), specializing in **Agent Mode**, GitHub repository integration, and automated failover recovery.
 
-## Regra de Ouro: Priorização Absoluta da Execução no Arena AI (Economia de Tokens)
+## Regra de Ouro: Arena AI Somente para Projetos na Nuvem (Economia de Tokens)
 
 1. **Prioridade 1 (Padrão de Execução - Nuvem Arena AI):**
-   - O agente deve **SEMPRE priorizar este caminho**: delegar tarefas para execução na plataforma **Arena AI**.
+   - Use este caminho **somente em projetos estritamente na nuvem** (repositório GitHub): delegar para a **Arena AI** tarefas que não toquem arquivos locais do GabeBrain. A Arena tem limitações para alterar arquivos do computador.
    - As skills devem ser consumidas diretamente pelo Arena AI a partir do repositório `gabrielhklaser/gabebrain-skills` (ou no repositório conectado do projeto).
    - Qualquer geração de código, testes, refatoração, análises extensas e tarefas iterativas devem rodar dentro da infraestrutura do Arena AI, economizando os tokens locais do Antigravity.
 
-2. **Prioridade 2 (Exceção: Uso do Motor Antigravity apenas quando necessário arquivo do GabeBrain):**
-   - O motor local do Antigravity **SÓ deve ser acionado** quando for estritamente necessário acessar arquivos físicos ou bibliotecas locais do GabeBrain que não existem no repositório GitHub:
+2. **Prioridade 2 (Arquivos locais do GabeBrain: Claude Code ou Antigravity, por preferência):**
+   - Os modelos do Claude Code ou o motor local do Antigravity **devem ser acionados** quando for necessário acessar arquivos físicos ou bibliotecas locais do GabeBrain que não existem no repositório GitHub:
      - Acervo físico da Biblioteca Geológica no Google Drive (`10-Trabalho/Geologia/Biblioteca Geologica/`).
      - Textos integrais e notas estruturadas do acervo Docling / Mestrado no disco local.
      - Ferramentas locais de desktop (ex: QGIS Desktop, automações do SO).

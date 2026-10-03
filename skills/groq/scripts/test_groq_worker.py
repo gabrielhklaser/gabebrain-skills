@@ -8,6 +8,8 @@ import pytest
 
 import groq_worker as gw
 
+REAL_READ_SECRETSTORE = gw._read_secretstore  # a fixture autouse troca o original nos testes
+
 
 def _http_error(code: int, retry_after: str | None = None) -> urllib.error.HTTPError:
     headers = {"retry-after": retry_after} if retry_after else {}
@@ -18,34 +20,56 @@ def _ok(content: str) -> dict:
     return {"choices": [{"message": {"content": content}}]}
 
 
+@pytest.fixture(autouse=True)
+def isolated_key_sources(monkeypatch):
+    """Nenhum teste toca a chave real: registro e SecretStore vazios por padrao."""
+    monkeypatch.setattr(gw, "_read_user_registry", lambda: None)
+    monkeypatch.setattr(gw, "_read_secretstore", lambda: None)
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+
+
 def test_get_key_prefers_env_then_file(monkeypatch, tmp_path):
     env_file = tmp_path / ".env"
     env_file.write_text("GROQ_API_KEY=from-file\n", encoding="utf-8")
-    monkeypatch.setattr(gw, "_read_user_registry", lambda: None)
-    monkeypatch.delenv("GROQ_API_KEY", raising=False)
     assert gw.get_key(env_file) == "from-file"
     monkeypatch.setenv("GROQ_API_KEY", "from-env")
     assert gw.get_key(env_file) == "from-env"
 
 
-def test_get_key_raises_when_missing(monkeypatch, tmp_path):
-    monkeypatch.setattr(gw, "_read_user_registry", lambda: None)
-    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+def test_get_key_uses_secretstore_before_env_file(monkeypatch, tmp_path):
+    env_file = tmp_path / ".env"
+    env_file.write_text("GROQ_API_KEY=from-file\n", encoding="utf-8")
+    monkeypatch.setattr(gw, "_read_secretstore", lambda: "from-store")
+    assert gw.get_key(env_file) == "from-store"
+
+
+def test_get_key_raises_when_missing(tmp_path):
     with pytest.raises(gw.GroqError, match="ausente"):
         gw.get_key(tmp_path / "nao-existe.env")
 
 
-def test_save_key_roundtrip_and_rejects_empty(monkeypatch, tmp_path):
-    env_file = tmp_path / ".env"
-    fake = "gsk_" + "a" * 40
-    gw.save_key(f"  {fake}  ", env_file)
-    monkeypatch.setattr(gw, "_read_user_registry", lambda: None)
-    monkeypatch.delenv("GROQ_API_KEY", raising=False)
-    assert gw.get_key(env_file) == fake
-    with pytest.raises(gw.GroqError, match="vazia"):
-        gw.save_key("   ", env_file)
-    with pytest.raises(gw.GroqError, match="curta"):
-        gw.save_key("x", env_file)
+def _fake_run(returncode: int, stdout: str):
+    def run(*args, **kwargs):
+        return gw.subprocess.CompletedProcess(args, returncode, stdout=stdout, stderr="")
+    return run
+
+
+def test_read_secretstore_returns_stripped_value(monkeypatch):
+    monkeypatch.setattr(gw.subprocess, "run", _fake_run(0, "gsk_abc\r\n"))
+    assert REAL_READ_SECRETSTORE() == "gsk_abc"
+
+
+def test_read_secretstore_failures_return_none(monkeypatch):
+    monkeypatch.setattr(gw.subprocess, "run", _fake_run(1, ""))
+    assert REAL_READ_SECRETSTORE() is None
+    monkeypatch.setattr(gw.subprocess, "run", _fake_run(0, "   "))
+    assert REAL_READ_SECRETSTORE() is None
+
+    def no_powershell(*args, **kwargs):
+        raise OSError("sem powershell")
+
+    monkeypatch.setattr(gw.subprocess, "run", no_powershell)
+    assert REAL_READ_SECRETSTORE() is None
 
 
 def test_check_size_blocks_oversized_input():
@@ -113,8 +137,46 @@ def test_summarize_strips_text():
 
 
 def test_main_status_without_key_fails(monkeypatch, capsys):
-    monkeypatch.setattr(gw, "_read_user_registry", lambda: None)
-    monkeypatch.delenv("GROQ_API_KEY", raising=False)
     monkeypatch.setattr(gw, "ENV_PATH", gw.Path("nao-existe.env"))
     assert gw.main(["status"]) == 1
     assert "ausente" in capsys.readouterr().err
+
+
+def test_compose_uses_cheap_model_and_never_answers():
+    seen: dict = {}
+
+    def post(payload, key):
+        seen.update(payload)
+        return _ok("  Objetivo: listar poços.\nSaída: tabela.  \n")
+
+    out = gw.compose("lista os pocos", gw.COMPOSE_MODEL, "k", post=post, sleep=lambda s: None)
+    assert out == "Objetivo: listar poços.\nSaída: tabela."
+    assert seen["model"] == "openai/gpt-oss-20b"
+    system = seen["messages"][0]["content"].lower()
+    assert "nao responda" in system and "nao invente" in system
+
+
+def test_compose_blocks_oversized_prompt():
+    big = "x" * (gw.MAX_INPUT_TOKENS_EST * gw.CHARS_PER_TOKEN + 100)
+    with pytest.raises(gw.GroqError, match="excede"):
+        gw.compose(big, gw.COMPOSE_MODEL, "k", post=lambda p, k: _ok("x"), sleep=lambda s: None)
+
+
+def test_answer_returns_plain_text_with_selected_model():
+    seen: dict = {}
+
+    def post(payload, key):
+        seen.update(payload)
+        return _ok(" Brasília \n")
+
+    assert gw.answer("capital do Brasil?", "qwen/qwen3.8-27b", "k", post=post, sleep=lambda s: None) == "Brasília"
+    assert seen["model"] == "qwen/qwen3.8-27b"
+
+
+def test_main_compose_reads_file_and_prints(monkeypatch, capsys, tmp_path):
+    f = tmp_path / "p.txt"
+    f.write_text("faca x", encoding="utf-8")
+    monkeypatch.setattr(gw, "get_key", lambda *a, **k: "k")
+    monkeypatch.setattr(gw, "compose", lambda text, model, key, **kw: f"[{model}] {text}")
+    assert gw.main(["compose", "--file", str(f)]) == 0
+    assert capsys.readouterr().out.strip() == "[openai/gpt-oss-20b] faca x"

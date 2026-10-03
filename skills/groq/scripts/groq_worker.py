@@ -5,21 +5,23 @@ NAO decide (isso e do Jev) e NAO recebe material privado (processos, clientes, l
 Sem dependencias externas. Chave lida de (nesta ordem):
   1. variavel de ambiente GROQ_API_KEY
   2. variavel de USUARIO do Windows (registro)
-  3. <pasta da skill>/.env
+  3. PowerShell SecretStore (segredo GROQ_API_KEY; criptografado por usuario)
+  4. <pasta da skill>/.env (nunca dentro do vault)
 
 Comandos:
-  setup                                    pede a chave (oculta) e grava no .env da skill
   status                                   diz se ha chave (nunca a mostra)
   extract --file F --fields a,b,c          devolve JSON com exatamente esses campos
   summarize --file F [--max-words 120]     resumo curto
+  compose --file F                         reescreve o pedido como prompt claro (nao responde)
+  answer --file F [--model M]              resposta direta em texto puro, sem ferramentas
 Opcoes comuns: --model, --json (saida crua)
 """
 from __future__ import annotations
 
 import argparse
-import getpass
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
@@ -30,10 +32,11 @@ from typing import Any
 ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 KEY_VAR = "GROQ_API_KEY"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
+COMPOSE_MODEL = "openai/gpt-oss-20b"  # montagem de prompt: barato e rapido o bastante
 # Free tier (console.groq.com/docs/rate-limits, 2026-10-02): 30 RPM, 1K RPD, 8K TPM, 200K TPD.
 MAX_INPUT_TOKENS_EST = 6000  # folga sob o teto de 8K TPM (entrada + saida)
 CHARS_PER_TOKEN = 4
-MIN_KEY_LEN = 20  # chaves Groq (gsk_...) tem ~56 caracteres; barra colagem truncada
+SECRETSTORE_TIMEOUT_S = 20.0
 MAX_RETRIES = 3
 MAX_RETRY_WAIT_S = 60.0
 ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
@@ -63,20 +66,30 @@ def _read_user_registry() -> str | None:
         return None
 
 
+def _read_secretstore() -> str | None:
+    """Le a chave do PowerShell SecretStore (criptografado, por usuario do Windows)."""
+    command = f"Get-Secret -Name {KEY_VAR} -AsPlainText -ErrorAction Stop"
+    try:
+        result = subprocess.run(  # noqa: S603 (comando fixo, sem entrada externa)
+            ["powershell", "-NoProfile", "-NonInteractive", "-Command", command],
+            capture_output=True, text=True, timeout=SECRETSTORE_TIMEOUT_S, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    value = result.stdout.strip()
+    return value if result.returncode == 0 and value else None
+
+
 def get_key(env_path: Path | None = None) -> str:
-    key = os.environ.get(KEY_VAR) or _read_user_registry() or _read_env_file(env_path or ENV_PATH)
+    key = (
+        os.environ.get(KEY_VAR)
+        or _read_user_registry()
+        or _read_secretstore()
+        or _read_env_file(env_path or ENV_PATH)
+    )
     if not key:
         raise GroqError(f"{KEY_VAR} ausente (variavel de usuario ou .env da skill)")
     return key
-
-
-def save_key(key: str, env_path: Path = ENV_PATH) -> None:
-    key = key.strip()
-    if not key:
-        raise GroqError("chave vazia")
-    if len(key) < MIN_KEY_LEN:
-        raise GroqError(f"chave curta demais ({len(key)} caracteres); a colagem falhou? tente de novo")
-    env_path.write_text(f"{KEY_VAR}={key}\n", encoding="utf-8")
 
 
 def estimate_tokens(text: str) -> int:
@@ -179,6 +192,26 @@ def summarize(text: str, max_words: int, model: str, key: str, **kw: Any) -> str
     return call_groq(build_payload(system, text, model, json_mode=False), key, **kw).strip()
 
 
+def compose(text: str, model: str, key: str, **kw: Any) -> str:
+    """Reescreve um pedido como prompt claro e autocontido. Nao responde ao pedido."""
+    check_size(text)
+    system = (
+        "Reescreva o pedido do usuario como um prompt claro e autocontido para um agente de IA, "
+        "com: objetivo, contexto fornecido, restricoes e formato de saida esperado. "
+        "Mantenha o idioma original. Preserve literalmente caminhos, codigo, numeros, nomes e "
+        "trechos citados. Nao invente fatos, arquivos, requisitos ou numeros. "
+        "Nao responda ao pedido: apenas reescreva. Se ja estiver claro, devolva quase igual."
+    )
+    return call_groq(build_payload(system, text, model, json_mode=False), key, **kw).strip()
+
+
+def answer(text: str, model: str, key: str, **kw: Any) -> str:
+    """Resposta direta (texto puro) para perguntas curtas e mecanicas, sem ferramentas."""
+    check_size(text)
+    system = "Responda em portugues, de forma direta e correta. Se nao souber, diga que nao sabe."
+    return call_groq(build_payload(system, text, model, json_mode=False), key, **kw).strip()
+
+
 def _load_text(args: argparse.Namespace) -> str:
     return Path(args.file).read_text(encoding="utf-8")
 
@@ -187,22 +220,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
-    sub.add_parser("setup")
-    for name in ("extract", "summarize"):
+    for name in ("extract", "summarize", "compose", "answer"):
         p = sub.add_parser(name)
         p.add_argument("--file", required=True)
-        p.add_argument("--model", default=DEFAULT_MODEL)
+        p.add_argument("--model", default=COMPOSE_MODEL if name == "compose" else DEFAULT_MODEL)
         if name == "extract":
             p.add_argument("--fields", required=True)
-        else:
+        elif name == "summarize":
             p.add_argument("--max-words", type=int, default=120)
     args = parser.parse_args(argv)
 
     try:
-        if args.cmd == "setup":
-            save_key(getpass.getpass(f"Cole a {KEY_VAR} (oculta): "))
-            print(f"chave gravada em {ENV_PATH}")
-            return 0
         if args.cmd == "status":
             get_key()
             print("chave GROQ_API_KEY configurada")
@@ -212,6 +240,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.cmd == "extract":
             fields = [f.strip() for f in args.fields.split(",") if f.strip()]
             print(json.dumps(extract(text, fields, args.model, key), ensure_ascii=False, indent=2))
+        elif args.cmd == "compose":
+            print(compose(text, args.model, key))
+        elif args.cmd == "answer":
+            print(answer(text, args.model, key))
         else:
             print(summarize(text, args.max_words, args.model, key))
         return 0

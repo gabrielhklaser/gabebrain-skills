@@ -1,6 +1,6 @@
 {
   "_comment": "Fonte única das regras de roteamento. Lida por scripts/prompt_router.py e pelo plugin GabeBrain Hub (Obsidian). Regex em sintaxe comum a Python e JavaScript, avaliadas sem diferenciar maiúsculas.",
-  "version": 1,
+  "version": 2,
   "local": {
     "model": "gemini-3.8-flash-high",
     "patterns": [
@@ -17,6 +17,13 @@
       "\\b(qgis|qgis desktop|shapefile|\\.shp|\\.geojson local|camadas gis|pyqgis)\\b",
       "\\b(powershell local|terminal local|processo local|abrir janela|desktop)\\b"
     ],
+    "soft_patterns": [
+      "\\b(vault|obsidian|gabebrain[ -]?hub|master[- ]?skills?|\\.claude|\\.agents|\\.gemini|20-skills|biblioteca de agentes)\\b",
+      "\\b(skills?|agentes?|subagentes?|scripts?|plugin|pasta|arquivos?)\\b.{0,40}\\bgabebrain\\b",
+      "\\bgabebrain\\b.{0,40}\\b(skills?|agentes?|subagentes?|scripts?|plugin|pasta|arquivos?|local)\\b",
+      "\\b[a-z]:\\\\[\\w .-]+|%userprofile%|%appdata%|%localappdata%|~[\\\\/]"
+    ],
+    "soft_reason": "Mexe em arquivos locais do GabeBrain (vault, skills, agentes, plugin ou pastas do computador): a Arena AI não edita o disco local, então roda no Antigravity ou no Claude Code.",
     "reasons": [
       { "when": "servidor|localhost|porta|npm|vite", "reason": "Demanda de servidor local detectada: subir/testar serviço no localhost da máquina." },
       { "when": "biblioteca|drive|cota|mestrado|docling", "reason": "Acesso a acervo local do GabeBrain necessário (Biblioteca Geológica / Google Drive / Mestrado)." },
@@ -39,9 +46,14 @@
     "model": "cloud-agent",
     "patterns": [
       "\\b(arena ai|na arena|no arena|arena agent|na nuvem|em nuvem)\\b",
-      "\\b(commit no github|criar pr|pull request|push para github|reposit[oó]rio remoto)\\b"
+      "\\b(commit no github|criar pr|pull request|push para github|reposit[oó]rio remoto)\\b",
+      "\\b(no github|do github|github\\.com)\\b|github\\.com"
     ],
     "reason": "Arena AI (Nuvem / GitHub - P1): tarefa executável em nuvem para economia máxima de tokens locais.",
+    "repo_patterns": [
+      "\\b(reposit[oó]rio|github|pull request|commit|branch|refator\\w*|componente|c[oó]digo|testes? unit[aá]rios?|readme)\\b"
+    ],
+    "no_cloud_reason": "Sem indício de projeto estritamente em nuvem (repositório GitHub): a Arena AI só atende projetos na nuvem, então segue no Antigravity ou no Claude Code.",
     "keep_local_reason": "Mantendo no Antigravity: continuidade de contexto local."
   }
 }

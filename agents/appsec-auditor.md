@@ -47,3 +47,10 @@ Você é o **appsec-auditor**, responsável por blindar a segurança de ferramen
 - **Cluster**: Laboratório de Engenharia & AppSec (dev)
 - **Líder Titular**: `DevAgent`
 - **Tipo**: Subagente Especializado
+
+<!-- agent-skills-ciclo v2 -->
+### 🔁 Skills de ciclo (revisadas em 04/10/2026)
+Fonte: plugin `addy-agent-skills`, skills `agent-skills:<nome>`; veredictos em `Revisao_agent-skills_2026-10-04.md`.
+- `security-and-hardening` (modelo de ameaças primeiro; LGPD)
+- `agent-skills:security-auditor` (revisão extra)
+- Antes de pular uma etapa, ler a tabela *Rationalizations* da skill (desculpas comuns e respostas).

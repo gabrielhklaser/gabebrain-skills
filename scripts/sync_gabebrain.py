@@ -221,7 +221,7 @@ def strip_front(text: str) -> str:
 
 
 def build_notes(skills, apply: bool):
-    print("== 20-Skills (notas geradas)")
+    # print("== 20-Skills (notas geradas)")
     today = date.today().isoformat()
     rows = []
     wanted = set()
@@ -319,3 +319,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

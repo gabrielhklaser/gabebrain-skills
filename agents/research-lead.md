@@ -47,3 +47,9 @@ Você é o **research-lead**, responsável pelo alinhamento de escopo, delimita�
 - **Cluster**: Central de Inteligência & Deep Research (research)
 - **Líder Titular**: `DeepResearchAgent`
 - **Tipo**: Subagente Especializado
+
+<!-- agent-skills-ciclo v2 -->
+### 🔁 Skills de ciclo (revisadas em 04/10/2026)
+Fonte: plugin `addy-agent-skills`, skills `agent-skills:<nome>`; veredictos em `Revisao_agent-skills_2026-10-04.md`.
+- `watch`
+- Antes de pular uma etapa, ler a tabela *Rationalizations* da skill (desculpas comuns e respostas).

@@ -44,3 +44,9 @@ Você é o **peer-reviewer**, avaliador crítico de novidade científica, rigor 
 - **Cluster**: Academia Científica & Mestrado PPGCA (science)
 - **Líder Titular**: `ScienceAgent`
 - **Tipo**: Subagente Especializado
+
+<!-- agent-skills-ciclo v2 -->
+### 🔁 Skills de ciclo (revisadas em 04/10/2026)
+Fonte: plugin `addy-agent-skills`, skills `agent-skills:<nome>`; veredictos em `Revisao_agent-skills_2026-10-04.md`.
+- `doubt-driven-development` (2º olhar com contexto limpo)
+- Antes de pular uma etapa, ler a tabela *Rationalizations* da skill (desculpas comuns e respostas).

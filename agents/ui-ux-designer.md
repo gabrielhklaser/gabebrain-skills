@@ -42,3 +42,9 @@ Você é o **ui-ux-designer**, o especialista em inteligência de design de inte
 - **Cluster**: Estúdio de Criação, Design & Mídia (design)
 - **Líder Titular**: `DesignAgent`
 - **Tipo**: Subagente Especializado
+
+<!-- agent-skills-ciclo v2 -->
+### 🔁 Skills de ciclo (revisadas em 04/10/2026)
+Fonte: plugin `addy-agent-skills`, skills `agent-skills:<nome>`; veredictos em `Revisao_agent-skills_2026-10-04.md`.
+- `browser-testing-with-devtools` (usar nossas ferramentas de navegador)
+- Antes de pular uma etapa, ler a tabela *Rationalizations* da skill (desculpas comuns e respostas).

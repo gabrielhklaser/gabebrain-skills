@@ -4,7 +4,7 @@ sync_gabebrain.py - mantem as copias de skills e Master Skills do GabeBrain em p
 
 Fonte da verdade:
   skills/         deste repositorio   -> deploy para os agentes
-  master-skills/  <-> vault "📚 Biblioteca de Agentes" (o vault e onde se edita; o repo versiona)
+  master-skills/  <-> vault "30-Agentes" (o vault e onde se edita; o repo versiona)
 
 Destinos das skills (so atualiza as skills que o destino ja tem, exceto o
 deploy principal, que recebe todas):
@@ -42,7 +42,10 @@ VAULT = Path(os.environ.get(
 DEPLOY_MAIN = HOME / ".gemini" / "config" / "skills"
 DEPLOY_MIRRORS = [VAULT / ".claude" / "skills", VAULT / ".agents" / "skills",
                   HOME / ".claude" / "skills"]
-VAULT_MASTERS = VAULT / "📚 Biblioteca de Agentes"
+# Em 2026-10-10 a "📚 Biblioteca de Agentes" virou "30-Agentes" dentro do cofre.
+VAULT_MASTERS = VAULT / "30-Agentes"
+# Copias das instrucoes da raiz do repo que vivem em 30-Agentes: nao sao Master Skills nem subagentes.
+NOT_MASTERS = {"AGENTS.md", "CLAUDE.md", "GEMINI.md"}
 SKILL_NOTES = VAULT / "20-Skills"
 
 IGNORE = shutil.ignore_patterns(
@@ -182,7 +185,7 @@ def sync_masters(apply: bool):
         return a.read_bytes().replace(b"\r\n", b"\n") == b.read_bytes().replace(b"\r\n", b"\n")
 
     repo_agents = REPO / "agents"
-    for v in sorted(VAULT_MASTERS.glob("*.md")):
+    for v in sorted(p for p in VAULT_MASTERS.glob("*.md") if p.name not in NOT_MASTERS):
         if v.name.startswith("Subagente_"):
             agent_file = v.name.replace("Subagente_", "")
             r = repo_agents / agent_file

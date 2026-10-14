@@ -25,6 +25,7 @@ Cluster especialista em cartografia multicamadas, outorgas de recursos hídricos
 - `sub: geo-hidro`: Subagente especializado associado
 - `sub: geo-licencia`: Subagente especializado associado
 - `sub: geo-acervo`: Subagente especializado associado
+- `sub: geo-eng`: Subagente especializado associado (revisão de memória de cálculo de contenção, skill `revisao-memoria-calculo-contencao`) → [[Subagente_geo-eng]]
 
 ---
 

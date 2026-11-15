@@ -79,6 +79,12 @@ PATTERNS = [
         "Palavras Banidas"
     ),
     (
+        r"\b(sheds?|shedding)\s+light\s+on\b",
+        "Clichê de IA: 'sheds light on'",
+        "Diga o que o resultado mostra ou explica (ex.: shows, explains, quantifies).",
+        "Palavras Banidas"
+    ),
+    (
         r"\btestemunho\s+vivo\b",
         "Clichê de IA: 'testemunho vivo'",
         "Substitua pela evidência empírica ou resultado quantitativo.",

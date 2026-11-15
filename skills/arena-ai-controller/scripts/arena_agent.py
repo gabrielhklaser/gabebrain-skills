@@ -68,7 +68,8 @@ EDITOR_SELECTOR = 'div.tiptap.ProseMirror, [contenteditable="true"], textarea'
 SKILL_PREFIX = os.environ.get("ARENA_SKILL_PREFIX") or (
     "[GabeBrain] Antes de executar, consulte no repositório gabrielhklaser/gabebrain-skills "
     "(skills/<nome>/SKILL.md) as skills pertinentes à tarefa — em especial superpowers-coding-agent "
-    "para código e no-ai-slop / escrita-tecnica-humanizada para textos. Responda em português brasileiro.\n\n"
+    "para código, no-ai-slop para artigo científico ou texto em inglês e texto-natural-ptbr para texto em "
+    "português. Responda em português brasileiro.\n\n"
 )
 
 # DADOS DE SESSÃO (cookies/perfil Chrome) SÃO DESCARTÁVEIS.

@@ -73,7 +73,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 7. **`computacao-aplicada`**: Módulo de acesso ao acervo do Mestrado PPGCA/Unisinos estruturado via Docling.
 8. **`canva-image-agent`**: Automação do Canva Pro via Playwright e motor local de manipulação gráfica (redimensionamento Lanczos, corte, otimização).
 9. **`revisor-cientifico-peer-review`**: Simulador de parecerista sênior (SBC/IEEE/ACM/Elsevier) com auditoria em 5 etapas e checklist canônico de manuscritos.
-10. **`escrita-tecnica-humanizada`**: Guia anti-AI slop, modulação de burstiness, voz ativa, densidade semântica e linter de estilo acadêmico.
+10. **`texto-natural-ptbr`**: Edição de texto em português brasileiro (parecer, ofício, e-mail, linguagem simples) para soar natural e fiel ao autor (forge-z, MIT). A antiga `escrita-tecnica-humanizada` foi aposentada em 2026-11-15 e absorvida pela `no-ai-slop`.
 11. **`skillspector-auditor`**: Agente e scanner de segurança para skills de agentes de IA baseado no NVIDIA SkillSpector.
 12. **`ecc-harness-optimizer`**: Sistema operacional de harness e otimizador de contexto/tokens de agentes (Everything Claude Code - ECC).
 13. **`superpowers-coding-agent`**: Agente de desenvolvimento disciplinado de código a partir de prompts (obra/superpowers).

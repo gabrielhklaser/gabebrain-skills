@@ -71,7 +71,7 @@ O perfil do navegador (cookies de login) fica em `ARENA_USER_DATA_DIR`, por padr
 
 ### Skills GabeBrain na nuvem
 
-Em conversas **novas**, o `send` prefixa o prompt com uma instrução para o Arena consultar as skills do repo `gabebrain-skills`: `superpowers-coding-agent` para código, `no-ai-slop` e `escrita-tecnica-humanizada` para texto. Desative com `--no-skill-prefix` ou troque o texto via `ARENA_SKILL_PREFIX` no `.env`. Follow-ups e cliques de confirmação não recebem o prefixo.
+Em conversas **novas**, o `send` prefixa o prompt com uma instrução para o Arena consultar as skills do repo `gabebrain-skills`: `superpowers-coding-agent` para código, `no-ai-slop` para artigo científico ou texto em inglês e `texto-natural-ptbr` para texto em português. Desative com `--no-skill-prefix` ou troque o texto via `ARENA_SKILL_PREFIX` no `.env`. Follow-ups e cliques de confirmação não recebem o prefixo.
 
 ### Verificação dos seletores
 

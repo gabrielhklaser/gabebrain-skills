@@ -2,7 +2,7 @@
 tipo: agente-master
 origem:
   - "revisor-cientifico-peer-review (IEEE/ACM/SBC Peer Review Protocol)"
-  - "escrita-tecnica-humanizada (Anti-AI Slop & Estilo Técnico Humanizado)"
+  - "escrita-tecnica-humanizada (Anti-AI Slop & Estilo Técnico Humanizado; aposentada em 2026-11-15, absorvida pela no-ai-slop)"
   - "computacao-aplicada (Mestrado PPGCA/Unisinos & Acervo Científico Docling)"
 versao: 1.0
 data_consolidacao: 2026-09-27
@@ -28,7 +28,7 @@ Agente mestre de inteligência acadêmica especializado na condução de **Peer 
 
 ## 📌 Origem da Consolidação
 - **Skill `revisor-cientifico-peer-review`:** Protocolo de avaliação cega em 5 etapas, cálculo de novidade (*novelty delta*), checagem cruzada texto-tabelas e parecer estruturado.
-- **Skill `escrita-tecnica-humanizada`:** Filtro anti-AI slop, cadência variada (*burstiness*), voz ativa e transição do gênero discursivo dissertação $\to$ artigo.
+- **Skill `no-ai-slop`:** Filtro anti-AI slop, cadência variada (*burstiness*), voz ativa e transição do gênero discursivo dissertação $\to$ artigo (absorveu a antiga `escrita-tecnica-humanizada`, aposentada em 2026-11-15). Texto em português brasileiro fica com `texto-natural-ptbr`.
 - **Skill `computacao-aplicada`:** Ancoragem bibliográfica e epistemológica no acervo de 80 obras do Mestrado PPGCA/Unisinos (Ontologias, IHC, Redução de Dimensionalidade/LAMP, k-NN, SWEBOK v4, etc.).
 
 ---
@@ -76,7 +76,7 @@ Ao redigir ou reescrever seções do artigo:
 
 ## ⚡ Skills e Ferramentas Integradas
 - `revisor-cientifico-peer-review`: `python ...\peer_review_checklist.py <artigo.md>`
-- `escrita-tecnica-humanizada`: `python ...\anti_slop_audit.py <artigo.md>`
+- `no-ai-slop`: `python ...\no_ai_slop_audit.py <artigo.md>`
 - `computacao-aplicada`: `python ...\busca_computacao_aplicada.py buscar "<termo>"`
 
 ---
@@ -84,7 +84,7 @@ Ao redigir ou reescrever seções do artigo:
 ### 🧩 Subagentes Integrados de Escrita e Validação Científica
 - **scientific-writing** (K-Dense-AI): Estruturação de seções, formulação matemática, diagramação de taxonomia e pirâmide invertida.
 - **scientific-thinking-scholar-evaluation** (ECC / Affaan M): Avaliação epistêmica, auditoria de baselines, equidade experimental e eliminação de viés de confirmação.
-- **escrita-tecnica-humanizada**: Ritmo sintático natural, autoridade acadêmica e voz ativa.
+- **texto-natural-ptbr**: Texto em português brasileiro (parecer, ofício, e-mail, linguagem simples) natural e fiel ao autor.
 - **no-ai-slop**: Filtro e expurgo de 20+ vícios de linguagem sintética de LLMs.
 - **revisor-cientifico-peer-review**: Avaliação formal pré-submissão no padrão SBC / IEEE.
 
@@ -93,5 +93,6 @@ Ao redigir ou reescrever seções do artigo:
 ## 🔗 Navegação e Central
 - [[00 - Índice da Biblioteca de Agentes|📚 Voltar ao Índice da Biblioteca de Agentes]]
 - [[20-Skills/Skill_revisor-cientifico-peer-review|⚡ Skill Revisor Científico]]
-- [[20-Skills/Skill_escrita-tecnica-humanizada|⚡ Skill Escrita Técnica Humanizada]]
+- [[20-Skills/Skill_no-ai-slop|⚡ Skill No AI Slop]]
+- [[20-Skills/Skill_texto-natural-ptbr|⚡ Skill Texto Natural PT-BR]]
 - [[20-Skills/Skill_computacao-aplicada|⚡ Skill Computação Aplicada]]

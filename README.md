@@ -2,24 +2,20 @@
 
 Repositório central de **Master Skills**, agentes especializados e protocolos operacionais do ecossistema **GabeBrain** (@gabrielhklaser).
 
-Projetado especificamente para integração com o **Arena AI** (`https://arena.ai/`), permitindo que prompts enviados a partir do **Antigravity** executem diretamente no ambiente de nuvem do Arena AI consumindo as habilidades, diretrizes e padrões de engenharia consolidados do ecossistema.
+Serve de fonte da verdade para as skills, os agentes e as diretrizes que o **Claude Code** e o **Antigravity** usam. O roteamento de modelo e de skills acontece dentro de cada harness, por ganchos locais que consultam o Jev.
 
 ---
 
-## 🏛️ Arquitetura Híbrida: Antigravity (Orquestrador) x Arena AI (Executor)
+## 🧭 Roteamento nos harnesses (Jev)
 
-Para economizar a cota de tokens do Antigravity e acelerar entregas pesadas:
+A sessão principal roda no modelo mais leve e funciona como recepção. Antes de cada resposta, um gancho (`UserPromptSubmit` no Claude Code, `PreInvocation` no Antigravity) consulta o Jev e injeta o resultado no contexto. Os scripts ficam em `~/.claude/router/`.
 
-- **Arena AI (Executor em Nuvem):**
-  - Conectado a este repositório no GitHub via seletor nativo do Arena AI.
-  - Executa tarefas pesadas de codificação, refatoração, criação de testes, processamento de dados e pipelines complexas em container cloud isolado.
-  - **Custo de tokens locais:** Zero.
-- **Antigravity (Orquestrador Local):**
-  - Envia comandos de alto nível para o Arena AI através do subagente/skill `arena-ai-controller`.
-  - Atua como ponte quando tarefas exigem acesso aos acervos físicos locais (PDFs da Biblioteca Geológica no Google Drive, extrações Docling no disco, QGIS Desktop).
-  - Extrai cirurgicamente apenas as evidências necessárias e as envia prontas no prompt para o Arena AI continuar a execução.
-
-Consulte o detalhamento completo em [`protocols/arena_antigravity_bridge.md`](protocols/arena_antigravity_bridge.md).
+- **Roteador de modelo** (`jev_router.py` no Claude Code; `jev_router_agy.py` no Antigravity): pergunta ao Jev o nível do pedido (simples, rotina ou difícil) e o risco de quebrar algo. O código escolhe o subagente e sobe um nível quando o risco ou a falta de confiança passam do limite.
+  - Claude Code: `rapido` (Haiku), `padrao` (Sonnet) ou `profundo` (Opus). Trocar de modelo exige confirmação do Gabriel antes da delegação.
+  - Antigravity: `gemini-3.8-flash` (simples), `claude-sonnet` (rotina), `gemini-4-argon` (difícil / rotina com subida) ou `claude-opus` (teto crítico), com os mesmos limiares (risco > 70% ou confiança < 0,5) e a mesma confirmação antes de trocar de modelo.
+- **Roteador de skills** (`jev_skill_router.py` e `jev_skill_router_agy.py`): pergunta ao Jev qual skill da biblioteca serve, ou nenhuma. Se a chance passar de 50% e a confiança for 0,6 ou mais, o `SKILL.md` entra no contexto.
+- A escolha manual do Gabriel (`/model`, seleção de modelo ou `[sem-roteador]` na mensagem) sempre prevalece.
+- Os registros ficam em `decisoes.jsonl` e `skills_decisoes.jsonl`, no mesmo diretório.
 
 ---
 
@@ -35,7 +31,7 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **04** | [`Master_Seguranca_e_Auditoria_de_Codigo`](master-skills/Master_Seguranca_e_Auditoria_de_Codigo.md) | OWASP Top 10, sanitização de inputs, proteção de credenciais, AppSec |
 | **05** | [`Master_Frontend_Design_e_UI_Engineering`](master-skills/Master_Frontend_Design_e_UI_Engineering.md) | Tailwind, React, Vue, CSS Tokens, Micro-interações, acessibilidade WCAG |
 | **06** | [`Master_Orquestracao_e_Hive_Mind_Agentes`](master-skills/Master_Orquestracao_e_Hive_Mind_Agentes.md) | Protocolos multi-agente, consenso distribuído, hive mind, delegação |
-| **07** | [`Master_Arena_AI_Agent_Controller`](master-skills/Master_Arena_AI_Agent_Controller.md) | Automação Playwright, GitHub branches arena/*, auto-failover, reconexão |
+| **07** | [`Master_Arena_AI_Agent_Controller`](master-skills/Master_Arena_AI_Agent_Controller.md) | *(legado)* Automação Playwright da Arena AI, GitHub branches arena/*, reconexão |
 | **08** | [`Master_Spec_Driven_Development_e_Engenharia_Contexto`](master-skills/Master_Spec_Driven_Development_e_Engenharia_Contexto.md) | SDD, TDD, prompts baseados em especificações rígidas, contratos de API |
 | **09** | [`Master_Transcricao_Ritmo_e_Notacao_Musical`](master-skills/Master_Transcricao_Ritmo_e_Notacao_Musical.md) | DSP de áudio, detecção de transientes, MusicXML, quantização rítmica |
 | **10** | [`Master_Paleoclima_e_Geologia_Espacial`](master-skills/Master_Paleoclima_e_Geologia_Espacial.md) | Reconstruções paleogeográficas, interpolação climática, Deep Time |
@@ -55,8 +51,8 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 | **24** | [`Master_SkillSpector_Seguranca_e_Auditoria_Skills`](master-skills/Master_SkillSpector_Seguranca_e_Auditoria_Skills.md) | NVIDIA SkillSpector: auditoria AppSec de skills de IA, 71 padrões, YARA, AST e Least Privilege |
 | **25** | [`Master_ECC_Harness_e_Otimizacao_Agentes`](master-skills/Master_ECC_Harness_e_Otimizacao_Agentes.md) | Everything Claude Code: harness OS, economia de tokens, ciclo 6-fases, TDD e memória durável SQLite |
 | **26** | [`Master_Superpowers_Engenharia_Codigo_e_Prompts`](master-skills/Master_Superpowers_Engenharia_Codigo_e_Prompts.md) | Superpowers: metodologia disciplinada de código a partir de prompts, brainstorming e planos atômicos |
-| **27** | [`Master_LoopAgent_Governanca_e_QALoop`](master-skills/Master_LoopAgent_Governanca_e_QALoop.md) | Orquestrador geral: governança multi-agente, qa-loop limitado, pontuação objetiva com Jev e handoff nuvem/local |
-| **28** | [`Master_QALoop_Governanca_e_Orquestracao`](master-skills/Master_QALoop_Governanca_e_Orquestracao.md) | Master do qa-loop: governança, hive mind e orquestração (qa-loop, jev, prompt-router-coordinator) |
+| **27** | [`Master_LoopAgent_Governanca_e_QALoop`](master-skills/Master_LoopAgent_Governanca_e_QALoop.md) | Orquestrador geral: governança multi-agente, qa-loop limitado e pontuação objetiva com Jev |
+| **28** | [`Master_QALoop_Governanca_e_Orquestracao`](master-skills/Master_QALoop_Governanca_e_Orquestracao.md) | Master do qa-loop: governança, hive mind e orquestração (qa-loop, jev) |
 
 ---
 
@@ -64,9 +60,9 @@ As Master Skills residem no diretório [`master-skills/`](master-skills/) e form
 
 Além das diretrizes teóricas, o repositório contém as implementações executáveis das ferramentas do agente:
 
-1. **`arena-ai-controller`**: Driver Playwright para automação de sessões, relê de prompts e reconexão resiliente com a plataforma Arena AI.
+1. **`arena-ai-controller`** *(legado, sem uso no fluxo)*: driver Playwright da Arena AI. A pasta foi mantida.
 2. **`gis-multicamadas`**: Gerador e manipulador de mapas Leaflet/Folium em múltiplas camadas (geologia, poços, drenagem, vias) com medição métrica e alternância de basemaps.
-3. **`vcs-version-agent`**: Agente de paridade bidirecional (GitHub <-> Local), fusão de branches `arena/*` e snapshots offline.
+3. **`vcs-version-agent`**: Agente de paridade bidirecional (GitHub <-> Local) e snapshots offline.
 4. **`biblioteca-pesquisavel`**: Motor de indexação e busca léxica por página no acervo técnico.
 5. **`biblioteca-triagem`**: Destilador de laudos, extração de confiança (A-E) e geração de fichas de síntese.
 6. **`biblioteca-mapa-documento`**: Extrator de estrutura de documentos extensos (>50k tokens) e mergulho direcionado em capítulos técnicos.
@@ -80,7 +76,7 @@ Além das diretrizes teóricas, o repositório contém as implementações execu
 14. **`desktop-screenshot`**: Captura de telas de aplicações desktop e publicação em PRs do GitHub com URLs imutáveis e commits de snapshots (sem hosts de imagem terceiros).
 15. **`sprout-cli`**: Interface CLI multi-agente para mensageria Nostr (canais/DMs), workflows, feed de eventos, proteções de branch e memória persistente chave-valor (`mem`).
 16. **`github-research`**: Pesquisa especializada de histórico de issues, PRs mesclados e código via GitHub CLI (`gh`).
-17. **`anydoc`**, **`no-ai-slop`**, **`prompt-router-coordinator`**, **`scientific-writing`**, **`scientific-thinking-scholar-evaluation`**: conversão de documentos, filtro anti-slop, roteamento de prompts entre agentes e escrita/avaliação científica.
+17. **`anydoc`**, **`no-ai-slop`**, **`scientific-writing`**, **`scientific-thinking-scholar-evaluation`**: conversão de documentos, filtro anti-slop e escrita/avaliação científica.
 18. **`web-asset-generator`**: Geração profissional de web assets (favicons, ícones PWA Android/iOS, imagens Open Graph/Twitter Cards e metatags HTML) a partir de logos, textos ou emojis, com validação de dimensões e contraste WCAG.
 19. **`deep-research`** (`research`, `research-add-items`, `research-add-fields`, `research-deep`, `research-report`): Pesquisa profunda em 3 fases inspirada no paper RhinoInsight (geração de outline, investigação paralela com validação estrita de esquema JSON e compilação de relatório Markdown com índice ancorado).
 20. **`context7`** (`context7-cli`, `context7-mcp`, `find-docs`): Recuperação em tempo real de documentação oficial e exemplos de código verificados para qualquer biblioteca, framework ou SDK via CLI (`ctx7`) e MCP nativo (`resolve-library-id`, `query-docs`). Elimina alucinações de APIs obsoletas ou inexistentes.
@@ -132,7 +128,7 @@ O GabeBrain adota uma divisão em 5 clusters especializados com 26 subagentes at
 - `sub: coder-tdd` (`agents/coder-tdd.md`): Ciclo TDD Red/Green/Refactor, planos atômicos e suíte de testes pytest.
 - `sub: context7-verifier` (`agents/context7-verifier.md`): Blindagem anti-alucinação com consulta proativa a documentação oficial.
 - `sub: appsec-auditor` (`agents/appsec-auditor.md`): Auditoria de 71 vulnerabilidades, regras YARA e diretrizes Karpathy.
-- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local, controller da Arena AI e harness optimizer.
+- `sub: vcs-sync` (`agents/vcs-sync.md`): Paridade Git GitHub/Local e harness optimizer.
 
 ### 🎓 4. ScienceAgent (`agents/science-agent.md`)
 *Produção Científica, Mestrado PPGCA & Peer Review*
@@ -154,11 +150,6 @@ O GabeBrain adota uma divisão em 5 clusters especializados com 26 subagentes at
 - **`@Lev`** (`agents/meadow-core/lev.persona.md`): Especialista em segurança, auditoria de código e superfície de ataque.
 - **`web-search-agent`** (`agents/web-search-agent.md`): Motor de busca profunda modular (`web-search-modules/`).
 
-## 🚀 Como Usar no Arena AI
+## 🗂️ Legado
 
-1. Acesse o [Arena AI Agent Mode](https://arena.ai/agent).
-2. Ative a integração com o GitHub no painel direito.
-3. Conecte o repositório `gabrielhklaser/gabebrain-skills` (ou inclua-o nas instruções de contexto do seu projeto principal).
-4. Envie prompts como:
-   > *"Com base nas diretrizes do GabeBrain em `master-skills/Master_GIS_Geoprocessamento.md`, implemente a camada de buffer hidrogeológico e plote no mapa interativo."*
-5. O Arena AI lerá as skills diretamente, executará as alterações e fará o push de volta para o GitHub.
+Estes itens continuam no repositório, mas não fazem parte do fluxo atual: `skills/arena-ai-controller`, `master-skills/Master_Arena_AI_Agent_Controller.md`, `skills/prompt-router-coordinator`, `agents/prompt-router.md` e `protocols/arena_antigravity_bridge.md`.

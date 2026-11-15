@@ -14,6 +14,8 @@ Utilize este checklist após redigir ou auditar seções de artigos científicos
 ---
 
 ## 2. Palavras e Expressões Banidas
+> Ressalva: um termo isolado não basta para reprovar. Reprove quando o termo estiver sem função, inflado ou acumulado com outros padrões; termo técnico com sentido próprio (ex.: *robust* em estatística robusta) fica.
+
 - [ ] **Léxico de IA Eliminado:** *delve, tapestry, crucial, pivotal, beacon, game-changer, multifaceted, foster, leverage, utilize, streamline, robust, transformative, etc.*?
 - [ ] **Muletas Acadêmicas Eliminadas:** *"Vale ressaltar que"*, *"Cabe destacar que"*, *"É importante notar que"*, *"It is worth noting that"*, *"No cenário contemporâneo"*, *"In today's fast-paced world"*?
 - [ ] **Advérbios Vazios Cortados:** *fundamentally, truly, essentially, inherently, merely, simply*?

@@ -83,7 +83,7 @@ O ecossistema GabeBrain implementa uma divisão hierárquica em 5 clusters espec
 ### 🔍 2. DeepResearchAgent (`agents/deep-research-agent.md`)
 *Cluster Líder de Pesquisa Profunda na Internet & Extração Estruturada em 3 Fases*
 - `sub: research-lead` (`agents/research-lead.md`): Fase 1 - Estruturação de `outline.yaml` e matriz de campos `fields.yaml` (`deep-research`, `research`).
-- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`, `watch`, `caveman`).
+- `sub: web-scout` (`agents/web-scout.md`): Fase 2 - Varredura especializada com agentes paralelos e módulos temáticos (`research-deep`, `research-add-items`, `web-search-agent`, `watch`, `caveman`, `funil-llm`).
 - `sub: report-synth` (`agents/report-synth.md`): Fase 3 - Validação 100% de campos via JSON, notas limpas e relatório consolidado (`research-report`, `web-para-nota`, `obsidian-markdown`, `obsidian-bases`, `json-canvas`, `obsidian-cli`).
 - `sub: gh-researcher` (`agents/gh-researcher.md`): Mineração de código, repositórios, PRs e issues via gh CLI (`github-research`, `caveman`).
 

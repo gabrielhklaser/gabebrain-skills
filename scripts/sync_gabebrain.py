@@ -78,6 +78,7 @@ DOMAINS = {
     "research-add-fields": "dominio/pesquisa-web",
     "research-add-items": "dominio/pesquisa-web",
     "research-deep": "dominio/pesquisa-web",
+    "funil-llm": "dominio/pesquisa-web",
     "research-report": "dominio/pesquisa-web",
     "context7-cli": "dominio/engenharia-software",
     "context7-mcp": "dominio/engenharia-software",

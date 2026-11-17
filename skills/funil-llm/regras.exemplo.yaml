@@ -1,0 +1,15 @@
+# Modelo de regras do funil-llm. Apague o que nao usar; chave desconhecida da erro.
+campos_obrigatorios: [url, titulo]
+dedupe: url
+dominios_bloqueados: [pinterest.com, quora.com, facebook.com]
+dominios_permitidos: []
+data: {campo: data, desde: 2024-01-01}
+numeros:
+  views: {min: 1000000}
+palavras:
+  campos: [titulo, resumo]
+  todas: []
+  alguma: [aquífero, groundwater]
+  nenhuma: [casino, apostas]
+ordenar: {campo: views, desc: true}
+limite: 50

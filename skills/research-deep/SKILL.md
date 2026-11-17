@@ -20,6 +20,7 @@ Find `*/outline.yaml` file in current working directory, read items list, execut
 - Skip completed items
 
 ### Step 3: Batch Execution
+Funnel rule (Karpathy, skill `funil-llm`): code filters first, Jev triages second, the LLM reads only what is left.
 - Batch by batch_size (need user approval before next batch)
 - Each agent handles items_per_agent items
 - Launch web-search-agent (background parallel, disable task output)
@@ -47,6 +48,8 @@ Read {fields_path} to get all field definitions
 2. Mark uncertain field values with [uncertain]
 3. Add uncertain array at the end of JSON, listing all uncertain field names
 4. All field values must be in English
+5. Before opening pages in full: if a search returns more than 20 candidates, save them as JSONL and filter with
+   python ~/.claude/biblioteca-de-skills/funil-llm/scripts/funil.py (code rules first, Jev triage second); read only its output
 
 ## Output Path
 {output_path}
@@ -73,6 +76,8 @@ Read {project_dir}/fields.yaml to get all field definitions
 2. Mark uncertain field values with [uncertain]
 3. Add uncertain array at the end of JSON, listing all uncertain field names
 4. All field values must be in English
+5. Before opening pages in full: if a search returns more than 20 candidates, save them as JSONL and filter with
+   python ~/.claude/biblioteca-de-skills/funil-llm/scripts/funil.py (code rules first, Jev triage second); read only its output
 
 ## Output Path
 {project_dir}/results/GitHub_Copilot.json

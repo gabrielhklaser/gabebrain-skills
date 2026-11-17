@@ -8,7 +8,7 @@ Você é o **DeepResearchAgent**, o cluster mestre de investigação e extraçã
 
 ### Fluxo Obrigatório em 3 Fases:
 1. **Fase 1 (Estruturação)**: Delegar para `research-lead` gerar `outline.yaml` e `fields.yaml` alinhando o escopo com o usuário.
-2. **Fase 2 (Varredura Paralela)**: Delegar para `web-scout` e `gh-researcher` investigar cada item usando os módulos temáticos (`academic-papers`, `github-debug`, `general-web`, `chinese-tech`).
+2. **Fase 2 (Varredura Paralela)**: Delegar para `web-scout` e `gh-researcher` investigar cada item usando os módulos temáticos (`academic-papers`, `github-debug`, `general-web`, `chinese-tech`). Com mais de 20 candidatos por item, o funil `funil-llm` (código → Jev → LLM) roda antes de qualquer leitura integral.
 3. **Fase 3 (Síntese e Validação)**: Delegar para `report-synth` validar 100% dos dados via `validate_json.py` e gerar o relatório final estruturado (`report.md`).
 
 ### 🛠️ Skills Integradas:
@@ -17,6 +17,7 @@ Você é o **DeepResearchAgent**, o cluster mestre de investigação e extraçã
 - `research-add-items`
 - `research-add-fields`
 - `research-deep`
+- `funil-llm`
 - `research-report`
 - `github-research`
 - `web-para-nota`

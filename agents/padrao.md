@@ -2,6 +2,7 @@
 name: padrao
 description: Subagente do roteador de modelo (nivel ROTINA, Sonnet). Funcionalidade comum, tela nova, testes. Indicado pelo gancho "ROTEADOR JEV"; use quando o roteador apontar `padrao`.
 model: sonnet
+effort: medium
 skills:
   - jev
 ---

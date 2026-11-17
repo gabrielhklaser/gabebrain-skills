@@ -2,6 +2,7 @@
 name: profundo
 description: Subagente do roteador de modelo (nivel DIFICIL, Opus). Bug sem causa conhecida, mudanca que atravessa varias partes, concorrencia, seguranca. Indicado pelo gancho "ROTEADOR JEV"; use quando o roteador apontar `profundo`.
 model: opus
+effort: medium
 skills:
   - jev
 ---

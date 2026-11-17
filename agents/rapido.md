@@ -2,6 +2,7 @@
 name: rapido
 description: Subagente do roteador de modelo (nivel SIMPLES, Haiku). Mudanca pequena e localizada - texto, cor, renomear algo. Indicado pelo gancho "ROTEADOR JEV"; use quando o roteador apontar `rapido`.
 model: haiku
+effort: low
 skills:
   - jev
 ---

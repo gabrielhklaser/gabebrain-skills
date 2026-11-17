@@ -10,7 +10,7 @@ Serve de fonte da verdade para as skills, os agentes e as diretrizes que o **Cla
 
 A sessão principal roda no modelo mais leve e funciona como recepção. Antes de cada resposta, um gancho (`UserPromptSubmit` no Claude Code, `PreInvocation` no Antigravity) consulta o Jev e injeta o resultado no contexto. Os scripts ficam em `~/.claude/router/`.
 
-- **Roteador de modelo** (`jev_router.py` no Claude Code; `jev_router_agy.py` no Antigravity): pergunta ao Jev o nível do pedido (simples, rotina ou difícil) e o risco de quebrar algo. O código escolhe o subagente e sobe um nível quando o risco ou a falta de confiança passam do limite.
+- **Roteador de modelo** (`jev_router.py` no Claude Code; `jev_router_agy.py` no Antigravity): pergunta ao Jev o nível do pedido (simples, rotina ou difícil) e o risco de quebrar algo. O código escolhe o subagente e sobe um nível quando o risco ou a falta de confiança passam do limite. Também indica o esforço (`low` no degrau mais barato, `medium` nos demais, `high` com risco acima de 70%); se a entrega falhar, repete uma vez um degrau acima antes de trocar de modelo.
   - Claude Code: `rapido` (Haiku), `padrao` (Sonnet) ou `profundo` (Opus). Trocar de modelo exige confirmação do Gabriel antes da delegação.
   - Antigravity: `gemini-3.8-flash` (simples), `claude-sonnet` (rotina), `gemini-4-argon` (difícil / rotina com subida) ou `claude-opus` (teto crítico), com os mesmos limiares (risco > 70% ou confiança < 0,5) e a mesma confirmação antes de trocar de modelo.
 - **Roteador de skills** (`jev_skill_router.py` e `jev_skill_router_agy.py`): pergunta ao Jev qual skill da biblioteca serve, ou nenhuma. Se a chance passar de 50% e a confiança for 0,6 ou mais, o `SKILL.md` entra no contexto.

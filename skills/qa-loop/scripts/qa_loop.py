@@ -5,11 +5,13 @@ Principios (ver SKILL.md):
   1. Medir antes de opinar: testes, compilacao, schema e segredos rodam de verdade (gates).
   2. Jev pontua pilares e vetos (barato); o agente so decide o que o Jev marcar INCERTO.
   3. O loop NUNCA e infinito: teto de iteracoes, estagnacao e veto sao codigo, nao convencao.
+  4. Sem verificador, sem aprovacao (Karpathy): toda rubrica declara como a entrega e checada e ao menos
+     um verificador executavel (--test-cmd ou --verify-cmd) precisa rodar; senao a rodada e vetada.
 
 Comandos:
-  gates  --paths A B ... [--test-cmd "pytest -q"] [--out gates.json]
+  gates  --paths A B ... [--test-cmd "pytest -q"] [--verify-cmd "CMD" ...] [--out gates.json]
   score  --rubric dev|geo|ciencia --spec-file S --artifact-file A [--gates gates.json]
-         [--privado] [--override pilar=0.8 ...] [--out score.json]
+         [--privado] [--override pilar=0.8 ...] [--trivial | --sem-verificador MOTIVO] [--out score.json]
   decide --history-file H.json --score score.json [--max-iter 3]
   validate --file saida.json
 """
@@ -34,6 +36,8 @@ JEV_THRESHOLD = 0.7              # abaixo disso o agente decide (regra do ecossi
 VETO_P = 0.7                     # P(sim) a partir da qual o veto do Jev vale
 ARTIFACT_CHAR_LIMIT = 12_000
 GATE_TIMEOUT_S = 120
+MIN_WAIVER_CHARS = 20            # dispensa de verificador exige motivo de verdade, nao "nao deu"
+EXECUTED_GATE_PREFIXES = ("testes", "verificador:")
 SKILL_DIR = Path(__file__).resolve().parent.parent
 JEV_SCRIPT = SKILL_DIR.parent / "jev" / "scripts" / "jev.py"
 
@@ -85,17 +89,23 @@ def gate_secrets(path: Path) -> Gate:
     return Gate(f"segredo:{path.name}", True, True, "ok")
 
 
-def gate_tests(command: str, cwd: Path | None = None) -> Gate:
+def gate_command(name: str, command: str, cwd: Path | None = None) -> Gate:
+    """Roda um comando de verificacao; exit 0 passa. Critico: falha ou nao execucao vetam a rodada."""
     try:
         result = subprocess.run(shlex.split(command), capture_output=True, text=True,
                                 timeout=GATE_TIMEOUT_S, cwd=cwd, check=False)
     except (OSError, subprocess.TimeoutExpired) as err:
-        return Gate("testes", False, True, f"nao executou: {err}")
+        return Gate(name, False, True, f"nao executou: {err}")
     tail = (result.stdout + result.stderr).strip().splitlines()[-3:]
-    return Gate("testes", result.returncode == 0, True, " | ".join(tail) or f"exit {result.returncode}")
+    return Gate(name, result.returncode == 0, True, " | ".join(tail) or f"exit {result.returncode}")
 
 
-def run_gates(paths: list[Path], test_cmd: str | None = None) -> list[Gate]:
+def gate_tests(command: str, cwd: Path | None = None) -> Gate:
+    return gate_command("testes", command, cwd)
+
+
+def run_gates(paths: list[Path], test_cmd: str | None = None,
+              verify_cmds: list[str] | None = None) -> list[Gate]:
     gates: list[Gate] = []
     for path in paths:
         if not path.is_file():
@@ -109,7 +119,33 @@ def run_gates(paths: list[Path], test_cmd: str | None = None) -> list[Gate]:
             gates.append(gate_secrets(path))
     if test_cmd:
         gates.append(gate_tests(test_cmd))
+    for number, command in enumerate(verify_cmds or [], start=1):
+        gates.append(gate_command(f"verificador:{number}", command))
     return gates
+
+
+def executed_verifiers(gates: list[dict[str, Any]]) -> list[str]:
+    """Gates que executaram algo de verdade (testes, navegador, script de checagem), nao so analise estatica."""
+    return [g["name"] for g in gates if g["name"].startswith(EXECUTED_GATE_PREFIXES)]
+
+
+def check_verification(rubric: dict[str, Any], gates: list[dict[str, Any]], trivial: bool = False,
+                       dispensa: str | None = None) -> dict[str, Any]:
+    """Exige ao menos um verificador executado. Se ele passou ou falhou e problema dos gates criticos."""
+    rule = rubric.get("verificacao", {})
+    if not rule.get("obrigatoria", False):
+        return {"ok": True, "dispensada": False, "detalhe": "verificacao nao exigida pela rubrica"}
+    ran = executed_verifiers(gates)
+    if ran:
+        return {"ok": True, "dispensada": False, "detalhe": f"executado(s): {', '.join(ran)}"}
+    if trivial:
+        return {"ok": True, "dispensada": True, "detalhe": "dispensada: entrega trivial (classify)"}
+    if dispensa and len(dispensa.strip()) >= MIN_WAIVER_CHARS:
+        return {"ok": True, "dispensada": True, "detalhe": f"dispensada pelo agente: {dispensa.strip()}"}
+    hint = "; ".join(rule.get("exemplos", []))
+    reason = "motivo de dispensa curto demais; " if dispensa else ""
+    return {"ok": False, "dispensada": False,
+            "detalhe": f"{reason}nenhum verificador executado. Rode um com --test-cmd/--verify-cmd: {hint}"}
 
 
 # --------------------------------------------------------------- rubricas
@@ -295,9 +331,10 @@ def _parse_overrides(items: list[str]) -> dict[str, float]:
 
 
 def cmd_gates(args: argparse.Namespace) -> int:
-    gates = run_gates([Path(p) for p in args.paths], args.test_cmd)
-    payload = {"gates": [g.as_dict() for g in gates],
-               "veto": any(g.critical and not g.passed for g in gates)}
+    gates = run_gates([Path(p) for p in args.paths], args.test_cmd, args.verify_cmd)
+    as_dicts = [g.as_dict() for g in gates]
+    payload = {"gates": as_dicts, "veto": any(g.critical and not g.passed for g in gates),
+               "verificadores_executados": executed_verifiers(as_dicts)}
     _emit(payload, args.out)
     return 0
 
@@ -347,9 +384,12 @@ def cmd_score(args: argparse.Namespace) -> int:
     if modo.startswith("agente"):
         result = score_with_jev(rubric, {"answers": {}}, overrides)
     failed = [g["name"] for g in gates["gates"] if g["critical"] and not g["passed"]]
+    verification = check_verification(rubric, gates["gates"], args.trivial, args.sem_verificador)
+    if not verification["ok"]:
+        failed.append("sem_verificador")
     pending = [p["id"] for p in result["pilares"] if p["incerto"]]
     payload = {**result, "modo": modo, "veto": bool(failed or result["vetos_jev"]),
-               "vetos_gates": failed, "pendente": pending}
+               "vetos_gates": failed, "pendente": pending, "verificacao": verification}
     _emit(payload, args.out)
     return 0
 
@@ -385,6 +425,8 @@ def build_parser() -> argparse.ArgumentParser:
     g = sub.add_parser("gates")
     g.add_argument("--paths", nargs="+", required=True)
     g.add_argument("--test-cmd")
+    g.add_argument("--verify-cmd", action="append", default=[],
+                   help="verificador executavel extra (navegador, script de checagem); repetivel")
     g.add_argument("--out")
     g.set_defaults(func=cmd_gates)
     s = sub.add_parser("score")
@@ -396,6 +438,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--autorizado-privado", action="store_true",
                    help="so apos o Gabriel autorizar enviar material sensivel ao Jev")
     s.add_argument("--override", nargs="*", default=[])
+    waiver = s.add_mutually_exclusive_group()
+    waiver.add_argument("--trivial", action="store_true", help="entrega trivial (classify): dispensa verificador")
+    waiver.add_argument("--sem-verificador", metavar="MOTIVO",
+                        help=f"dispensa o verificador com motivo (>= {MIN_WAIVER_CHARS} caracteres); fica registrada")
     s.add_argument("--out")
     s.set_defaults(func=cmd_score)
     c = sub.add_parser("classify")

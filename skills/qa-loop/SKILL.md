@@ -21,12 +21,18 @@ Garantido em codigo (`decide`), nao so em texto:
 - **Estagnacao:** ganho < 3 pontos entre rodadas consecutivas (ou regressao) => `ESCALAR`.
 - **Veto:** gate critico falho ou veto do Jev => reprova, qualquer que seja a nota.
 - **Fim obrigatorio:** o loop so termina em `APROVADO` ou `ESCALAR` (decide o Gabriel). Nunca "repete ate passar".
+- **Sem verificador, sem aprovacao (Karpathy):** toda rubrica declara `verificacao` (obrigatoria + exemplos por dominio).
+  Se nenhum verificador executavel rodou (`--test-cmd` ou `--verify-cmd`), o `score` veta com `sem_verificador`,
+  mesmo com nota 100. Compilar e varrer segredos nao conta: e analise estatica.
 
 ## Fluxo de uma rodada
 0. `classify --artifact-file X` — o Jev escolhe a rubrica (`dev|geo|ciencia`) e diz se a entrega e **trivial**
    (trivial => so os gates, sem ciclo de revisao). Confianca < 0,7 => o agente escolhe.
-1. `gates` — mede de verdade: compila `.py`, valida `.json`, varre segredos, roda `--test-cmd`.
-2. `score` — o Jev responde os pilares (`score`) e vetos (`noul`) da rubrica numa unica chamada barata.
+1. `gates` — mede de verdade: compila `.py`, valida `.json`, varre segredos, roda `--test-cmd` e cada `--verify-cmd`
+   (repetivel: Playwright, script que recalcula o resultado, `validate_json.py`, linter). Exit 0 passa; falha veta.
+2. `score` — confere o verificador e o Jev responde os pilares (`score`) e vetos (`noul`) numa unica chamada barata.
+   Dispensa do verificador so com `--trivial` (o `classify` disse trivial) ou `--sem-verificador "motivo"` (>= 20
+   caracteres); a dispensa sai no campo `verificacao` e deve constar da `analise_breve` entregue ao Gabriel.
    Pilar com confianca < 0,7 volta como `incerto`: o agente pontua e reenvia com `--override pilar=0..1`.
 3. `decide` — grava o historico e devolve `APROVADO | REPROVADO | ESCALAR | PENDENTE_AGENTE`.
 4. Se `REPROVADO`: **o agente escreve** o feedback (o Jev nao escreve), citando evidencia (`arquivo:linha`,
@@ -34,7 +40,7 @@ Garantido em codigo (`decide`), nao so em texto:
 5. `validate` — confere o JSON final antes de entregar.
 
 ```bash
-python qa_loop.py gates --paths entrega.py --test-cmd "python -m pytest -q" --out gates.json
+python qa_loop.py gates --paths entrega.py --test-cmd "python -m pytest -q" --verify-cmd "python checa_saida.py" --out gates.json
 python qa_loop.py score --rubric dev --spec-file spec.txt --artifact-file entrega.py --gates gates.json --out score.json
 python qa_loop.py decide --history-file historico.json --score score.json --max-iter 3
 ```
@@ -57,7 +63,8 @@ sensivel sem esses padroes (laudos reais, dados de clientes) continua exigindo p
 
 ## Rubricas (`rubricas/*.json`)
 `dev` (codigo), `geo` (laudos/hidrologia/GIS/licenciamento), `ciencia` (texto academico/pesquisa). Pesos somam 100;
-aprovacao >= 85 sem veto. Para criar outra, copie uma e ajuste `pilares` e `vetos`.
+aprovacao >= 85 sem veto. Cada uma tem `verificacao.exemplos`: como checar a entrega daquele dominio. Para criar
+outra, copie uma e ajuste `pilares`, `vetos` e `verificacao`.
 
 ## Saida final obrigatoria (validada por `validate`)
 ```json

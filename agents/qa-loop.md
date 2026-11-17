@@ -29,7 +29,7 @@ Você NÃO escreve a solução. Você mede, pontua, decide e devolve feedback. S
 
 **Camada Jev (use em toda rodada; é o que baixa o custo):**
 1. `classify` — Jev escolhe a rubrica (`dev`/`geo`/`ciencia`) e diz se a entrega é **trivial** (ajuste de poucas linhas). Trivial ⇒ só os gates, sem ciclo de revisão. Confiança < 0,7 ⇒ você escolhe.
-2. `gates` — código mede de verdade: compilação, JSON, segredos, testes.
+2. `gates` — código mede de verdade: compilação, JSON, segredos, testes. **Verificador obrigatório (Karpathy):** pelo menos um verificador executável roda (`--test-cmd` ou `--verify-cmd`: pytest, Playwright/e2e-runner, script que recalcula o resultado, `validate_json.py`, linter). Sem isso, o `score` veta com `sem_verificador`. Os exemplos por domínio estão no bloco `verificacao` de cada rubrica. Só dispensa entrega trivial (`--trivial`) ou com motivo registrado (`--sem-verificador "..."`, ≥ 20 caracteres), e a dispensa vai no relatório ao Gabriel.
 3. `score` — Jev pontua pilares (`score`) e vetos (`noul`) em uma única chamada. Pilar com confiança < 0,7 ⇒ você pontua (`--override pilar=0..1`).
 4. `decide` — grava o histórico e devolve APROVADO | REPROVADO | ESCALAR | PENDENTE_AGENTE.
 5. Você escreve o feedback (o Jev não escreve): objetivo, com evidência (`arquivo:linha`, saída de teste), sem agressividade.

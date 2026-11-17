@@ -227,3 +227,91 @@ def test_classify_baixa_confianca_deixa_para_o_agente() -> None:
     resp = {"answers": {"rubrica": {"choice": "geo", "confidence": 0.4}, "trivial": {"noul": 0.9}}}
     out = qa.classify_with_jev(resp)
     assert out["rubrica"] is None and out["rubrica_incerta"] and out["trivial"]
+
+
+# ------------------------------------------------- verificador obrigatorio
+# Karpathy: "criterio espetacular nao adianta se o agente nao consegue checar a realidade".
+# Toda rubrica declara como a entrega e verificada; sem um verificador executado, a rodada e vetada.
+
+def _gate(name: str, passed: bool = True) -> dict:
+    return {"name": name, "passed": passed, "critical": True, "detail": "ok"}
+
+
+@pytest.mark.parametrize("nome", ["dev", "geo", "ciencia"])
+def test_toda_rubrica_declara_verificacao(nome: str) -> None:
+    verificacao = qa.load_rubric(nome)["verificacao"]
+    assert verificacao["obrigatoria"] is True
+    assert len(verificacao["exemplos"]) >= 2
+
+
+def test_verificador_extra_vira_gate_critico() -> None:
+    gates = qa.run_gates([], verify_cmds=[f'"{sys.executable}" -c "raise SystemExit(0)"',
+                                         f'"{sys.executable}" -c "raise SystemExit(3)"'])
+    assert [g.name for g in gates] == ["verificador:1", "verificador:2"]
+    assert [g.passed for g in gates] == [True, False]
+    assert all(g.critical for g in gates)
+
+
+def test_so_testes_e_verificadores_contam_como_execucao() -> None:
+    gates = [_gate("compile:a.py"), _gate("segredo:a.py"), _gate("testes"), _gate("verificador:1")]
+    assert qa.executed_verifiers(gates) == ["testes", "verificador:1"]
+    assert qa.executed_verifiers([_gate("compile:a.py"), _gate("json:b.json")]) == []
+
+
+def test_sem_verificador_executado_reprova() -> None:
+    result = qa.check_verification(qa.load_rubric("dev"), [_gate("compile:a.py")])
+    assert result["ok"] is False
+    assert "pytest" in result["detalhe"]  # cita os exemplos da rubrica
+
+
+def test_com_verificador_executado_passa() -> None:
+    result = qa.check_verification(qa.load_rubric("geo"), [_gate("verificador:1", passed=False)])
+    assert result["ok"] is True  # a falha do verificador ja veta pelo gate; aqui so se exige que exista
+
+
+def test_entrega_trivial_dispensa_verificador() -> None:
+    result = qa.check_verification(qa.load_rubric("dev"), [], trivial=True)
+    assert result["ok"] is True and "trivial" in result["detalhe"]
+
+
+def test_dispensa_exige_motivo_e_fica_registrada() -> None:
+    curto = qa.check_verification(qa.load_rubric("ciencia"), [], dispensa="nao deu")
+    assert curto["ok"] is False
+    longo = qa.check_verification(qa.load_rubric("ciencia"), [],
+                                  dispensa="ensaio opinativo sem dado, citacao ou codigo verificavel")
+    assert longo["ok"] is True and longo["dispensada"] is True
+
+
+def test_rubrica_sem_exigencia_nao_bloqueia() -> None:
+    rubrica = {**qa.load_rubric("dev"), "verificacao": {"obrigatoria": False, "exemplos": []}}
+    assert qa.check_verification(rubrica, [])["ok"] is True
+
+
+def _score_cli(tmp_path: Path, gates: list[dict], *extra: str) -> dict:
+    import json
+    spec, art, gfile, out = (tmp_path / n for n in ("spec.txt", "a.py", "g.json", "s.json"))
+    spec.write_text("faca x", encoding="utf-8")
+    art.write_text("print(1)\n", encoding="utf-8")
+    gfile.write_text(json.dumps({"gates": gates, "veto": False}), encoding="utf-8")
+    qa.main(["score", "--rubric", "dev", "--spec-file", str(spec), "--artifact-file", str(art),
+             "--gates", str(gfile), "--privado", "--override", "funcionalidade=1", "robustez=1",
+             "praticas=1", "aderencia=1", "--out", str(out), *extra])
+    return json.loads(out.read_text(encoding="utf-8"))
+
+
+def test_score_sem_verificador_veta_mesmo_com_nota_maxima(tmp_path: Path) -> None:
+    payload = _score_cli(tmp_path, [_gate("compile:a.py")])
+    assert payload["nota"] == 100
+    assert payload["veto"] is True and "sem_verificador" in payload["vetos_gates"]
+    assert payload["verificacao"]["ok"] is False
+
+
+def test_score_com_testes_nao_veta(tmp_path: Path) -> None:
+    payload = _score_cli(tmp_path, [_gate("compile:a.py"), _gate("testes")])
+    assert payload["veto"] is False and payload["verificacao"]["ok"] is True
+
+
+def test_score_trivial_e_dispensa_pela_cli(tmp_path: Path) -> None:
+    assert _score_cli(tmp_path, [], "--trivial")["veto"] is False
+    dispensa = _score_cli(tmp_path, [], "--sem-verificador", "mudanca so de texto em docstring, sem logica")
+    assert dispensa["veto"] is False and dispensa["verificacao"]["dispensada"] is True

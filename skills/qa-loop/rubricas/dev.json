@@ -10,5 +10,14 @@
   "vetos": [
     {"id": "segredo", "pergunta": "O artefato expoe segredo, token ou senha em texto?"},
     {"id": "destrutivo", "pergunta": "O artefato executa acao destrutiva ou irreversivel nao pedida na especificacao?"}
-  ]
+  ],
+  "verificacao": {
+    "obrigatoria": true,
+    "regra": "Pelo menos um verificador executavel roda nesta rodada; sem isso, veto sem_verificador.",
+    "exemplos": [
+      "testes unitarios: --test-cmd \"python -m pytest -q\" (ou npm test, vitest)",
+      "app web: script Playwright ou e2e-runner abrindo a tela e checando o fluxo (--verify-cmd)",
+      "CLI/script: rodar com uma entrada de exemplo e conferir a saida (--verify-cmd)"
+    ]
+  }
 }

@@ -10,5 +10,14 @@
   "vetos": [
     {"id": "sem_fonte", "pergunta": "Ha conclusao tecnica decisiva apresentada como fato sem nenhuma fonte ou declaracao de que vem do conhecimento geral?"},
     {"id": "numero_incoerente", "pergunta": "Ha valor numerico que contradiz outro valor do mesmo artefato?"}
-  ]
+  ],
+  "verificacao": {
+    "obrigatoria": true,
+    "regra": "Pelo menos um verificador executavel roda nesta rodada; sem isso, veto sem_verificador.",
+    "exemplos": [
+      "recalcular o resultado com script independente (vazao, balanco, Q7,10) e comparar com tolerancia (--verify-cmd)",
+      "GIS: checar CRS, geometrias validas e area/limites com GeoPandas (--verify-cmd)",
+      "laudo/parecer: checagem automatica de normas e itens obrigatorios citados (--verify-cmd)"
+    ]
+  }
 }

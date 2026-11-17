@@ -9,5 +9,14 @@
   ],
   "vetos": [
     {"id": "referencia_inventada", "pergunta": "Ha referencia ou citacao que parece inventada ou nao verificavel?"}
-  ]
+  ],
+  "verificacao": {
+    "obrigatoria": true,
+    "regra": "Pelo menos um verificador executavel roda nesta rodada; sem isso, veto sem_verificador.",
+    "exemplos": [
+      "pesquisa: validate_json.py -f fields.yaml -j resultado.json (--verify-cmd)",
+      "texto: linter da no-ai-slop ou texto-natural-ptbr sobre o arquivo (--verify-cmd)",
+      "citacoes: conferir que toda referencia citada existe na bibliografia/DOI (--verify-cmd)"
+    ]
+  }
 }
